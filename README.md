@@ -1,22 +1,26 @@
 # HILFER Workstation
 
-HILFER is an interactive narrative investigation game built around a fictional corporate desktop OS.
+A playable institutional-horror prototype inside a fictional corporate Windows 98 desktop. Reconcile Jessica's conflicting work-clearance records and observe the first workstation anomaly.
 
-This repository currently contains the **project context pack for Codex and other contributors**. The game implementation and the Windows 98 template are separate steps.
+## Run
 
-## Start here
+From this folder:
 
-- [AGENTS.md](AGENTS.md) — repository instructions for coding agents.
-- [docs/PROJECT_CONTEXT.md](docs/PROJECT_CONTEXT.md) — story premise, gameplay direction, immediate demo, and team responsibilities.
-- [docs/DESIGN_DECISIONS.md](docs/DESIGN_DECISIONS.md) — current directions, explicitly unapproved ideas, and open questions.
-- [docs/INTEGRATION.md](docs/INTEGRATION.md) — proposed evidence/case schemas, cross-app drag contract, progression events, and local persistence.
+```sh
+python -m http.server 8080 --bind 127.0.0.1
+```
 
-These documents are **working context, not final team approval or a full export of private Drive sources**. The design decisions log distinguishes agreed story direction from experimental mechanics.
+Open [HILFER locally](http://127.0.0.1:8080). No build or packages required. Use a modern desktop browser; keyboard users can attach evidence by ID.
 
-## Planned technical foundation
+Open **Reconciliation**, select **CASE-001**, then open **Records**. Inspect and drag HR-014 and OH-008 into the evidence tray. Commit the supported work-eligibility determination and authoritative source. Reload preserves progress. **Start → Reset Demo Progress** starts over.
 
-Adapt [pollygon-dev/WIN98-template](https://github.com/pollygon-dev/WIN98-template), preserving its attribution and license. Prefer HTML, CSS, and vanilla JavaScript for the initial demo; keep static game data in JSON and store only player progress in `localStorage`.
+Only CASE-001 is playable. CASE-002 is an explicit unlocked placeholder. Clearance does not establish the cause of illness. Records and art are temporary, replaceable integration fixtures.
 
-The first planned vertical slice: find Jessica's HR and Occupational Health records in Records → attach them to CASE-001 in Reconciliation → commit the supported resolution → trigger the first persistent distortion and unlock the next case.
+## Checks and integration
 
-**Note:** This repository is public. Do not add private source documents, unapproved team art, secrets, or confidential material without permission.
+- `node --test` or `npm test`: validation, progression, idempotence, persistence and reset; Node 18+.
+- `tests/browser.check.js`: optional Playwright/Edge regression, including native record drags and window controls. See [integration instructions](docs/INTEGRATION.md) for setup.
+- [Integration contracts](docs/INTEGRATION.md): data schemas, central store, drag IDs, events, persistence and graphics replacement.
+- [Project context](docs/PROJECT_CONTEXT.md), [design decisions](docs/DESIGN_DECISIONS.md), [agent instructions](AGENTS.md).
+
+HTML/CSS/vanilla ES modules, static JSON and localStorage. The shell adapts [pollygon-dev/WIN98-template](https://github.com/pollygon-dev/WIN98-template), based on HTML5-Templates.com. Public-domain license preserved in [LICENSE](LICENSE). The upstream snapshot in `references/WIN98-template/` is unchanged.

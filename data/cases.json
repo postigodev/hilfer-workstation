@@ -1,0 +1,16 @@
+[
+  {
+    "id": "CASE-001", "title": "Personnel Availability Mismatch", "initiallyUnlocked": true,
+    "description": "Jessica remains AVAILABLE in the personnel register. A later Occupational Health determination covers the same duty period. Determine which work-eligibility classification enters the consolidated record.",
+    "scope": "Work eligibility only. A clearance decision does not establish occupational causation or incident-casualty status.",
+    "requiredEvidence": ["HR-014", "OH-008"],
+    "resolution": {"field": "workEligibility", "value": "NOT_CLEARED", "sourceId": "OH-008"},
+    "statusOptions": ["AVAILABLE", "NOT_CLEARED"],
+    "progression": {"unlockCaseIds": ["CASE-002"], "distortionLevel": 1}
+  },
+  {
+    "id": "CASE-002", "title": "Further Review", "initiallyUnlocked": false, "placeholder": true,
+    "description": "Placeholder — awaiting departmental records. This assignment is not playable in the first prototype.",
+    "requiredEvidence": []
+  }
+]

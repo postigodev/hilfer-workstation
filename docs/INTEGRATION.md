@@ -1,81 +1,76 @@
-# HILFER — Demo Integration Contracts (Proposal)
+# HILFER — Integration Contracts
 
-**Status:** proposed implementation interfaces for the first demo. The developer implementing them should confirm exact names in code and amend this document as needed. No separate backend required.
+Implemented first-prototype interfaces. Static content is read-only; the central store owns all progress. Records is intentionally a temporary adapter for Lyden.
 
-## Static game data
+## Run and checks
 
-Static JSON files in the repository (`data/records.json`, `data/cases.json`) are the source of truth for evidence and the case-definition rules. Example shape:
+From the repository root: `python -m http.server 8080 --bind 127.0.0.1`, then open `http://127.0.0.1:8080`. Node 18+ runs pure logic checks with `node --test` (or `npm test`). No build or runtime packages.
 
-```json
-{
-  "id": "OH-008",
-  "type": "occupational_health_record",
-  "title": "Jessica — Work Clearance",
-  "department": "Occupational Health",
-  "employeeId": "EMP-JESSICA",
-  "fields": {
-    "workEligibility": "NOT_CLEARED",
-    "occupationalCausation": "NOT_ESTABLISHED"
-  },
-  "caseIds": ["CASE-001"]
-}
-```
+Optional browser regression: with Playwright and Microsoft Edge available, run `node tests/browser.check.js`. Set `HILFER_URL` to the local server URL (default `http://127.0.0.1:8080`); set `HILFER_PLAYWRIGHT_MODULE` only if Playwright is outside normal module resolution. This check uses real browser drags and a temporary isolated browser profile. `HILFER_SCREENSHOT` optionally selects an output path.
 
-Case example:
+## Data and ownership
 
-```json
-{
-  "id": "CASE-001",
-  "title": "Personnel Availability Mismatch",
-  "requiredEvidence": ["HR-014", "OH-008"],
-  "resolution": {
-    "field": "workEligibility",
-    "value": "NOT_CLEARED",
-    "sourceId": "OH-008"
-  },
-  "onComplete": ["UNLOCK_CASE_002", "SET_DISTORTION_LEVEL_1"]
-}
-```
+- `data/records.json`: stable ID, type, title, department, employeeId, employee, date (local fictional facility time), workPeriod, fields, caseIds, note. HR-014 and OH-008 cover the same duty period; OH is later. Occupational causation remains NOT_ESTABLISHED.
+- `data/cases.json`: requiredEvidence, resolution `{field, value, sourceId}`, statusOptions, initiallyUnlocked and progression `{unlockCaseIds, distortionLevel}`. A placeholder has `placeholder: true` and cannot be completed. Validation and progression follow these definitions.
+- `js/core/store.js`: immutable registry, runtime state, validated mutations, subscriptions. `progression.js`: pure validation and milestone transitions. `persistence.js`: versioned saves.
+- Lyden replaces `js/apps/records-fixture.js` and its mount call in `js/main.js`; Reconciliation does not import that adapter. Arwa replaces visual tokens/assets in `css/hilfer.css` and desktop glyphs in `index.html`. UI components can use the same store API without editing case logic.
 
-Ensure HR and OH records refer to the *same time period* and the discrepancy is truly about work eligibility, not the noncontradictory distinction between job assignment and medical condition.
+## Registry and state API
 
-## Player state
-
-Use a single versioned `localStorage` namespace, for example `hilfer:save:v1`. Persist IDs and small state objects, **not** complete records or asset bytes. Handle malformed/stale state and provide Reset Demo Progress.
-
-## Records → Reconciliation
-
-Records owns **listing, searching, inspecting, and drag origin**. Reconciliation owns **case eligibility, evidence linking, validation, commit and progression**. They use the shared record registry and game store.
+`js/main.js` creates one store and exposes it as `window.hilfer` after loading JSON. Imported apps receive the same `store` instance.
 
 ```js
-function beginRecordDrag(event, recordId) {
-  event.dataTransfer.setData('application/x-hilfer-record-id', recordId);
-  event.dataTransfer.setData('text/plain', recordId);
-  event.dataTransfer.effectAllowed = 'copy';
-}
+const record = hilfer.getRecord('OH-008'); // frozen registry object, undefined if unknown
+hilfer.getRecords();                    // frozen array; render text with textContent
+hilfer.getCases();                      // frozen case definitions
+hilfer.discover(record.id);             // call when inspected; not when merely listed
+const caseId = hilfer.getActiveCaseId(); // currently selected Reconciliation case
+const state = hilfer.getState();        // independent snapshot; edits do not mutate store
+const attached = state.attachedEvidence[caseId] ?? [];
+hilfer.attachEvidence(caseId, record.id); // {ok, message}; also discovers if necessary
+hilfer.removeEvidence(caseId, record.id);
+hilfer.submitResolution(caseId, {
+  field: 'workEligibility', value: 'NOT_CLEARED', sourceId: 'OH-008'
+});
+const unsubscribe = hilfer.subscribe(state => { /* refresh UI */ });
+const stopEvents = hilfer.onEvent(({ type, detail }) => { /* react to milestone */ });
+hilfer.resetProgress(); // also available in Start > Reset Demo Progress
 ```
 
-The receiving drop zone resolves the ID in the registry, checks that it is relevant to the case, rejects unknown/duplicate IDs, and links it in player state. Provide an attach-by-ID method as a fallback for accessibility/tests. Dragging an OS window by its title bar must not start evidence dragging.
+`getActiveCaseId()` can return a locked/placeholder selection; mutations validate availability. Rejecting any mutation leaves completion/progression unchanged. Completed cases have sealed evidence and idempotent commits. Attachments alone never complete a case. Only the small canonical resolution is persisted, not arbitrary caller properties. Reconciliation includes attach-by-ID controls for keyboard access.
 
-## Events (proposed)
+## Record drag contract
 
-- `hilfer:evidence-discovered` — a record becomes known to the player.
-- `hilfer:evidence-attached` — a valid evidence ID is linked to an active case.
-- `hilfer:case-reconciled` — the player has committed a validated resolution, once.
-- `hilfer:case-unlocked` — new case now available.
-- `hilfer:distortion-changed` — persistent visual state changed.
+Resolve IDs through `store.getRecord`; never trust external record objects. Custom MIME is exported from `js/apps/shared.js`. The fixture also exports `beginRecordDrag(event, recordId)`.
 
-Prefer a central store with UI subscribers and dispatch explicit events only for cross-module reactions. Events should be idempotent and should include stable IDs. A rejected drop must not mark a case complete.
+```js
+event.stopPropagation();
+event.dataTransfer.setData('application/x-hilfer-record-id', recordId);
+event.dataTransfer.setData('text/plain', recordId);
+event.dataTransfer.effectAllowed = 'copy';
+```
 
-## Definition of done for CASE-001
+Drag cards use `draggable="true"` inside window content. Window movement listens only to title bars, excludes controls, and never cancels record dragstart. A successful drop attaches evidence; the player must still submit a supported classification/source pair.
 
-- Records fixture or Lyden's Records UI opens and displays both files.
-- Dragging HR-014 and OH-008 to Reconciliation works, with duplicate/invalid-drop feedback.
-- The UI requires an explicit supported resolution (work eligibility NOT_CLEARED from OH-008).
-- Successful commit updates state, moves the case to completed, unlocks a placeholder CASE-002 and triggers one subtle glitch / persisted distortion level 1.
-- Reload restores progress; demo reset clears it.
-- CSS effects do not block ordinary use or require final art assets to exist yet.
+## Progress events
 
-## Upstream shell compatibility
+Events use `store.onEvent`, not DOM CustomEvents. Subscribers receive `{type, detail}` after the updated state is saved and UI state subscribers run. No replay on load; read the current state on mount. Unsubscribe with the returned function.
 
-`WIN98-template` is vanilla HTML/CSS/JS with existing global window management and title-bar dragging. Understand its selectors and event handlers before modularizing. Preserve original license/attribution. Avoid a framework rewrite for the initial demo.
+| Type | detail |
+| --- | --- |
+| `hilfer:evidence-discovered` | `{recordId}` |
+| `hilfer:evidence-attached` | `{caseId, recordId}` |
+| `hilfer:case-reconciled` | `{caseId, resolution: {field, value, sourceId}}` |
+| `hilfer:case-unlocked` | `{caseId, byCaseId}` |
+| `hilfer:distortion-changed` | `{previousLevel, level}` |
+| `hilfer:progress-reset` | `{}` |
+
+Discovery and milestone events fire once per corresponding transition. Removing/re-attaching may emit another attachment event; removal uses ordinary state subscriptions. Reset starts a fresh progression cycle.
+
+## Persistence and graphics
+
+`hilfer:save:v1` stores version, discoveredEvidenceIds, attachedEvidence, resolutions, completedCaseIds, unlockedCaseIds and distortionLevel. No static record content. Loading filters unknown IDs/duplicates and derives completion/unlocks/distortion by replaying validated resolutions. Malformed/incompatible saves start clean with a visible warning; unavailable storage leaves a playable in-memory session with a warning. Keep the HTTP origin/port unchanged to share saved progress.
+
+`css/hilfer.css` exposes `--wallpaper-clean`, `--wallpaper-distorted` (CSS image values such as `url('../assets/wallpaper.png')`), `--desktop-bg`, `--brand-ink`, `--paper` and titlebar colors. Replace desktop icon glyphs in `index.html` with licensed image assets. `data-distortion="0|1"` controls the persistent appearance; `microglitch` lasts 650ms only after a newly reconciled case. Reduced-motion disables the animation. No glitch replays on reload, rejected drops or repeated commits. CASE-002 is a labeled placeholder, not a second playable case.
+
+Upstream snapshot in `references/WIN98-template/` remains unchanged. Root shell CSS and window-management functions adapt pollygon-dev/WIN98-template (original HTML5-Templates.com foundation); public-domain license is preserved in `LICENSE`.

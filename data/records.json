@@ -1,0 +1,17 @@
+[
+  {
+    "id": "HR-014", "type": "personnel_status", "title": "Jessica Personnel Status",
+    "department": "Human Resources", "employeeId": "EMP-JESSICA", "employee": "Jessica",
+    "date": "1998-10-12T09:00:00", "workPeriod": "1998-10-12 / 1998-10-18",
+    "fields": {"workEligibility": "AVAILABLE"}, "caseIds": ["CASE-001"],
+    "note": "Staffing extract for the current duty period. Availability carried forward from the personnel register."
+  },
+  {
+    "id": "OH-008", "type": "occupational_health_record", "title": "Jessica Occupational Health",
+    "department": "Occupational Health", "employeeId": "EMP-JESSICA", "employee": "Jessica",
+    "date": "1998-10-13T14:30:00", "workPeriod": "1998-10-12 / 1998-10-18",
+    "fields": {"workEligibility": "NOT_CLEARED", "occupationalCausation": "NOT_ESTABLISHED"},
+    "caseIds": ["CASE-001"],
+    "note": "Work clearance withheld for the same duty period. This determination does not establish the cause of illness or incident-casualty classification."
+  }
+]
