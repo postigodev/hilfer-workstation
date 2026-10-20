@@ -18,10 +18,26 @@ try {
   await page.locator('[data-case="CASE-002"]').click();
   await check(() => page.getByText('Locked. Complete the preceding').isVisible(), 'locked case displays requirements');
   await page.locator('[data-case="CASE-001"]').click();
+  assert.equal(await page.locator('.case-detail').textContent().then(t => /HR-014|OH-008|Required:|A clearance decision|later Occupational/.test(t)), false);
+  assert.deepEqual(await page.evaluate(() => hilfer.getState().discoveredEvidenceIds), []);
+  await page.locator('#records-search').fill('unmatched');
+  await check(() => page.getByText('No matching records.', {exact:true}).isVisible(), 'search empty state');
+  await page.locator('#clear-search').click();
+  await page.locator('[data-folder="Human Resources"]').click();
+  assert.equal(await page.locator('[data-file-id]').count(), 1);
+  await page.locator('[data-file-id="HR-014"]').click();
+  await check(() => page.locator('.portrait-placeholder img').isVisible(), 'HR employee file includes portrait placeholder');
+  assert.deepEqual(await page.evaluate(() => hilfer.getState().discoveredEvidenceIds), ['HR-014']);
+  assert.deepEqual(await page.evaluate(() => hilfer.getState().attachedEvidence['CASE-001'] ?? []), []);
+  await page.locator('#records-search').fill('OH-008');
+  assert.equal(await page.locator('[data-file-id]').count(), 0);
+  await page.locator('[data-folder=""]').click();
+  assert.equal(await page.locator('[data-file-id]').count(), 1);
+  await page.locator('#clear-search').click();
   // Actual browser mouse drag, rather than dispatching synthetic drop events.
   for (const id of ['HR-014', 'OH-008']) {
-    await page.locator(`details[data-record="${id}"] summary`).click();
-    const card = page.locator(`[data-record-id="${id}"]`);
+    await page.locator(`[data-file-id="${id}"]`).click();
+    const card = page.locator(id === 'HR-014' ? `[data-file-id="${id}"]` : `#record-preview [data-record-id="${id}"]`);
     await card.scrollIntoViewIfNeeded();
     const windowPosition = await page.locator('#records-window').boundingBox();
     await card.dragTo(page.locator('#evidence-tray'));
@@ -30,6 +46,12 @@ try {
     assert.equal(after.x, windowPosition.x); assert.equal(after.y, windowPosition.y);
   }
   assert.equal(await page.evaluate(() => hilfer.getState().completedCaseIds.length), 0);
+  await check(() => page.locator('.medical-document').isVisible(), 'medical form uses distinct document renderer');
+  await check(() => page.locator('.medical-document').textContent().then(t => t.includes('NOT_ESTABLISHED')), 'causation stays separate in the source document');
+  const commit = await page.locator('.commit-button').boundingBox();
+  const app = await page.locator('#reconciliation-app').boundingBox();
+  assert.ok(commit.y >= app.y && commit.y + commit.height < app.y + app.height, 'commit fits without scrolling');
+  await page.screenshot({path: join(tmpdir(), 'hilfer-documents-desktop.png')});
   await page.locator('#record-id').fill('HR-014'); await page.locator('#attach-form button').click();
   await check(() => page.getByText('This record is already attached.').isVisible(), 'duplicate feedback');
   await page.locator('#record-id').fill('UNKNOWN'); await page.locator('#attach-form button').click();
@@ -96,6 +118,14 @@ try {
   await page.setViewportSize({width:390,height:844});
   await page.locator('[data-case="CASE-002"]').click();
   await check(() => page.getByText('Assignment released. Content pending;').isVisible(), 'mobile case navigation');
+  await page.locator('.start-button').click();
+  await page.locator('#start-menu [data-open="records"]').click();
+  await page.locator('[data-file-id="HR-014"]').click();
+  await page.screenshot({path: join(tmpdir(), 'hilfer-documents-mobile.png')});
+  assert.equal(await page.locator('#records-app').evaluate(el => el.scrollWidth > el.clientWidth), false);
+  await page.getByRole('button', {name:'Close Records',exact:true}).click();
+  await page.locator('[data-case="CASE-001"]').click();
+  await check(() => page.locator('.commit-button').isVisible(), 'small screen commit remains reachable');
   assert.deepEqual(errors, []);
   console.log('PASS: native record drags; validation/removal; commit/glitch/unlock; reload/reset/repeat; window controls/taskbar/drag; small viewport. No browser errors.');
 } finally { await browser.close(); }

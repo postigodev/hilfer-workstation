@@ -12,6 +12,6 @@
     "date": "1998-10-13T14:30:00", "workPeriod": "1998-10-12 / 1998-10-18",
     "fields": {"workEligibility": "NOT_CLEARED", "occupationalCausation": "NOT_ESTABLISHED"},
     "caseIds": ["CASE-001"],
-    "note": "Work clearance withheld for the same duty period. This determination does not establish the cause of illness or incident-casualty classification."
+    "note": "Work clearance withheld for the stated duty period."
   }
 ]

@@ -1,6 +1,6 @@
 # HILFER — Integration Contracts
 
-Implemented first-prototype interfaces. Static content is read-only; the central store owns all progress. Records is intentionally a temporary adapter for Lyden.
+Implemented first-prototype interfaces. Static content is read-only; the central store owns all progress. Records remains a replaceable presentation module for Lyden.
 
 ## Run and checks
 
@@ -13,6 +13,8 @@ Optional browser regression: with Playwright and Microsoft Edge available, run `
 - `data/records.json`: stable ID, type, title, department, employeeId, employee, date (local fictional facility time), workPeriod, fields, caseIds, note. HR-014 and OH-008 cover the same duty period; OH is later. Occupational causation remains NOT_ESTABLISHED.
 - `data/cases.json`: requiredEvidence, resolution `{field, value, sourceId}`, statusOptions, initiallyUnlocked and progression `{unlockCaseIds, distortionLevel}`. A placeholder has `placeholder: true` and cannot be completed. Validation and progression follow these definitions.
 - `js/core/store.js`: immutable registry, runtime state, validated mutations, subscriptions. `progression.js`: pure validation and milestone transitions. `persistence.js`: versioned saves.
+- Records uses department navigation, a filtered file list and a document preview. Selection calls `discover`; listing/search does not. Both file rows and previews drag stable IDs. `renderRecord(record)` in `js/apps/records-fixture.js` returns escaped document HTML, with separate personnel/medical layouts. Replace `assets/placeholders/personnel.svg` for the portrait; it is an asset placeholder, not Jessica's likeness.
+- Case presentation uses `subjectId`, `category` and a neutral `description`. Required evidence and the supported resolution remain internal validation data; the UI reveals source IDs only after attachment.
 - Lyden replaces `js/apps/records-fixture.js` and its mount call in `js/main.js`; Reconciliation does not import that adapter. Arwa replaces visual tokens/assets in `css/hilfer.css` and desktop glyphs in `index.html`. UI components can use the same store API without editing case logic.
 
 ## Registry and state API
