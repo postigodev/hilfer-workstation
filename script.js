@@ -24,7 +24,7 @@ function openWindow(windowId) {
     addToTaskbar(windowId);
     setActiveWindow(windowId);
     closeStartMenu();
-    
+
     clearIconSelection();
 }
 
@@ -36,7 +36,7 @@ function closeWindow(windowId) {
     windowEl.classList.add('inactive');
     openWindows.delete(windowId);
     removeFromTaskbar(windowId);
-    
+
     const nextWindow = [...openWindows].find(id => document.getElementById(id + '-window').classList.contains('visible'));
     if (nextWindow) setActiveWindow(nextWindow);
     else activeWindow = null;
@@ -49,7 +49,7 @@ function minimizeWindow(windowId) {
     windowEl.classList.remove('visible');
     windowEl.classList.remove('active');
     windowEl.classList.add('inactive');
-    
+
     const taskbarItem = document.querySelector(`[data-window="${windowId}"]`);
     if (taskbarItem) {
         taskbarItem.classList.remove('active');
@@ -71,7 +71,7 @@ function maximizeWindow(windowId) {
         windowEl.dataset.originalHeight = windowEl.style.height;
         windowEl.dataset.originalTop = windowEl.style.top;
         windowEl.dataset.originalLeft = windowEl.style.left;
-        
+
         windowEl.classList.add('maximized');
         windowEl.style.width = '100vw';
         windowEl.style.height = 'calc(100dvh - 32px)';
@@ -106,7 +106,7 @@ function setActiveWindow(windowId) {
 
 function addToTaskbar(windowId) {
     const taskbarItems = document.getElementById('taskbar-items');
-    
+
     if (document.querySelector(`[data-window="${windowId}"]`)) return;
 
     const item = document.createElement('button');
@@ -114,7 +114,7 @@ function addToTaskbar(windowId) {
     item.setAttribute('data-window', windowId);
     item.textContent = getWindowTitle(windowId);
     item.onclick = () => toggleWindow(windowId);
-    
+
     taskbarItems.appendChild(item);
 }
 
@@ -152,7 +152,7 @@ function clearIconSelection() {
 function toggleStartMenu() {
     const startMenu = document.getElementById('start-menu');
     const startButton = document.querySelector('.start-button');
-    
+
     if (startMenu.classList.contains('visible')) {
         startMenu.classList.remove('visible');
         startButton.classList.remove('active');
@@ -177,10 +177,10 @@ function initDragAndDrop() {
             const rect = draggedElement.getBoundingClientRect();
             offset.x = e.clientX - rect.left;
             offset.y = e.clientY - rect.top;
-            
+
             const windowId = draggedElement.id.replace('-window', '');
             setActiveWindow(windowId);
-            
+
             e.preventDefault();
         }
     });
@@ -189,10 +189,10 @@ function initDragAndDrop() {
         if (draggedElement) {
             const x = e.clientX - offset.x;
             const y = e.clientY - offset.y;
-            
+
             const maxX = window.innerWidth - draggedElement.offsetWidth;
             const maxY = window.innerHeight - draggedElement.offsetHeight - 32;
-            
+
             draggedElement.style.left = Math.max(0, Math.min(x, maxX)) + 'px';
             draggedElement.style.top = Math.max(0, Math.min(y, maxY)) + 'px';
         }

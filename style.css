@@ -77,14 +77,14 @@
 }
 
 :root[data-theme="cyberpunk"] .window {
-    box-shadow: 
+    box-shadow:
         2px 2px 0px rgba(0,0,0,0.5),
         0 0 20px rgba(255, 0, 255, 0.3),
         inset 0 0 0 1px rgba(0, 255, 255, 0.2);
 }
 
 :root[data-theme="cyberpunk"] .taskbar {
-    box-shadow: 
+    box-shadow:
         0 -2px 10px rgba(255, 0, 255, 0.3),
         inset 0 0 0 1px rgba(0, 255, 255, 0.2);
 }
@@ -270,7 +270,7 @@ body {
     border-left: 1px solid var(--window-border-dark);
     border-top: 1px solid var(--window-border-dark);
     cursor: se-resize;
-    background-image: 
+    background-image:
         linear-gradient(45deg, transparent 30%, var(--window-border-dark) 30%, var(--window-border-dark) 35%, transparent 35%),
         linear-gradient(45deg, transparent 60%, var(--window-border-dark) 60%, var(--window-border-dark) 65%, transparent 65%);
     background-size: 4px 4px;
@@ -582,4 +582,3 @@ button:hover, input[type="button"]:hover, input[type="submit"]:hover {
 button:active, input[type="button"]:active, input[type="submit"]:active {
     border: 1px inset var(--button-bg);
 }
-
