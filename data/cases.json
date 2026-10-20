@@ -7,11 +7,17 @@
     "requiredEvidence": ["HR-014", "OH-008"],
     "resolution": {"field": "workEligibility", "value": "NOT_CLEARED", "sourceId": "OH-008"},
     "statusOptions": ["AVAILABLE", "NOT_CLEARED"],
+    "report": {
+      "heading": "Personnel / Work Eligibility", "subject": "Jessica / EMP-JESSICA",
+      "disposition": "Administrative discrepancy resolved.",
+      "contextFields": [{"field": "occupationalCausation", "label": "Occupational causation"}]
+    },
     "progression": {"unlockCaseIds": ["CASE-002"], "distortionLevel": 1}
   },
   {
     "id": "CASE-002", "title": "Further Review", "initiallyUnlocked": false, "placeholder": true,
     "description": "Placeholder — awaiting departmental records. This assignment is not playable in the first prototype.",
+    "report": {"heading": "Pending Review", "pendingText": "Awaiting departmental records."},
     "requiredEvidence": []
   }
 ]

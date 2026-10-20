@@ -10,7 +10,7 @@ export function beginRecordDrag(event, recordId) {
 // Presentation only: IDs, discovery and drag validation still belong to the shared store.
 export function renderRecord(record) {
   const fields = (entries) => `<dl class="document-fields">${entries.map(([name, value]) => `<dt>${h(name)}</dt><dd>${h(value)}</dd>`).join('')}</dl>`;
-  const identity = fields([['Employee', record.employee], ['Personnel ID', record.employeeId]]);
+  const identity = `<div class="document-identity"><span>EMPLOYEE</span><strong>${h(record.employee)}</strong><span>${h(record.employeeId)}</span></div>`;
   const reference = fields([['Record reference', record.id], ['Issued', record.date.replace('T', ' ')], ['Effective period', record.workPeriod]]);
   let content;
   if (record.type === 'personnel_status') {
@@ -40,6 +40,7 @@ export function mountRecords(root, store) {
     <div class="records-explorer"><nav class="folder-tree" aria-label="Departments"><div class="pane-label">Departments</div><button data-folder="" aria-pressed="true">▾ All departments</button>${departments.map(name => `<button data-folder="${h(name)}" aria-pressed="false">▸ ${h(name)}</button>`).join('')}</nav>
       <section class="files-pane" aria-label="Record list"><div class="pane-label">Reference / Employee</div><div id="record-files"></div></section>
       <section class="preview-pane" aria-label="Document preview"><div class="preview-reference" id="preview-reference">Document preview</div><div class="preview-scroll" id="record-preview"></div></section></div>
+    <div class="preview-drag-bar" id="preview-drag-bar" hidden></div>
     <div class="records-status"><span id="record-count"></span><span id="record-drag-hint">Read-only</span></div>`;
 
   function renderFiles() {
@@ -52,9 +53,12 @@ export function mountRecords(root, store) {
     root.querySelectorAll('[data-folder]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.folder === department)));
     const record = store.getRecord(selectedId);
     root.querySelector('#preview-reference').textContent = record ? `${record.id} / ${record.employeeId}` : 'Document preview';
-    root.querySelector('#record-drag-hint').textContent = record ? 'Drag file to Reconciliation' : 'Read-only';
+    root.querySelector('#record-drag-hint').textContent = record ? `Read-only / ${record.id}` : 'Read-only';
     root.querySelector('#record-preview').innerHTML = record ? renderRecord(record) : '<div class="preview-empty"><span aria-hidden="true">▤</span>No document selected</div>';
     root.querySelector('#record-preview').scrollTop = 0;
+    const dragBar = root.querySelector('#preview-drag-bar');
+    dragBar.hidden = !record;
+    dragBar.innerHTML = record ? `<span class="file-drag-handle" draggable="true" data-record-id="${h(record.id)}">▤ ${h(record.id)} / Drag file to Reconciliation</span>` : '';
   }
   root.querySelector('.records-search').addEventListener('submit', event => event.preventDefault());
   root.querySelector('#records-search').addEventListener('input', event => { query = event.target.value; renderFiles(); });
@@ -74,5 +78,15 @@ export function mountRecords(root, store) {
       selectedId = null; department = ''; query = ''; root.querySelector('#records-search').value = ''; renderFiles();
     }
   });
+  function openRecord(recordId) {
+    if (!store.getRecord(recordId)) return { ok: false, message: 'Unknown record ID.' };
+    // A source link must reach its document even when a previous search hid it.
+    selectedId = recordId; department = ''; query = '';
+    root.querySelector('#records-search').value = '';
+    store.discover(recordId); renderFiles();
+    root.querySelector('.record-document')?.focus({ preventScroll: true });
+    return { ok: true };
+  }
   renderFiles();
+  return { openRecord };
 }

@@ -14,6 +14,11 @@ try {
   await page.waitForFunction(() => window.hilfer);
   assert.equal(await page.locator('.taskbar').evaluate(el => getComputedStyle(el).backgroundColor), 'rgb(192, 192, 192)');
   await page.locator('[data-open="reconciliation"]').first().click();
+  await page.locator('#report-tab').click();
+  const initialReport = page.locator('[data-report-section="CASE-001"]');
+  assert.match(await initialReport.textContent(), /PENDING/);
+  assert.doesNotMatch(await initialReport.textContent(), /HR-014|OH-008|NOT_CLEARED|NOT_ESTABLISHED/);
+  await page.locator('[data-report-case="CASE-001"]').click();
   await page.locator('[data-open="records"]').first().click();
   await page.locator('[data-case="CASE-002"]').click();
   await check(() => page.getByText('Locked. Complete the preceding').isVisible(), 'locked case displays requirements');
@@ -52,6 +57,18 @@ try {
   const app = await page.locator('#reconciliation-app').boundingBox();
   assert.ok(commit.y >= app.y && commit.y + commit.height < app.y + app.height, 'commit fits without scrolling');
   await page.screenshot({path: join(tmpdir(), 'hilfer-documents-desktop.png')});
+  await page.locator('#report-tab').click();
+  const pendingReport = page.locator('[data-report-section="CASE-001"]');
+  assert.match(await pendingReport.textContent(), /UNDER REVIEW/);
+  assert.match(await pendingReport.textContent(), /Provisional references/);
+  assert.equal(await pendingReport.locator('[data-open-record]').count(), 2);
+  assert.equal(await pendingReport.locator('.report-findings').count(), 0);
+  assert.doesNotMatch(await pendingReport.textContent(), /NOT_CLEARED|NOT_ESTABLISHED/);
+  await page.reload(); await page.waitForFunction(() => window.hilfer);
+  await page.locator('[data-open="reconciliation"]').first().click();
+  await page.locator('#report-tab').click();
+  assert.match(await page.locator('[data-report-section="CASE-001"]').textContent(), /UNDER REVIEW/);
+  await page.locator('[data-report-case="CASE-001"]').click();
   await page.locator('#record-id').fill('HR-014'); await page.locator('#attach-form button').click();
   await check(() => page.getByText('This record is already attached.').isVisible(), 'duplicate feedback');
   await page.locator('#record-id').fill('UNKNOWN'); await page.locator('#attach-form button').click();
@@ -79,6 +96,19 @@ try {
   await check(() => page.locator('[data-case="CASE-002"]').textContent().then(t => t.includes('AVAILABLE · PLACEHOLDER')), 'next case released');
   assert.equal(await page.evaluate(() => milestones.filter(e => e.type === 'hilfer:case-reconciled').length),1);
   await page.screenshot({path:process.env.HILFER_SCREENSHOT || join(tmpdir(), 'hilfer-prototype.png')});
+  await page.locator('.view-entry').click();
+  const filed = page.locator('[data-report-section="CASE-001"]');
+  assert.match(await filed.textContent(), /RECONCILED/);
+  assert.match(await filed.textContent(), /NOT_CLEARED/);
+  assert.match(await filed.textContent(), /NOT_ESTABLISHED/);
+  assert.match(await filed.textContent(), /Administrative discrepancy resolved/);
+  assert.equal(await filed.locator('.report-references [data-open-record]').count(), 2);
+  await page.screenshot({path: join(tmpdir(), 'hilfer-living-report-desktop.png')});
+  await filed.locator('[data-open-record="OH-008"]').first().click();
+  await check(() => page.locator('#records-window').isVisible(), 'report source opens Records');
+  assert.equal(await page.locator('#preview-reference').textContent(), 'OH-008 / EMP-JESSICA');
+  assert.equal(await page.locator('.record-document').evaluate(el => el === document.activeElement), true);
+  await page.getByRole('button', {name:'Close Records',exact:true}).click();
   await page.reload(); await page.waitForFunction(() => window.hilfer);
   assert.equal(await page.evaluate(() => hilfer.getState().distortionLevel), 1);
   assert.equal(await page.evaluate(() => hilfer.getState().resolutions['CASE-001'].sourceId),'OH-008');
@@ -86,6 +116,9 @@ try {
   assert.equal(await page.locator('html').getAttribute('class') ?? '', '');
   // Window controls, taskbar restore, titlebar movement, Start and reset.
   await page.locator('[data-open="reconciliation"]').first().click();
+  await page.locator('#report-tab').click();
+  assert.match(await page.locator('[data-report-section="CASE-001"]').textContent(), /NOT_CLEARED/);
+  await page.locator('#register-tab').click();
   await page.getByRole('button', {name:'Minimize Reconciliation',exact:true}).click();
   await check(() => page.locator('#reconciliation-window').isHidden(), 'minimize hides window');
   await page.locator('.taskbar-item[data-window="reconciliation"]').click();
@@ -100,6 +133,10 @@ try {
   assert.equal(await page.locator('.taskbar-item[data-window="reconciliation"]').count(),0);
   await page.locator('.start-button').click(); await page.locator('#reset-progress').click();
   assert.equal(await page.evaluate(() => hilfer.getState().distortionLevel),0);
+  await page.locator('[data-open="reconciliation"]').first().click();
+  await page.locator('#report-tab').click();
+  assert.match(await page.locator('[data-report-section="CASE-001"]').textContent(), /PENDING/);
+  assert.doesNotMatch(await page.locator('.incident-report').textContent(), /HR-014|OH-008|NOT_CLEARED|NOT_ESTABLISHED/);
   await page.reload(); await page.waitForFunction(() => window.hilfer);
   assert.equal(await page.evaluate(() => hilfer.getState().completedCaseIds.length),0);
   // Repeat a complete playthrough through accessible controls.
@@ -126,6 +163,18 @@ try {
   await page.getByRole('button', {name:'Close Records',exact:true}).click();
   await page.locator('[data-case="CASE-001"]').click();
   await check(() => page.locator('.commit-button').isVisible(), 'small screen commit remains reachable');
+  await page.locator('#report-tab').click();
+  await page.screenshot({path: join(tmpdir(), 'hilfer-living-report-mobile.png')});
+  assert.equal(await page.locator('.report-scroll').evaluate(el => el.scrollWidth > el.clientWidth), false);
+  await page.locator('#report-tab').press('ArrowLeft');
+  assert.equal(await page.locator('#register-tab').getAttribute('aria-selected'), 'true');
+  await page.locator('#register-tab').press('End');
+  assert.equal(await page.locator('#report-tab').getAttribute('aria-selected'), 'true');
+  await page.locator('.start-button').click();
+  await page.locator('#reset-progress').click();
+  assert.equal(await page.locator('#report-tab').getAttribute('aria-selected'), 'true');
+  assert.match(await page.locator('[data-report-section="CASE-001"]').textContent(), /PENDING/);
+  assert.doesNotMatch(await page.locator('.incident-report').textContent(), /HR-014|OH-008|NOT_CLEARED|NOT_ESTABLISHED/);
   assert.deepEqual(errors, []);
-  console.log('PASS: native record drags; validation/removal; commit/glitch/unlock; reload/reset/repeat; window controls/taskbar/drag; small viewport. No browser errors.');
+  console.log('PASS: native drags; provisional/filed report; source and case navigation; commit/glitch/unlock; reload/reset/repeat; tabs/keyboard; window controls; small viewport. No browser errors.');
 } finally { await browser.close(); }

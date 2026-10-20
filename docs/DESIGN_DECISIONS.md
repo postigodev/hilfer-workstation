@@ -39,3 +39,7 @@ This document prevents a brainstorm, a technical placeholder, or an AI suggestio
 ## Approval practice
 
 When implementing a decision that changes story or core mechanics, add a dated line here explaining **what was chosen**, **why**, **by whom/after what group discussion**, and **what remains open**. Do not mistake this assistant-authored initial log for a substitute for team approval.
+
+## 2026-10-20 — Living report (user-approved prototype iteration)
+
+The user requested a structured Consolidated Incident Report inside Reconciliation, derived from current attachments and committed decisions. Pending references are provisional; only valid commits create formal determinations. Source links revisit records. Jessica's eligibility decision does not adjudicate occupational causation. Later comparisons/disclosure mechanics remain unimplemented.

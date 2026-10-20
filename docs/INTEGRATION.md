@@ -54,6 +54,14 @@ event.dataTransfer.effectAllowed = 'copy';
 
 Drag cards use `draggable="true"` inside window content. Window movement listens only to title bars, excludes controls, and never cancels record dragstart. A successful drop attaches evidence; the player must still submit a supported classification/source pair.
 
+## Consolidated Report
+
+Reconciliation has Case Register / Consolidated Report tabs. `js/apps/report.js` exports `deriveReport(cases, state, getRecord)` and `renderReport(report)`. The document is recomputed from existing attachments, completed IDs and committed resolutions; no report state or save migration exists. Inspection alone adds no references. Uncommitted attachments are provisional; determinations and context fields appear only after a committed resolution. Reserved placeholder sections do not count as playable cases.
+
+Optional case `report` metadata: `heading`, `subject`, `disposition`, `pendingText`, and `contextFields: [{field, label}]`. Context fields read the committed authority record and retain its source ID; they are not additional adjudicated questions. Jessica's causation field remains NOT_ESTABLISHED. Never render a case's supported resolution or required IDs as unfiled findings.
+
+`mountRecords(root, store)` returns `{openRecord(recordId)}`. `mountReconciliation(root, store, {openRecord})` uses that callback for source links. The bridge in `js/main.js` exposes `hilfer.openRecord(id)`, opens Records, clears restrictive filters, discovers the record and focuses its preview. Unknown IDs return `{ok:false}`. This navigation does not attach or reconcile evidence.
+
 ## Progress events
 
 Events use `store.onEvent`, not DOM CustomEvents. Subscribers receive `{type, detail}` after the updated state is saved and UI state subscribers run. No replay on load; read the current state on mount. Unsubscribe with the returned function.

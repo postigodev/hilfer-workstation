@@ -13,8 +13,13 @@ async function boot() {
   let storage;
   try { storage = window.localStorage; } catch { storage = { getItem() { throw new Error('Storage disabled'); }, setItem() { throw new Error('Storage disabled'); } }; }
   const store = createStore({ records, cases, storage });
-  mountRecords(document.querySelector('#records-app'), store);
-  const reconciliation = mountReconciliation(document.querySelector('#reconciliation-app'), store);
+  const recordsApp = mountRecords(document.querySelector('#records-app'), store);
+  function openRecord(recordId) {
+    if (!store.getRecord(recordId)) return { ok: false, message: 'Unknown record ID.' };
+    window.openWindow('records');
+    return recordsApp.openRecord(recordId);
+  }
+  const reconciliation = mountReconciliation(document.querySelector('#reconciliation-app'), store, { openRecord });
   mountDistortion(store);
   function update() {
     const state = store.getState();
@@ -24,7 +29,7 @@ async function boot() {
   store.subscribe(update); update();
   document.querySelector('#reset-progress').addEventListener('click', () => { store.resetProgress(); });
   // Stable integration surface for Records and browser tests; all writes go through validation.
-  window.hilfer = Object.freeze({ ...store, ...reconciliation });
+  window.hilfer = Object.freeze({ ...store, ...reconciliation, openRecord });
 }
 boot().catch(error => {
   console.error(error);
