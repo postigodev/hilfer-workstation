@@ -106,6 +106,7 @@ try {
   await page.screenshot({path: join(tmpdir(), 'hilfer-living-report-desktop.png')});
   await filed.locator('[data-open-record="OH-008"]').first().click();
   await check(() => page.locator('#records-window').isVisible(), 'report source opens Records');
+  assert.ok(await page.locator('#records-window').evaluate(el => el.classList.contains('active')), 'source link focuses Records instead of its origin');
   assert.equal(await page.locator('#preview-reference').textContent(), 'OH-008 / EMP-JESSICA');
   assert.equal(await page.locator('.record-document').evaluate(el => el === document.activeElement), true);
   await page.getByRole('button', {name:'Close Records',exact:true}).click();
@@ -175,6 +176,25 @@ try {
   assert.equal(await page.locator('#report-tab').getAttribute('aria-selected'), 'true');
   assert.match(await page.locator('[data-report-section="CASE-001"]').textContent(), /PENDING/);
   assert.doesNotMatch(await page.locator('.incident-report').textContent(), /HR-014|OH-008|NOT_CLEARED|NOT_ESTABLISHED/);
+  await page.setViewportSize({width:1280,height:800});
+  await page.locator('#register-tab').click();
+  await page.locator('#reconciliation-app [data-open="records"]').click();
+  assert.ok(await page.locator('#records-window').evaluate(el => el.classList.contains('active')), 'Records toolbar shortcut changes active app');
+  await page.locator('#records-app [data-open="reconciliation"]').click();
+  assert.ok(await page.locator('#reconciliation-window').evaluate(el => el.classList.contains('active')), 'return shortcut changes active app');
+  await page.locator('#reconciliation-app [data-arrange]').click();
+  const registerBox = await page.locator('#reconciliation-window').boundingBox();
+  const recordsBox = await page.locator('#records-window').boundingBox();
+  assert.ok(registerBox.x + registerBox.width <= recordsBox.x, 'arranged windows do not overlap');
+  assert.ok(recordsBox.x + recordsBox.width <= 1280, 'arranged windows fit the viewport');
+  await page.locator('[data-file-id="HR-014"]').click();
+  await page.locator('[data-file-id="HR-014"]').dragTo(page.locator('#evidence-tray'));
+  await page.locator('.evidence-card [data-open-record="HR-014"]').click();
+  assert.ok(await page.locator('#records-window').evaluate(el => el.classList.contains('active')), 'case source keeps Records active');
+  await page.screenshot({path: join(tmpdir(), 'hilfer-workspace-1280.png')});
+  await page.getByRole('button', {name:'Close Records',exact:true}).click();
+  await page.getByRole('button', {name:'Close Reconciliation',exact:true}).click();
+  await page.screenshot({path: join(tmpdir(), 'hilfer-dispatch.png')});
   assert.deepEqual(errors, []);
   console.log('PASS: native drags; provisional/filed report; source and case navigation; commit/glitch/unlock; reload/reset/repeat; tabs/keyboard; window controls; small viewport. No browser errors.');
 } finally { await browser.close(); }

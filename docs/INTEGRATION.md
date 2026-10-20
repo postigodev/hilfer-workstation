@@ -84,3 +84,7 @@ Discovery and milestone events fire once per corresponding transition. Removing/
 `css/hilfer.css` exposes `--wallpaper-clean`, `--wallpaper-distorted` (CSS image values such as `url('../assets/wallpaper.png')`), `--desktop-bg`, `--brand-ink`, `--paper` and titlebar colors. Replace desktop icon glyphs in `index.html` with licensed image assets. `data-distortion="0|1"` controls the persistent appearance; `microglitch` lasts 650ms only after a newly reconciled case. Reduced-motion disables the animation. No glitch replays on reload, rejected drops or repeated commits. CASE-002 is a labeled placeholder, not a second playable case.
 
 Upstream snapshot in `references/WIN98-template/` remains unchanged. Root shell CSS and window-management functions adapt pollygon-dev/WIN98-template (original HTML5-Templates.com foundation); public-domain license is preserved in `LICENSE`.
+
+## Workspace controls
+
+App toolbars link Records and Reconciliation. Arrange / Start > Arrange workspace opens both side by side on desktop (1000px+); smaller screens keep Reconciliation in front and use the app shortcuts/taskbar. Source links focus Records without reactivating the originating window. Replaceable shell icons live in `assets/placeholders/`.

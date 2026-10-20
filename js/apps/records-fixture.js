@@ -35,9 +35,9 @@ export function mountRecords(root, store) {
   let department = '';
   let query = '';
   const departments = [...new Set(store.getRecords().map(r => r.department))];
-  root.innerHTML = `<div class="app-toolbar"><span>HILFER Records</span><span>Read-only archive</span></div>
+  root.innerHTML = `<div class="app-toolbar"><span>HILFER Records</span><div class="application-actions"><button data-open="reconciliation">Reconciliation</button><button data-arrange aria-label="Arrange workspace">Arrange</button></div></div>
     <form class="records-search" role="search"><label for="records-search">Find</label><input type="search" id="records-search" placeholder="Name, reference or department" autocomplete="off"><button type="button" id="clear-search">Clear</button></form>
-    <div class="records-explorer"><nav class="folder-tree" aria-label="Departments"><div class="pane-label">Departments</div><button data-folder="" aria-pressed="true">▾ All departments</button>${departments.map(name => `<button data-folder="${h(name)}" aria-pressed="false">▸ ${h(name)}</button>`).join('')}</nav>
+    <div class="records-explorer"><nav class="folder-tree" aria-label="Departments"><div class="pane-label">Departments</div><button data-folder="" aria-pressed="true"><span class="folder-symbol" aria-hidden="true"></span>All departments</button>${departments.map(name => `<button data-folder="${h(name)}" aria-pressed="false"><span class="folder-symbol" aria-hidden="true"></span>${h(name)}</button>`).join('')}</nav>
       <section class="files-pane" aria-label="Record list"><div class="pane-label">Reference / Employee</div><div id="record-files"></div></section>
       <section class="preview-pane" aria-label="Document preview"><div class="preview-reference" id="preview-reference">Document preview</div><div class="preview-scroll" id="record-preview"></div></section></div>
     <div class="preview-drag-bar" id="preview-drag-bar" hidden></div>
@@ -48,13 +48,13 @@ export function mountRecords(root, store) {
       [record.id, record.title, record.employee, record.employeeId, record.department].join(' ').toLowerCase().includes(query.toLowerCase()));
     if (!records.some(r => r.id === selectedId)) selectedId = null;
     const discovered = store.getState().discoveredEvidenceIds;
-    root.querySelector('#record-files').innerHTML = records.length ? records.map(record => `<button class="record-file" data-file-id="${h(record.id)}" data-record-id="${h(record.id)}" draggable="true" aria-pressed="${selectedId === record.id}"><b>▤ ${h(record.id)}</b><span>${h(record.title)}</span><small>${h(record.employeeId)}${discovered.includes(record.id) ? ' · Viewed' : ''}</small></button>`).join('') : '<p class="files-empty">No matching records.</p>';
+    root.querySelector('#record-files').innerHTML = records.length ? records.map(record => `<button class="record-file" data-file-id="${h(record.id)}" data-record-id="${h(record.id)}" draggable="true" aria-pressed="${selectedId === record.id}"><b><span class="file-symbol" aria-hidden="true"></span>${h(record.id)}</b><span>${h(record.title)}</span><small>${h(record.employeeId)}${discovered.includes(record.id) ? ' · Viewed' : ''}</small></button>`).join('') : '<p class="files-empty">No matching records.</p>';
     root.querySelector('#record-count').textContent = `${records.length} file${records.length === 1 ? '' : 's'}`;
     root.querySelectorAll('[data-folder]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.folder === department)));
     const record = store.getRecord(selectedId);
-    root.querySelector('#preview-reference').textContent = record ? `${record.id} / ${record.employeeId}` : 'Document preview';
+    root.querySelector('#preview-reference').textContent = record ? `${record.id} / ${record.employeeId}` : 'Preview / no file selected';
     root.querySelector('#record-drag-hint').textContent = record ? `Read-only / ${record.id}` : 'Read-only';
-    root.querySelector('#record-preview').innerHTML = record ? renderRecord(record) : '<div class="preview-empty"><span aria-hidden="true">▤</span>No document selected</div>';
+    root.querySelector('#record-preview').innerHTML = record ? renderRecord(record) : '<div class="preview-empty"><span class="preview-empty-sheet" aria-hidden="true"></span><b>No document selected</b><span>Select a file from the register.</span></div>';
     root.querySelector('#record-preview').scrollTop = 0;
     const dragBar = root.querySelector('#preview-drag-bar');
     dragBar.hidden = !record;

@@ -218,7 +218,7 @@ function updateClock() {
 // HILFER: only title bars move windows; native record drag events remain untouched.
 document.addEventListener('click', e => {
     const app = e.target.closest('[data-open]');
-    if (app) openWindow(app.dataset.open);
+    if (app) { openWindow(app.dataset.open); return; }
     const control = e.target.closest('[data-control]');
     if (control) {
         const id = control.closest('.window').id.replace('-window', '');
@@ -237,3 +237,27 @@ document.querySelector('#display-theme').addEventListener('change', e => {
 initDragAndDrop();
 updateClock();
 setInterval(updateClock, 1000);
+
+// A deliberate desk arrangement; manual movement and window controls still work.
+function arrangeWorkspace() {
+    openWindow('reconciliation');
+    openWindow('records');
+    if (window.innerWidth < 1000) {
+        setActiveWindow('reconciliation');
+        return;
+    }
+    const available = window.innerWidth - 136;
+    const registerWidth = Math.round(available * 0.43);
+    const height = Math.min(620, window.innerHeight - 82);
+    for (const [id, left, width] of [
+        ['reconciliation', 112, registerWidth],
+        ['records', 124 + registerWidth, available - registerWidth]
+    ]) {
+        const el = document.getElementById(id + '-window');
+        el.classList.remove('maximized');
+        Object.assign(el.style, { left: left + 'px', top: '36px', width: width + 'px', height: height + 'px' });
+    }
+}
+document.addEventListener('click', e => {
+    if (e.target.closest('[data-arrange]')) { arrangeWorkspace(); closeStartMenu(); }
+});
