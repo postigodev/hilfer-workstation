@@ -13,13 +13,21 @@ async function boot() {
   let storage;
   try { storage = window.localStorage; } catch { storage = { getItem() { throw new Error('Storage disabled'); }, setItem() { throw new Error('Storage disabled'); } }; }
   const store = createStore({ records, cases, storage });
-  const recordsApp = mountRecords(document.querySelector('#records-app'), store);
+  let reconciliation;
+  const recordsApp = mountRecords(document.querySelector('#records-app'), store, {
+    onClaim(recordId, field) {
+      if (!reconciliation) return { ok: false, message: 'Reconciliation has not loaded.' };
+      const result = reconciliation.presentClaim(recordId, field);
+      if (result.ok) window.openWindow('reconciliation');
+      return result;
+    }
+  });
   function openRecord(recordId) {
     if (!store.getRecord(recordId)) return { ok: false, message: 'Unknown record ID.' };
     window.openWindow('records');
     return recordsApp.openRecord(recordId);
   }
-  const reconciliation = mountReconciliation(document.querySelector('#reconciliation-app'), store, { openRecord });
+  reconciliation = mountReconciliation(document.querySelector('#reconciliation-app'), store, { openRecord });
   mountDistortion(store);
   function update() {
     const state = store.getState();
