@@ -13,7 +13,7 @@ This document prevents a brainstorm, a technical placeholder, or an AI suggestio
 | Theme | Current story design | Harm emerges from institutional incentives and fragmented accountabilities; no singular cartoon villain. |
 | Ending | Preferred creative direction | Whistleblower confrontation, apparent send, sanitized Sent Mail, friendly AI reset. Exact mechanics unresolved. |
 | Aesthetics | Current creative direction | OS grows gradually more unsettling as the player makes meaningful progress, not only at the ending. |
-| Demo vertical slice | Current implementation target | Jessica HR vs Occupational Health -> evidence attachment -> supported reconciliation -> first glitch -> next case. |
+| Demo vertical slice | Current prototype experiment | Report starts with provisional HR-014. In Records, select an evidence field; compare current vs OH-008; file supported replacement directly -> updated report -> first glitch -> next case. |
 | Storage | Prototype technical choice | Static JSON in repo, player state in versioned `localStorage`; no backend initially. |
 | OS foundation | Prototype technical choice | `pollygon-dev/WIN98-template`, vanilla HTML/CSS/JS; preserve useful behaviors. |
 
@@ -43,3 +43,14 @@ When implementing a decision that changes story or core mechanics, add a dated l
 ## 2026-10-20 — Living report (user-approved prototype iteration)
 
 The user requested a structured Consolidated Incident Report inside Reconciliation, derived from current attachments and committed decisions. Pending references are provisional; only valid commits create formal determinations. Source links revisit records. Jessica's eligibility decision does not adjudicate occupational causation. Later comparisons/disclosure mechanics remain unimplemented.
+
+## 2026-10-26 — Claim-based Reconciliation (user-requested prototype iteration)
+
+The user approved experimenting with a simpler primary gameplay loop: **inspect provisional official report → inspect sources in Records → select a claim in the document → compare claims → apply supported source directly to the report**. This replaces the *player-facing* drag/drop, paired dropdowns and Commit button in CASE-001, but keeps domain validation, the evidence registry, state, persistence and report projection.
+
+- Starting report: HR-014 / AVAILABLE is **existing and unverified**, not a validated outcome and not a spoiler for the OH finding.
+- Records: work-eligibility field itself becomes a contextual interaction. Other medical classifications remain informational.
+- Reconciliation: select one of the competing sources in a compact case comparison; choosing the original entry does not complete a case. An accepted replacement automatically files the resolution, with a traceable audit of both sources.
+- Distortion remains milestone-triggered and idempotent.
+- Earlier drag/attach API is retained at the domain layer for compatibility, **not** as a primary gameplay requirement.
+- This is an experimental interaction validated on Jessica only. More complex cases, alternative procedural choices, and deliberate player complicity remain open design questions.
