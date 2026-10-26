@@ -5,6 +5,7 @@
     "subjectId": "EMP-JESSICA", "category": "Personnel / Work Eligibility",
     "scope": "Work eligibility only. A clearance decision does not establish occupational causation or incident-casualty status.",
     "requiredEvidence": ["HR-014", "OH-008"],
+    "provisional": {"field":"workEligibility", "value":"AVAILABLE", "sourceId":"HR-014"},
     "resolution": {"field": "workEligibility", "value": "NOT_CLEARED", "sourceId": "OH-008"},
     "statusOptions": ["AVAILABLE", "NOT_CLEARED"],
     "report": {

@@ -68,6 +68,41 @@ export function createStore({ records, cases, storage }) {
       publish(events);
       return { ok: true, message: 'Resolution committed. Consolidated work eligibility updated. Next assignment released.' };
     },
+
+    // The player selects a claim inside Records, then approves it against the report's
+    // existing provisional source. No separate drag, dropdown, or Commit step.
+    reconcileClaim(caseId, recordId, field) {
+      const definition = cases.find(c => c.id === caseId);
+      if (!definition || definition.placeholder || !state.unlockedCaseIds.includes(caseId))
+        return { ok: false, message: 'This case is not available.' };
+      if (state.completedCaseIds.includes(caseId))
+        return { ok: true, alreadyCompleted: true, message: 'This report entry is already filed.' };
+      const source = getRecord(recordId);
+      if (!source || !state.discoveredEvidenceIds.includes(recordId) ||
+          !source.caseIds.includes(caseId) || field !== definition.resolution?.field)
+        return { ok: false, message: 'Inspect a relevant source claim before revising this entry.' };
+      const baseline = definition.provisional;
+      if (!baseline || recordId === baseline.sourceId)
+        return { ok: false, message: 'This is already the provisional source. Compare another record.' };
+      const candidate = { field, value: source.fields[field], sourceId: recordId };
+      const ids = [...new Set([...(state.attachedEvidence[caseId] ?? []), ...(definition.requiredEvidence ?? [])])];
+      const error = validateResolution(definition, ids, candidate, getRecord);
+      if (error) return { ok: false, message: error };
+      // The initial entry is an official source already present in the report.
+      // Link its ID together with the inspected replacement, without falsely
+      // marking the baseline record as separately inspected by the player.
+      const attached = state.attachedEvidence[caseId] ??= [];
+      const events = [];
+      for (const id of definition.requiredEvidence) {
+        if (!attached.includes(id)) {
+          attached.push(id);
+          events.push(['hilfer:evidence-attached', { caseId, recordId: id }]);
+        }
+      }
+      events.push(...applyCompletion(state, definition, candidate));
+      publish(events);
+      return { ok: true, message: 'Consolidated entry updated from ' + recordId + '.' };
+    },
     resetProgress() { state = initialState(cases); publish([['hilfer:progress-reset', {}]]); }
   };
 }
