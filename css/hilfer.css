@@ -257,3 +257,47 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 1px d
 .report-references { padding-top: 8px; border-top: 1px dotted var(--ledger-rule); }
 @container records (max-width: 610px) { .record-file .file-symbol { display: inline-block; } }
 @media (max-width: 450px) { .case-metadata { grid-template-columns: 1fr; gap: 4px; } .case-metadata > div { grid-template-columns: 75px 1fr; gap: 4px; padding: 0; } }
+
+
+/* Source-to-report prototype: the official document is the central game surface. */
+.claim-case-view { padding: 2px 0 12px; }
+.claim-case-view .case-metadata { margin-bottom: 10px; }
+.claim-case-view h1 { margin: 8px 0 12px; font-size: 13px; line-height: 1.3; }
+.claim-existing { background: var(--routing-paper); border: 1px solid var(--ledger-rule); box-shadow: 2px 2px 0 #90958b; }
+.claim-existing .pane-label { background: #e2e6dd; letter-spacing: .35px; }
+.claim-existing-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 7px; padding: 13px 10px; }
+.claim-existing-row strong { font: bold 14px 'Courier New', monospace; border-bottom: 1px solid var(--routing-blue); }
+.claim-existing-source { border-top: 1px solid var(--ledger-rule-soft); padding: 6px 10px; color: var(--ledger-secondary); font-size: 10px; }
+.claim-next { margin: 12px 0; border-left: 3px solid var(--routing-blue); padding: 7px 8px; background: #e0e5df; display: grid; grid-template-columns: auto 1fr; gap: 6px 8px; font-size: 11px; line-height: 1.4; }
+.claim-next button { grid-column: 2; justify-self: start; padding: 3px 8px; }
+.claim-compare { background: #f5f5ec; border: 1px solid var(--ledger-rule); margin-top: 12px; padding-bottom: 8px; }
+.claim-compare > .pane-label { letter-spacing: .45px; background: #dfe4db; }
+.claim-columns { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 8px; padding: 9px; }
+.claim-option { display: flex; flex-direction: column; gap: 5px; padding: 8px; border: 1px solid #aab2a4; background: #fbfbf5; min-width: 0; }
+.claim-option small { font: 9px 'Courier New', monospace; color: var(--ledger-secondary); }
+.claim-option strong { font: bold 13px 'Courier New', monospace; overflow-wrap: anywhere; }
+.claim-option time { font: 10px 'Courier New', monospace; color: var(--ledger-metadata); }
+.claim-candidate { border-color: var(--routing-blue); background: #e7efe9; }
+.claim-choice { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; padding: 0 9px; }
+.claim-choice button, .claim-open-report { padding: 5px 9px; font-size: 11px; }
+.claim-apply { border: 2px outset #b9c4af; color: #16362c; background: #d5e2d2; font-weight: bold; }
+.claim-hint { margin: 8px 9px; color: var(--ledger-secondary); font-size: 10px; line-height: 1.4; }
+.claim-open-report { margin-left: 9px; }
+.record-document { cursor: default; }
+.record-document:active { cursor: default; }
+.claim-source { display: flex; gap: 4px; flex-wrap: wrap; justify-content: space-between; align-items: center; width: 100%; text-align: left; color: var(--ledger-ink); border: 1px dashed #50695a; background: #e1e8df; padding: 7px 8px; }
+.claim-source:hover, .claim-source:focus-visible { background: #c8d9cb; border-style: solid; }
+.claim-source strong { font: bold 14px 'Courier New', monospace; }
+.claim-source small { font: 9px Tahoma, sans-serif; color: #244f3f; text-decoration: underline; }
+.claim-source:focus-visible { outline: 2px solid var(--control-focus); outline-offset: 2px; }
+.document-determination:has(.claim-source) { padding: 8px 9px; }
+.report-provisional { display: grid; gap: 8px; padding: 8px 10px; border: 1px solid #9da59b; background: #f3f3e8; }
+.report-provisional > small { font: 9px 'Courier New', monospace; color: var(--ledger-secondary); }
+.report-provisional > div { display: flex; justify-content: space-between; gap: 9px; align-items: center; }
+.report-provisional > div b { font: bold 13px 'Courier New', monospace; }
+.report-provisional p { margin: 0; font-size: 10px; }
+@media (max-width: 520px) {
+  .claim-columns { grid-template-columns: 1fr; }
+  .claim-choice { justify-content: stretch; }
+  .claim-choice button { flex: 1; }
+}
