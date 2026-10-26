@@ -24,11 +24,10 @@ export function mountReconciliation(root, store, { openRecord = () => {} } = {})
     let comparison = '';
     if (candidateRecord && candidateValue !== undefined && !done) {
       comparison = '<section class="claim-compare" tabindex="-1" aria-label="Compare source claims">' +
-        '<div class="pane-label">SOURCE COMPARISON</div>' +
-        '<div class="claim-columns">' +
-          '<div class="claim-option claim-current"><small>EXISTING ENTRY</small><strong>' + h(current?.value ?? '—') + '</strong><span>' + sourceLink(current?.sourceId ?? '') + '</span><time>' + h(source?.date?.slice(0, 10) ?? '') + '</time></div>' +
-          '<div class="claim-option claim-candidate"><small>INSPECTED SOURCE</small><strong>' + h(candidateValue) + '</strong><span>' + sourceLink(candidateRecord.id) + '</span><time>' + h(candidateRecord.date?.slice(0, 10) ?? '') + '</time></div>' +
-        '</div>' +
+        '<table class="claim-table"><caption>Source comparison</caption><thead><tr><th scope="col">Record</th><th scope="col">Issued</th><th scope="col">' + h(label(pendingClaim.field)) + '</th></tr></thead><tbody>' +
+          '<tr><th scope="row">' + sourceLink(current?.sourceId ?? '') + '<small>EXISTING ENTRY</small></th><td>' + h(source?.date?.slice(0, 10) ?? '') + '</td><td><strong>' + h(current?.value ?? '—') + '</strong></td></tr>' +
+          '<tr><th scope="row">' + sourceLink(candidateRecord.id) + '<small>INSPECTED SOURCE</small></th><td>' + h(candidateRecord.date?.slice(0, 10) ?? '') + '</td><td><strong>' + h(candidateValue) + '</strong></td></tr>' +
+        '</tbody></table>' +
         (alreadyCurrent
           ? '<p class="claim-hint">This is the existing source. Examine another record to verify the entry.</p>'
           : '<div class="claim-choice"><button type="button" data-dismiss-claim>Keep existing</button><button type="button" class="claim-apply" data-use-claim="' + h(candidateRecord.id) + '">Use ' + h(candidateRecord.id) + ' in report</button></div>') +
@@ -38,12 +37,12 @@ export function mountReconciliation(root, store, { openRecord = () => {} } = {})
       '<div class="case-metadata"><div><small>CASE</small><b>' + h(definition.id) + '</b></div><div><small>SUBJECT</small><span>' + h(definition.subjectId ?? '—') + '</span></div><div><small>STATE</small><span>' + (done ? 'RECONCILED' : unlocked ? 'OPEN' : 'LOCKED') + '</span></div></div>' +
       '<h1>' + h(definition.category ?? definition.title) + '</h1>' +
       (!unlocked ? '<p>Assignment locked.</p>' : definition.placeholder ? '<p>Records not yet released.</p>' :
-        '<div class="claim-existing"><div class="pane-label">' + (done ? 'FILED DETERMINATION' : 'CURRENT REPORT ENTRY / UNVERIFIED') + '</div>' +
+        (comparison ? '' : '<div class="claim-existing"><div class="pane-label">' + (done ? 'FILED DETERMINATION' : 'CURRENT REPORT ENTRY / UNVERIFIED') + '</div>' +
           '<div class="claim-existing-row"><span>' + h(label(current?.field ?? definition.resolution.field)) + '</span><strong>' + h(current?.value ?? '—') + '</strong></div>' +
-          '<div class="claim-existing-source">Source ' + (current ? sourceLink(current.sourceId) : '—') + '</div></div>' +
+          '<div class="claim-existing-source">Source ' + (current ? sourceLink(current.sourceId) : '—') + '</div></div>') +
         (done
-          ? '<p class="claim-hint">Determination filed. The report retains the source and its context.</p><button type="button" class="claim-open-report" data-view-entry="' + h(definition.id) + '">View report entry</button>'
-          : comparison || '<div class="claim-next"><span class="file-symbol" aria-hidden="true"></span><span>Review departmental records. Select the relevant determination in a document.</span><button type="button" data-open="records">Open Records</button></div>')) +
+          ? '<p class="claim-hint">Determination filed.</p><button type="button" class="claim-open-report" data-view-entry="' + h(definition.id) + '">View report entry</button>'
+          : comparison || '<div class="claim-next"><span>Select a determination in Records to compare sources.</span><button type="button" data-open="records">Open Records</button></div>')) +
       '</div>';
   }
 
@@ -54,9 +53,9 @@ export function mountReconciliation(root, store, { openRecord = () => {} } = {})
     const report = deriveReport(cases, state, store.getRecord);
     const selected = cases.find(c => c.id === selectedCaseId);
     root.innerHTML =
-      '<div class="app-toolbar"><span>HILFER / DATA RECONCILIATION</span><div class="application-actions"><button data-open="records">Records</button><button data-arrange>Arrange</button></div></div>' +
+      '<div class="app-toolbar"><span>Reconciliation</span><div class="application-actions"><button data-open="records">Records</button><button data-arrange>Arrange</button></div></div>' +
       '<div class="reconciliation-tabs" role="tablist" aria-label="Reconciliation views">' +
-      '<button id="report-tab" role="tab" aria-controls="reconciliation-panel" data-view="report" aria-selected="' + (view === 'report') + '" tabindex="' + (view === 'report' ? '0' : '-1') + '">Consolidated Report <span class="tab-progress">' + report.completed + '</span></button>' +
+      '<button id="report-tab" role="tab" aria-controls="reconciliation-panel" data-view="report" aria-selected="' + (view === 'report') + '" tabindex="' + (view === 'report' ? '0' : '-1') + '">Consolidated Report</button>' +
       '<button id="register-tab" role="tab" aria-controls="reconciliation-panel" data-view="register" aria-selected="' + (view === 'register') + '" tabindex="' + (view === 'register' ? '0' : '-1') + '">Case Register</button></div>' +
       '<div id="reconciliation-panel" role="tabpanel" aria-labelledby="' + (view === 'report' ? 'report-tab' : 'register-tab') + '">' +
       (view === 'report' ? renderReport(report) :
@@ -64,7 +63,7 @@ export function mountReconciliation(root, store, { openRecord = () => {} } = {})
           cases.map(c => '<button type="button" data-case="' + h(c.id) + '" aria-pressed="' + (selectedCaseId === c.id) + '"><b>' + h(c.id) + '</b><span>' + h(c.title) + '</span><small>' + (state.completedCaseIds.includes(c.id) ? 'FILED' : !state.unlockedCaseIds.includes(c.id) ? 'LOCKED' : c.placeholder ? 'RESERVED' : 'OPEN') + '</small></button>').join('') +
         '</nav><div class="case-detail">' + showCase(selected, state) + '</div></div>') +
       '</div><p class="feedback" data-tone="' + h(feedbackTone) + '" role="status" aria-live="polite">' +
-      h(feedback || (view === 'report' ? 'Controlled internal record / work in progress' : 'Select a source in Records to amend an entry.')) + '</p>';
+      h(feedback || (view === 'report' ? 'Report / work in progress' : 'Select a source in Records to amend an entry.')) + '</p>';
     if (previousFocus) root.querySelector('#' + previousFocus)?.focus({ preventScroll: true });
     if (view === 'report') root.querySelector('.report-scroll').scrollTop = scroll;
   }

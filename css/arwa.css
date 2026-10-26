@@ -6,7 +6,7 @@
   --wallpaper-distorted: var(--art-wallpaper);
   --brand-ink: #743f43;
   --cabinet-plastic: #d4aaa7;
-  --cabinet-inset: #f8e3df;
+  --cabinet-inset: #f1eeea;
   --ledger-ink: #352829;
   --ledger-secondary: #604346;
   --ledger-metadata: #67484b;
@@ -15,7 +15,7 @@
   --ledger-rule-soft: #e2c9c4;
   --routing-blue: #68323a;
   --routing-paper: #fff6f1;
-  --paper: #fff6f1;
+  --paper: #fffdf7;
   --folder-manila: #e89487;
   --control-edge: #9d7473;
   --control-focus: #642b33;
@@ -57,23 +57,23 @@
 #reconciliation-window .window-title::before { background-image: var(--art-reconciliation); }
 .window-button { background: var(--button-bg); border-color: #eed1cc; color: #4a3031; }
 .close-btn:hover { background: #87353b !important; }
-.app-toolbar, .pane-label, .preview-reference, .records-status, .feedback { background: #e0bfba; border-color: var(--control-edge); }
-.case-list, .folder-tree { background: #ecd1cc; border-color: var(--control-edge); }
+.app-toolbar, .pane-label, .preview-reference, .records-status, .feedback { background: var(--cabinet-inset); border-color: var(--control-edge); }
+.case-list, .folder-tree { background: #e8e3dd; border-color: var(--control-edge); }
 .case-list button { border-bottom-color: #d9bbb7; }
 .case-list button[aria-pressed="true"], .folder-tree button[aria-pressed="true"], .record-file[aria-pressed="true"] { background: #853d46; color: #fff; }
-.files-pane, .record-file { background: #faebe8; }
+.files-pane, .record-file { background: #fffdf7; }
 .record-file:hover:not([aria-pressed="true"]) { background: #efd4d0; }
 .source-columns, .preview-drag-bar { background: #d9b6b2; border-color: var(--control-edge); }
 .reconciliation-tabs button { background: #cfaba6; border-color: #d9bbb7; }
 .reconciliation-tabs button[aria-selected="true"] { background: var(--cabinet-inset); }
-.preview-pane, .report-scroll { background: #c8a29e; }
+.preview-pane, .report-scroll { background: #b7b0aa; }
 .evidence-tray { background: #fff6f1; }
 .record-drag-active .evidence-tray { outline-color: #843c44; background: #fae2d9; }
 .evidence-tray.drag-over { background: #f2cec2; }
 .drop-caption, .preview-empty { color: #604346; }
-.medical-document { background: #fff9f6; color: #352829; }
-.document-determination { background: #f5e2d9; }
-.medical-determination { background: #f2e9e4; }
+.medical-document { background: #fdfdfb; color: #352829; }
+.document-determination { background: transparent; border: 0; border-top: 1px solid var(--ledger-rule); border-bottom: 1px solid var(--ledger-rule); }
+.medical-determination { background: transparent; }
 .file-drag-handle { background: var(--button-bg); border-color: var(--control-edge); }
 .record-file, .evidence-card { border-bottom-color: var(--ledger-rule-soft); }
 .taskbar { background: var(--taskbar-bg); border-top: 2px solid #dcb3ae; color: #fff; }
@@ -122,3 +122,28 @@ input, select { caret-color: var(--control-focus); }
   .window-button { width: 28px; height: 24px; }
   .application-actions button, .evidence-card button:not(.source-reference), .attach-form button { min-height: 28px; }
 }
+
+/* Neutral working surfaces; Arwa's color stays on the workstation chrome. */
+.case-detail { background: var(--cabinet-inset); }
+.feedback { border-left: 0; }
+.feedback[data-tone="success"] { color: var(--ledger-ink); }
+.pane-label { font-weight: normal; letter-spacing: 0; }
+.report-letterhead { border-top: 0; border-bottom: 1px solid var(--ledger-rule); }
+.report-letterhead b { font: bold 16px Georgia, serif; letter-spacing: 0; }
+.incident-report h1 { font: bold 17px Georgia, serif; margin: 14px 0 10px; }
+.report-control { font-size: 10px; }
+.report-control b { letter-spacing: 0; }
+.report-control > span { display: none; }
+.report-progress { padding: 7px 0; }
+.report-stamp, .report-filed .report-stamp { border: 0; padding: 0; color: var(--ledger-secondary); font: 10px Tahoma, sans-serif; }
+.report-filed .report-stamp { font-weight: bold; color: var(--filed-ink); }
+.report-subject { font: 11px Tahoma, sans-serif; }
+.report-findings strong { font: bold 12px Tahoma, sans-serif; }
+.document-heading { border-top: 0; border-bottom: 1px solid var(--ledger-rule); padding-right: 45px; }
+.document-identity strong { font-size: 15px; }
+.document-fields { border-top: 0; padding-top: 0; }
+.document-authorization { line-height: 1.5; }
+.session-status { left: 16px; bottom: 42px; gap: 3px; font: 10px Tahoma, sans-serif; }
+.session-status span:empty { display: none; }
+.preview-empty-sheet { display: none; }
+@media (max-width: 450px) { .report-control { flex-wrap: wrap; } }

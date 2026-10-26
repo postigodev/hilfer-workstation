@@ -12,7 +12,7 @@ export function renderRecord(record) {
   const fields = (entries) => `<dl class="document-fields">${entries.map(([name, value]) => `<dt>${h(name)}</dt><dd>${h(value)}</dd>`).join('')}</dl>`;
   const identity = `<div class="document-identity"><span>EMPLOYEE</span><strong>${h(record.employee)}</strong><span>${h(record.employeeId)}</span></div>`;
   const reference = fields([['Record reference', record.id], ['Issued', record.date.replace('T', ' ')], ['Effective period', record.workPeriod]]);
-  const claimControl = `<button type="button" class="claim-source" data-claim-record="${h(record.id)}" data-claim-field="workEligibility" aria-label="Compare ${h(record.fields.workEligibility)} from ${h(record.id)} with the report"><strong>${h(record.fields.workEligibility)}</strong><small>Compare with report ↗</small></button>`;
+  const claimControl = `<button type="button" class="claim-source" data-claim-record="${h(record.id)}" data-claim-field="workEligibility" aria-label="Compare ${h(record.fields.workEligibility)} from ${h(record.id)} with the report"><strong>${h(record.fields.workEligibility)}</strong><small>Compare with report</small></button>`;
   let content;
   if (record.type === 'personnel_status') {
     content = `<header class="document-heading"><b>HILFER PERSONNEL</b><span>EMPLOYEE RECORD</span></header>
@@ -36,7 +36,7 @@ export function mountRecords(root, store, { onClaim = () => {} } = {}) {
   let department = '';
   let query = '';
   const departments = [...new Set(store.getRecords().map(r => r.department))];
-  root.innerHTML = `<div class="app-toolbar"><span>HILFER Records</span><div class="application-actions"><button data-open="reconciliation">Reconciliation</button><button data-arrange aria-label="Arrange workspace">Arrange</button></div></div>
+  root.innerHTML = `<div class="app-toolbar"><span>Records</span><div class="application-actions"><button data-open="reconciliation">Reconciliation</button><button data-arrange aria-label="Arrange workspace">Arrange</button></div></div>
     <form class="records-search" role="search"><label for="records-search">Find</label><input type="search" id="records-search" placeholder="Name, reference or department" autocomplete="off"><button type="button" id="clear-search">Clear</button></form>
     <div class="records-explorer"><nav class="folder-tree" aria-label="Departments"><div class="pane-label">Departments</div><button data-folder="" aria-pressed="true"><span class="folder-symbol" aria-hidden="true"></span>All departments</button>${departments.map(name => `<button data-folder="${h(name)}" aria-pressed="false"><span class="folder-symbol" aria-hidden="true"></span>${h(name)}</button>`).join('')}</nav>
       <section class="files-pane" aria-label="Record list"><div class="pane-label">Reference / Employee</div><div id="record-files"></div></section>
