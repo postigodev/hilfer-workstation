@@ -1,0 +1,29 @@
+/* Central visual paths. Replace a distorted URL when Arwa supplies a matching variant. */
+:root {
+  --art-wallpaper-clean: url('../assets/arwa/wallpaper.webp');
+  --art-logo-clean: url('../assets/arwa/logo.webp');
+  --art-reconciliation-clean: url('../assets/arwa/reconciliation.webp');
+  --art-records-clean: url('../assets/arwa/records.webp');
+  --art-settings-clean: url('../assets/arwa/settings.webp');
+  --art-wallpaper-distorted: var(--art-wallpaper-clean);
+  --art-logo-distorted: var(--art-logo-clean);
+  --art-reconciliation-distorted: var(--art-reconciliation-clean);
+  --art-records-distorted: var(--art-records-clean);
+  --art-settings-distorted: var(--art-settings-clean);
+  --art-wallpaper: var(--art-wallpaper-clean);
+  --art-logo: var(--art-logo-clean);
+  --art-reconciliation: var(--art-reconciliation-clean);
+  --art-records: var(--art-records-clean);
+  --art-settings: var(--art-settings-clean);
+}
+:root[data-distortion="1"] {
+  --art-wallpaper: var(--art-wallpaper-distorted);
+  --art-logo: var(--art-logo-distorted);
+  --art-reconciliation: var(--art-reconciliation-distorted);
+  --art-records: var(--art-records-distorted);
+  --art-settings: var(--art-settings-distorted);
+}
+[data-art="logo"] { background-image: var(--art-logo); }
+[data-art="reconciliation"] { background-image: var(--art-reconciliation); }
+[data-art="records"] { background-image: var(--art-records); }
+[data-art="settings"] { background-image: var(--art-settings); }

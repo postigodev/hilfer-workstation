@@ -1,0 +1,99 @@
+/* Visual adaptation of april-hpxd/WIN98-template, graphics by Arwa.
+   Presentation only: retain the playable shell's dimensions, controls and pane layouts. */
+:root {
+  --desktop-bg: #ecd1cc;
+  --wallpaper-clean: var(--art-wallpaper);
+  --wallpaper-distorted: var(--art-wallpaper);
+  --brand-ink: #743f43;
+  --cabinet-plastic: #d4aaa7;
+  --cabinet-inset: #f8e3df;
+  --ledger-ink: #352829;
+  --ledger-secondary: #604346;
+  --ledger-metadata: #67484b;
+  --ledger-muted: #715759;
+  --ledger-rule: #ba918d;
+  --ledger-rule-soft: #e2c9c4;
+  --routing-blue: #68323a;
+  --routing-paper: #fff6f1;
+  --paper: #fff6f1;
+  --folder-manila: #e89487;
+  --control-edge: #9d7473;
+  --control-focus: #642b33;
+  --window-border-light: #e8c5c0;
+  --window-border-dark: #9d7473;
+  --window-border-darker: #6d4549;
+  --active-titlebar-start: #642b33;
+  --active-titlebar-end: #a04c54;
+  --inactive-titlebar-start: #926568;
+  --inactive-titlebar-end: #b88b8d;
+  --taskbar-bg: #a87573;
+  --button-bg: #e5c2be;
+  --button-hover: #f1d5d0;
+  --button-active: #d2a49f;
+}
+:root[data-theme="archive"] {
+  --cabinet-plastic: #c3b5b3;
+  --cabinet-inset: #eee5e1;
+  --active-titlebar-start: #554348;
+  --active-titlebar-end: #8e777a;
+  --routing-blue: #554348;
+  --button-bg: #d5c6c2;
+}
+:root[data-distortion="1"] { --desktop-bg: #e0c3bf; --brand-ink: #743f43; }
+/* The graphic includes a top label: fit its composition instead of cropping that label. */
+#desktop { background-position: center; background-repeat: no-repeat; background-size: 100% 100%; }
+.desktop-icons { top: 80px; }
+.desktop-brand { inset: 0; display: grid; place-content: center; opacity: .78; transform: none; text-shadow: none; }
+.desktop-logo { display: block; width: clamp(190px, 24vw, 300px); aspect-ratio: 1; background-position: center; background-size: contain; background-repeat: no-repeat; mix-blend-mode: multiply; }
+.icon-image { width: 48px; height: 48px; background-size: contain; background-position: center; background-repeat: no-repeat; image-rendering: auto; background-color: transparent; border: 0; box-shadow: none; }
+.icon-text { color: #402d2e; text-shadow: 0 1px #ffe8e4; }
+.icon:hover, .icon:focus-visible { background: #ffffff40; border-color: #743f43; }
+.window { border-color: #e8c5c0; box-shadow: 3px 4px 0 #4a22244d; }
+.window-header { background: linear-gradient(90deg, var(--active-titlebar-start), var(--active-titlebar-end)); }
+.window.inactive .window-header { background: linear-gradient(90deg, var(--inactive-titlebar-start), var(--inactive-titlebar-end)); color: #fff; }
+.window-title { display: flex; align-items: center; gap: 5px; }
+.window-title::before { content: ''; width: 16px; height: 16px; flex: none; background: center / contain no-repeat var(--art-settings); }
+#records-window .window-title::before { background-image: var(--art-records); }
+#reconciliation-window .window-title::before { background-image: var(--art-reconciliation); }
+.window-button { background: var(--button-bg); border-color: #eed1cc; color: #4a3031; }
+.close-btn:hover { background: #87353b !important; }
+.app-toolbar, .pane-label, .preview-reference, .records-status, .feedback { background: #e0bfba; border-color: var(--control-edge); }
+.case-list, .folder-tree { background: #ecd1cc; border-color: var(--control-edge); }
+.case-list button { border-bottom-color: #d9bbb7; }
+.case-list button[aria-pressed="true"], .folder-tree button[aria-pressed="true"], .record-file[aria-pressed="true"] { background: #853d46; color: #fff; }
+.files-pane, .record-file { background: #faebe8; }
+.record-file:hover:not([aria-pressed="true"]) { background: #efd4d0; }
+.source-columns, .preview-drag-bar { background: #d9b6b2; border-color: var(--control-edge); }
+.reconciliation-tabs button { background: #cfaba6; border-color: #d9bbb7; }
+.reconciliation-tabs button[aria-selected="true"] { background: var(--cabinet-inset); }
+.preview-pane, .report-scroll { background: #c8a29e; }
+.evidence-tray { background: #fff6f1; }
+.record-drag-active .evidence-tray { outline-color: #843c44; background: #fae2d9; }
+.evidence-tray.drag-over { background: #f2cec2; }
+.drop-caption, .preview-empty { color: #604346; }
+.medical-document { background: #fff9f6; color: #352829; }
+.document-determination { background: #f5e2d9; }
+.medical-determination { background: #f2e9e4; }
+.file-drag-handle { background: var(--button-bg); border-color: var(--control-edge); }
+.record-file, .evidence-card { border-bottom-color: var(--ledger-rule-soft); }
+.taskbar { background: var(--taskbar-bg); border-top: 2px solid #dcb3ae; color: #fff; }
+.start-button { background: #6d3038; color: #fff; border-color: #d29a95; gap: 5px; padding: 2px 8px 2px 4px; }
+.start-button:hover, .start-button.active { background: #853d46; }
+.shell-logo { display: inline-block; width: 22px; height: 22px; flex: none; background-position: center; background-size: contain; background-repeat: no-repeat; }
+.start-menu { background: #f5deda; border-color: #d8ada8; }
+.start-menu-header { display: flex; align-items: center; gap: 6px; background: #6b3038; color: #fff; }
+.start-menu-item { color: #4b3032; }
+.start-menu-item:hover { background: #853d46; color: #fff; }
+.start-menu-item[data-open]::before, .taskbar-item::before { content: ''; display: inline-block; width: 16px; height: 16px; flex: none; margin-right: 5px; background: center / contain no-repeat var(--art-settings); vertical-align: middle; }
+[data-open="records"]::before, .taskbar-item[data-window="records"]::before { background-image: var(--art-records); }
+[data-open="reconciliation"]::before, .taskbar-item[data-window="reconciliation"]::before { background-image: var(--art-reconciliation); }
+.taskbar-item { background: #ca9b97; border-color: #e6beb8; color: #402a2c; }
+.taskbar-item.active { background: #e7c4be; }
+.clock { color: #462e2f; border-color: #c69792; }
+.session-status, .terminal-label { color: #352829; }
+#save-status { color: #7b272e; background: #fff6f1; }
+.report-letterhead, .document-heading { background: right 4px center / 38px 38px no-repeat var(--art-logo); padding-right: 45px; }
+:root[data-distortion="1"] .desktop-brand { transform: none; text-shadow: none; }
+:root[data-distortion="1"] .desktop-logo { filter: sepia(.15) contrast(1.08); opacity: .8; }
+:root[data-distortion="1"] #desktop::after { background: repeating-linear-gradient(0deg, transparent 0 4px, #56242a0a 4px 5px); }
+@media (max-width: 700px) { .desktop-brand { display: grid; } }

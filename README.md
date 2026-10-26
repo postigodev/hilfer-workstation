@@ -14,7 +14,7 @@ Open [HILFER locally](http://127.0.0.1:8080). No build or packages required. Use
 
 Open **Reconciliation**, select **CASE-001**, then open **Records**. Inspect and drag HR-014 and OH-008 into the evidence tray. Commit the supported work-eligibility determination and authoritative source. Reload preserves progress. **Start → Reset Demo Progress** starts over.
 
-Only CASE-001 is playable. CASE-002 is an explicit unlocked placeholder. Clearance does not establish the cause of illness. Records and art are temporary, replaceable integration fixtures.
+Only CASE-001 is playable. CASE-002 is an explicit unlocked placeholder. Clearance does not establish the cause of illness. The shell uses Arwa's graphics from Altynai's adaptation; [asset credits and provenance](assets/arwa/CREDITS.md). The personnel portrait remains a neutral placeholder.
 
 ## Checks and integration
 

@@ -12,7 +12,16 @@ const check = async (condition, message) => { assert.ok(await condition(), messa
 try {
   await page.goto(process.env.HILFER_URL || 'http://127.0.0.1:8080');
   await page.waitForFunction(() => window.hilfer);
-  assert.equal(await page.locator('.taskbar').evaluate(el => getComputedStyle(el).backgroundColor), 'rgb(192, 192, 192)');
+  assert.equal(await page.locator('.taskbar').evaluate(el => getComputedStyle(el).backgroundColor), 'rgb(168, 117, 115)');
+  const artwork = ['logo', 'wallpaper', 'reconciliation', 'records', 'settings'];
+  for (const name of artwork) {
+    const response = await page.request.get(new URL(`/assets/arwa/${name}.webp`, page.url()).href);
+    assert.equal(response.status(), 200, `${name} artwork is available`);
+    assert.match(response.headers()['content-type'], /image\/webp/);
+  }
+  assert.match(await page.locator('#desktop').evaluate(el => getComputedStyle(el).backgroundImage), /wallpaper.webp/);
+  assert.match(await page.locator('[data-art="reconciliation"]').evaluate(el => getComputedStyle(el).backgroundImage), /reconciliation.webp/);
+  await page.screenshot({path: join(tmpdir(), 'hilfer-arwa-desktop.png')});
   await page.locator('[data-open="reconciliation"]').first().click();
   await page.locator('#report-tab').click();
   const initialReport = page.locator('[data-report-section="CASE-001"]');
@@ -91,6 +100,10 @@ try {
   await page.getByRole('button', { name: 'Commit Resolution', exact: true }).click();
   await page.waitForFunction(() => window.glitchSeen);
   assert.equal(await page.locator('html').getAttribute('data-distortion'), '1');
+  assert.match(await page.locator('.desktop-logo').evaluate(el => getComputedStyle(el).backgroundImage), /logo.webp/);
+  await page.evaluate(() => document.documentElement.style.setProperty('--art-reconciliation-distorted', 'url("/assets/arwa/settings.webp")'));
+  assert.match(await page.locator('[data-art="reconciliation"]').evaluate(el => getComputedStyle(el).backgroundImage), /settings.webp/, 'distortion selects the centrally configured variant');
+  await page.evaluate(() => document.documentElement.style.removeProperty('--art-reconciliation-distorted'));
   await page.waitForFunction(() => !document.documentElement.classList.contains('microglitch'));
   await check(() => page.getByRole('button', {name:'Resolution committed',exact:true}).isDisabled(), 'committed form is sealed');
   await check(() => page.locator('[data-case="CASE-002"]').textContent().then(t => t.includes('AVAILABLE · PLACEHOLDER')), 'next case released');
@@ -195,6 +208,19 @@ try {
   await page.getByRole('button', {name:'Close Records',exact:true}).click();
   await page.getByRole('button', {name:'Close Reconciliation',exact:true}).click();
   await page.screenshot({path: join(tmpdir(), 'hilfer-dispatch.png')});
+  await page.setViewportSize({width:1440,height:1000});
+  await page.locator('[data-open="records"]').first().click();
+  const beforeResize = await page.locator('#records-window').boundingBox();
+  await page.mouse.move(beforeResize.x + beforeResize.width - 6, beforeResize.y + beforeResize.height - 6);
+  await page.mouse.down();
+  await page.mouse.move(beforeResize.x + beforeResize.width - 65, beforeResize.y + beforeResize.height - 50, {steps:12});
+  await page.mouse.up();
+  const afterResize = await page.locator('#records-window').boundingBox();
+  assert.ok(afterResize.width < beforeResize.width && afterResize.height < beforeResize.height, 'native window resize works');
+  await page.locator('[data-file-id="OH-008"]').click();
+  await page.locator('#record-preview').evaluate(el => { el.scrollTop = el.scrollHeight; });
+  assert.ok(await page.locator('#record-preview').evaluate(el => el.scrollHeight <= el.clientHeight || el.scrollTop > 0), 'document scroll remains usable');
+  await page.screenshot({path: join(tmpdir(), 'hilfer-arwa-resized.png')});
   assert.deepEqual(errors, []);
-  console.log('PASS: native drags; provisional/filed report; source and case navigation; commit/glitch/unlock; reload/reset/repeat; tabs/keyboard; window controls; small viewport. No browser errors.');
+  console.log('PASS: artwork loading/variant selection; native drags; provisional/filed report; commit/glitch/unlock; reload/reset; source navigation; window controls/resize/scroll; taskbar; desktop/mobile. No browser errors.');
 } finally { await browser.close(); }
