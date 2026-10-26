@@ -45,7 +45,7 @@
 .desktop-icons { top: 80px; }
 .desktop-brand { inset: 0; display: grid; place-content: center; opacity: .78; transform: none; text-shadow: none; }
 .desktop-logo { display: block; width: clamp(190px, 24vw, 300px); aspect-ratio: 1; background-position: center; background-size: contain; background-repeat: no-repeat; mix-blend-mode: multiply; }
-.icon-image { width: 48px; height: 48px; background-size: contain; background-position: center; background-repeat: no-repeat; image-rendering: auto; background-color: transparent; border: 0; box-shadow: none; }
+.icon-image { width: 48px; height: 48px; background-size: contain; background-position: center; background-repeat: no-repeat; image-rendering: pixelated; background-color: transparent; border: 0; box-shadow: none; }
 .icon-text { color: #402d2e; text-shadow: 0 1px #ffe8e4; }
 .icon:hover, .icon:focus-visible { background: #ffffff40; border-color: #743f43; }
 .window { border-color: #e8c5c0; box-shadow: 3px 4px 0 #4a22244d; }
@@ -85,8 +85,8 @@
 .start-menu-item { color: #4b3032; }
 .start-menu-item:hover { background: #853d46; color: #fff; }
 .start-menu-item[data-open]::before, .taskbar-item::before { content: ''; display: inline-block; width: 16px; height: 16px; flex: none; margin-right: 5px; background: center / contain no-repeat var(--art-settings); vertical-align: middle; }
-[data-open="records"]::before, .taskbar-item[data-window="records"]::before { background-image: var(--art-records); }
-[data-open="reconciliation"]::before, .taskbar-item[data-window="reconciliation"]::before { background-image: var(--art-reconciliation); }
+.start-menu-item[data-open="records"]::before, .taskbar-item[data-window="records"]::before { background-image: var(--art-records); }
+.start-menu-item[data-open="reconciliation"]::before, .taskbar-item[data-window="reconciliation"]::before { background-image: var(--art-reconciliation); }
 .taskbar-item { background: #ca9b97; border-color: #e6beb8; color: #402a2c; }
 .taskbar-item.active { background: #e7c4be; }
 .clock { color: #462e2f; border-color: #c69792; }
@@ -147,3 +147,8 @@ input, select { caret-color: var(--control-focus); }
 .session-status span:empty { display: none; }
 .preview-empty-sheet { display: none; }
 @media (max-width: 450px) { .report-control { flex-wrap: wrap; } }
+
+/* Arwa's selected pixel icons; logo and wallpaper retain their original rendering. */
+.window-title::before, .taskbar-item::before, .start-menu-item[data-open]::before { image-rendering: pixelated; }
+.folder-tree button:has(.department-icon) { gap: 4px; }
+.department-icon { display: inline-block; flex: 0 0 20px; width: 20px; height: 20px; background-position: center; background-size: contain; background-repeat: no-repeat; image-rendering: pixelated; }

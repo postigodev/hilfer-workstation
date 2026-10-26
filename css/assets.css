@@ -2,9 +2,11 @@
 :root {
   --art-wallpaper-clean: url('../assets/arwa/wallpaper.webp');
   --art-logo-clean: url('../assets/arwa/logo.webp');
-  --art-reconciliation-clean: url('../assets/arwa/reconciliation.webp');
-  --art-records-clean: url('../assets/arwa/records.webp');
-  --art-settings-clean: url('../assets/arwa/settings.webp');
+  --art-reconciliation-clean: url('../assets/arwa/icons/reconciliation-pixel.webp');
+  --art-records-clean: url('../assets/arwa/icons/records-pixel.webp');
+  --art-settings-clean: url('../assets/arwa/icons/display-pixel.webp');
+  --art-hr-folder: url('../assets/arwa/icons/hr-pixel.webp');
+  --art-medical-folder: url('../assets/arwa/icons/medical-pixel.webp');
   --art-wallpaper-distorted: var(--art-wallpaper-clean);
   --art-logo-distorted: var(--art-logo-clean);
   --art-reconciliation-distorted: var(--art-reconciliation-clean);
@@ -27,3 +29,6 @@
 [data-art="reconciliation"] { background-image: var(--art-reconciliation); }
 [data-art="records"] { background-image: var(--art-records); }
 [data-art="settings"] { background-image: var(--art-settings); }
+
+[data-department-icon="hr"] { background-image: var(--art-hr-folder); }
+[data-department-icon="medical"] { background-image: var(--art-medical-folder); }
