@@ -73,6 +73,18 @@ export function mountRecords(root, store) {
     const file = event.target.closest('[data-record-id]');
     if (file) beginRecordDrag(event, file.dataset.recordId);
   });
+  root.addEventListener('keydown', event => {
+    const current = event.target.closest('[data-file-id]');
+    if (!current || !['ArrowUp', 'ArrowDown', 'Home', 'End'].includes(event.key)) return;
+    event.preventDefault();
+    const files = [...root.querySelectorAll('[data-file-id]')];
+    const index = files.indexOf(current);
+    const next = event.key === 'Home' ? 0 : event.key === 'End' ? files.length - 1
+      : Math.max(0, Math.min(files.length - 1, index + (event.key === 'ArrowDown' ? 1 : -1)));
+    selectedId = files[next].dataset.fileId;
+    store.discover(selectedId); renderFiles();
+    root.querySelector(`[data-file-id="${selectedId}"]`)?.focus({ preventScroll: true });
+  });
   store.onEvent(({type}) => {
     if (type === 'hilfer:progress-reset') {
       selectedId = null; department = ''; query = ''; root.querySelector('#records-search').value = ''; renderFiles();

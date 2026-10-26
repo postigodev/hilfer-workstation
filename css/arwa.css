@@ -97,3 +97,28 @@
 :root[data-distortion="1"] .desktop-logo { filter: sepia(.15) contrast(1.08); opacity: .8; }
 :root[data-distortion="1"] #desktop::after { background: repeating-linear-gradient(0deg, transparent 0 4px, #56242a0a 4px 5px); }
 @media (max-width: 700px) { .desktop-brand { display: grid; } }
+
+/* Impeccable polish: preserve the existing desktop, improve reading and control states. */
+.pane-label, .preview-reference { font-size: 11px; }
+.association-state { letter-spacing: 0; }
+.tab-progress { background: var(--paper); color: var(--ledger-ink); border-color: var(--control-edge); }
+.commit-button:not(:disabled), .view-entry { font-weight: bold; }
+.commit-button:disabled { outline: none; background: var(--cabinet-plastic); }
+.view-entry { min-height: 24px; font-size: 11px; }
+select:disabled { background: var(--cabinet-inset); color: var(--ledger-secondary); }
+button:focus-visible, input:focus-visible, select:focus-visible, article:focus-visible { outline: 2px dotted var(--control-focus); outline-offset: 2px; }
+input, select { caret-color: var(--control-focus); }
+.feedback, .records-status { padding-right: 24px; }
+.report-control, .report-letterhead span, .report-unfiled, .report-references { font-size: 10px; }
+.report-findings { row-gap: 8px; }
+.report-stamp { white-space: nowrap; }
+.record-file:focus-visible { outline-offset: -3px; }
+.taskbar-items { min-width: 0; }
+.taskbar-item { min-width: 0; flex: 0 1 150px; }
+.start-button, .clock { flex-shrink: 0; }
+@media (pointer: coarse) {
+  .window-header { height: 30px; }
+  .window-content { height: calc(100% - 34px); }
+  .window-button { width: 28px; height: 24px; }
+  .application-actions button, .evidence-card button:not(.source-reference), .attach-form button { min-height: 28px; }
+}

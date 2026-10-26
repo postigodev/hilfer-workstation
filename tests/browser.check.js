@@ -23,6 +23,8 @@ try {
   assert.match(await page.locator('[data-art="reconciliation"]').evaluate(el => getComputedStyle(el).backgroundImage), /reconciliation.webp/);
   await page.screenshot({path: join(tmpdir(), 'hilfer-arwa-desktop.png')});
   await page.locator('[data-open="reconciliation"]').first().click();
+  assert.equal(await page.locator('#source-id').isDisabled(), true, 'authority requires associated evidence');
+  assert.equal(await page.locator('.commit-button').isDisabled(), true, 'incomplete forms cannot be submitted');
   await page.locator('#report-tab').click();
   const initialReport = page.locator('[data-report-section="CASE-001"]');
   assert.match(await initialReport.textContent(), /PENDING/);
@@ -60,6 +62,13 @@ try {
     assert.equal(after.x, windowPosition.x); assert.equal(after.y, windowPosition.y);
   }
   assert.equal(await page.evaluate(() => hilfer.getState().completedCaseIds.length), 0);
+  await page.locator('[data-file-id="HR-014"]').focus();
+  await page.locator('[data-file-id="HR-014"]').press('ArrowDown');
+  assert.equal(await page.locator('#preview-reference').textContent(), 'OH-008 / EMP-JESSICA');
+  await page.locator('[data-file-id="OH-008"]').press('Home');
+  assert.equal(await page.locator('#preview-reference').textContent(), 'HR-014 / EMP-JESSICA');
+  await page.locator('[data-file-id="HR-014"]').press('End');
+  assert.equal(await page.locator('#preview-reference').textContent(), 'OH-008 / EMP-JESSICA');
   await check(() => page.locator('.medical-document').isVisible(), 'medical form uses distinct document renderer');
   await check(() => page.locator('.medical-document').textContent().then(t => t.includes('NOT_ESTABLISHED')), 'causation stays separate in the source document');
   const commit = await page.locator('.commit-button').boundingBox();
@@ -82,11 +91,17 @@ try {
   await check(() => page.getByText('This record is already attached.').isVisible(), 'duplicate feedback');
   await page.locator('#record-id').fill('UNKNOWN'); await page.locator('#attach-form button').click();
   await check(() => page.getByText('Unknown record ID.').isVisible(), 'unknown feedback');
+  await page.locator('#report-tab').click();
+  assert.match(await page.locator('.feedback').textContent(), /read-only/);
+  assert.equal(await page.locator('.feedback').getAttribute('data-tone'), 'neutral', 'case errors do not leak into report status');
+  await page.locator('#register-tab').click();
   await page.getByRole('button', { name: 'Remove HR-014', exact: true }).click();
   assert.equal(await page.locator('.evidence-card').count(), 1);
   await page.locator('#record-id').fill('HR-014'); await page.locator('#attach-form button').click();
   await page.locator('#status-value').selectOption('AVAILABLE');
   await page.locator('#source-id').selectOption('HR-014');
+  assert.equal(await page.locator('.commit-button').isEnabled(), true);
+  assert.equal(await page.locator('#resolution-state').textContent(), 'READY TO COMMIT');
   await page.getByRole('button', { name: 'Commit Resolution', exact: true }).click();
   await check(() => page.getByText('Unsupported determination.').isVisible(), 'wrong resolution rejected');
   await page.evaluate(() => {
@@ -221,6 +236,45 @@ try {
   await page.locator('#record-preview').evaluate(el => { el.scrollTop = el.scrollHeight; });
   assert.ok(await page.locator('#record-preview').evaluate(el => el.scrollHeight <= el.clientHeight || el.scrollTop > 0), 'document scroll remains usable');
   await page.screenshot({path: join(tmpdir(), 'hilfer-arwa-resized.png')});
+  // Window edges may leave the desktop; title bars can bring them back.
+  const dragHeader = async (startX, endX, endY) => {
+    const header = await page.locator('#records-window .window-header').boundingBox();
+    await page.mouse.move(startX, header.y + 10); await page.mouse.down();
+    await page.mouse.move(endX, endY ?? header.y + 10, {steps:12}); await page.mouse.up();
+  };
+  let freeWindow = await page.locator('#records-window').boundingBox();
+  await dragHeader(freeWindow.x + 180, 5);
+  assert.ok((await page.locator('#records-window').boundingBox()).x < 0, 'window moves past the left edge');
+  freeWindow = await page.locator('#records-window').boundingBox();
+  await dragHeader(Math.max(15, freeWindow.x + freeWindow.width / 2), 500);
+  freeWindow = await page.locator('#records-window').boundingBox();
+  await dragHeader(freeWindow.x + 35, 1420);
+  freeWindow = await page.locator('#records-window').boundingBox();
+  assert.ok(freeWindow.x + freeWindow.width > 1440, 'window moves past the right edge');
+  await dragHeader(freeWindow.x + 10, 500);
+  freeWindow = await page.locator('#records-window').boundingBox();
+  await dragHeader(freeWindow.x + 60, freeWindow.x + 60, 930);
+  freeWindow = await page.locator('#records-window').boundingBox();
+  assert.ok(freeWindow.y + freeWindow.height > 1000, 'window moves past the bottom edge');
+  await dragHeader(freeWindow.x + 60, freeWindow.x + 60, 160);
+  const released = await page.locator('#records-window').boundingBox();
+  await page.mouse.move(100, 100);
+  assert.deepEqual(await page.locator('#records-window').boundingBox(), released, 'released window does not follow the cursor');
+  await page.setViewportSize({width:1024,height:768});
+  const medium = await page.locator('#records-window').boundingBox();
+  await dragHeader(medium.x + 60, 5);
+  assert.ok((await page.locator('#records-window').boundingBox()).x < 0, 'responsive layout does not override window movement');
+  const touch = await browser.newContext({viewport:{width:390,height:844},hasTouch:true,isMobile:true});
+  const touchPage = await touch.newPage();
+  await touchPage.goto(page.url()); await touchPage.waitForFunction(() => window.hilfer);
+  await touchPage.locator('[data-open="reconciliation"]').first().click();
+  const closeTarget = await touchPage.getByRole('button', {name:'Close Reconciliation',exact:true}).boundingBox();
+  assert.ok(closeTarget.width >= 28 && closeTarget.height >= 24, 'touch window controls have larger targets');
+  await touchPage.locator('#reconciliation-app [data-open="records"]').click();
+  await touchPage.locator('[data-file-id="HR-014"]').click();
+  await touchPage.screenshot({path:join(tmpdir(),'hilfer-polish-touch.png')});
+  assert.equal(await touchPage.locator('#records-app').evaluate(el => el.scrollWidth > el.clientWidth), false);
+  await touch.close();
   assert.deepEqual(errors, []);
   console.log('PASS: artwork loading/variant selection; native drags; provisional/filed report; commit/glitch/unlock; reload/reset; source navigation; window controls/resize/scroll; taskbar; desktop/mobile. No browser errors.');
 } finally { await browser.close(); }

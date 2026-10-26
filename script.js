@@ -172,7 +172,7 @@ function closeStartMenu() {
 function initDragAndDrop() {
     document.addEventListener('mousedown', function(e) {
         const header = e.target.closest('.window-header');
-        if (header && !header.parentElement.classList.contains('maximized') && !e.target.closest('.window-controls')) {
+        if (e.button === 0 && header && !header.parentElement.classList.contains('maximized') && !e.target.closest('.window-controls')) {
             draggedElement = header.parentElement;
             const rect = draggedElement.getBoundingClientRect();
             offset.x = e.clientX - rect.left;
@@ -187,20 +187,32 @@ function initDragAndDrop() {
 
     document.addEventListener('mousemove', function(e) {
         if (draggedElement) {
+            // Mouse release outside the browser must not leave a window stuck to the cursor.
+            if (!(e.buttons & 1)) { draggedElement = null; return; }
             const x = e.clientX - offset.x;
             const y = e.clientY - offset.y;
-
-            const maxX = window.innerWidth - draggedElement.offsetWidth;
-            const maxY = window.innerHeight - draggedElement.offsetHeight - 32;
-
-            draggedElement.style.left = Math.max(0, Math.min(x, maxX)) + 'px';
-            draggedElement.style.top = Math.max(0, Math.min(y, maxY)) + 'px';
+            // Like desktop windows, edges may extend beyond the visible workspace.
+            draggedElement.style.left = x + 'px';
+            draggedElement.style.top = y + 'px';
         }
     });
 
     document.addEventListener('mouseup', function() {
         draggedElement = null;
     });
+    window.addEventListener('blur', () => { draggedElement = null; });
+}
+
+// Refit on display-size changes only; never clamp a user's ongoing window movement.
+function fitWindowsToWorkspace() {
+    draggedElement = null;
+    for (const el of document.querySelectorAll('.window:not(.maximized)')) {
+        const style = getComputedStyle(el);
+        const width = Math.min(parseFloat(style.width), window.innerWidth - 12);
+        const height = Math.min(parseFloat(style.height), window.innerHeight - 42);
+        el.style.left = (window.innerWidth <= 700 ? 6 : Math.max(6, Math.min(parseFloat(el.style.left) || 0, window.innerWidth - width - 12))) + 'px';
+        el.style.top = (window.innerWidth <= 700 ? 10 : Math.max(6, Math.min(parseFloat(el.style.top) || 0, window.innerHeight - height - 42))) + 'px';
+    }
 }
 
 function updateClock() {
@@ -235,6 +247,8 @@ document.querySelector('#display-theme').addEventListener('change', e => {
     document.documentElement.dataset.theme = e.target.value;
 });
 initDragAndDrop();
+fitWindowsToWorkspace();
+window.addEventListener('resize', fitWindowsToWorkspace);
 updateClock();
 setInterval(updateClock, 1000);
 
