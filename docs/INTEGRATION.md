@@ -1,92 +1,97 @@
 # HILFER — Integration Contracts
 
-Implemented first-prototype interfaces. Static content is read-only; the central store owns all progress. Records remains a replaceable presentation module for Lyden.
+**Current experiment:** source-to-report reconciliation. This is the implemented vertical-slice UX for Jessica, not a finalized rule for every future case. Static evidence/case content lives in JSON. The central store owns gameplay state. The report remains a derived projection — never a second save.
 
 ## Run and checks
 
-From the repository root: `python -m http.server 8080 --bind 127.0.0.1`, then open `http://127.0.0.1:8080`. Node 18+ runs pure logic checks with `node --test` (or `npm test`). No build or runtime packages.
+From the repository root:
 
-Optional browser regression: with Playwright and Microsoft Edge available, run `node tests/browser.check.js`. Set `HILFER_URL` to the local server URL (default `http://127.0.0.1:8080`); set `HILFER_PLAYWRIGHT_MODULE` only if Playwright is outside normal module resolution. This check uses real browser drags and a temporary isolated browser profile. `HILFER_SCREENSHOT` optionally selects an output path.
+    python -m http.server 8080 --bind 127.0.0.1
 
-## Data and ownership
+Open http://127.0.0.1:8080. Node 18+ runs domain tests with \`node --test\` / \`npm test\`. Optional browser checks: \`node tests/browser.check.js\` with Playwright and Microsoft Edge installed. \`HILFER_URL\` defaults to localhost:8080, \`HILFER_PLAYWRIGHT_MODULE\` can specify the local Playwright package, and \`HILFER_SCREENSHOT\` controls the screenshot path.
 
-- `data/records.json`: stable ID, type, title, department, employeeId, employee, date (local fictional facility time), workPeriod, fields, caseIds, note. HR-014 and OH-008 cover the same duty period; OH is later. Occupational causation remains NOT_ESTABLISHED.
-- `data/cases.json`: requiredEvidence, resolution `{field, value, sourceId}`, statusOptions, initiallyUnlocked and progression `{unlockCaseIds, distortionLevel}`. A placeholder has `placeholder: true` and cannot be completed. Validation and progression follow these definitions.
-- `js/core/store.js`: immutable registry, runtime state, validated mutations, subscriptions. `progression.js`: pure validation and milestone transitions. `persistence.js`: versioned saves.
-- Records uses department navigation, a filtered file list and a document preview. Selection calls `discover`; listing/search does not. Both file rows and previews drag stable IDs. `renderRecord(record)` in `js/apps/records-fixture.js` returns escaped document HTML, with separate personnel/medical layouts. Replace `assets/placeholders/personnel.svg` for the portrait; it is an asset placeholder, not Jessica's likeness.
-- Case presentation uses `subjectId`, `category` and a neutral `description`. Required evidence and the supported resolution remain internal validation data; the UI reveals source IDs only after attachment.
-- Lyden replaces `js/apps/records-fixture.js` and its mount call in `js/main.js`; Reconciliation does not import that adapter. Arwa's shell asset paths are centralized in `css/assets.css`, with palette/shell adaptation in `css/arwa.css`. UI components can use the same store API without editing case logic.
+## Player-facing flow
 
-## Registry and state API
+1. Reconciliation opens with the **Consolidated Report**. CASE-001 already contains HR-014's **unverified** work-eligibility claim: AVAILABLE. The report does not reveal the competing Occupational Health claim.
+2. Open Records; select a department and inspect a document. The \`workEligibility\` field is a single contextual button, \`Compare with report\`. Other metadata and medical classifications remain ordinary information.
+3. Selecting the field invokes the \`onClaim(recordId, field)\` callback and opens Reconciliation's **Case Register** with an inline comparison of the initial source and the inspected source. The player sees actual values, source IDs and dates.
+4. Selecting the existing HR source does not complete the case. The player can keep the existing entry to investigate further. Choosing **Use OH-008 in report** immediately validates and files the supported replacement; there is **no extra Commit button, dropdown, or required drag**.
+5. The consolidated report becomes filed, explicitly cites both HR-014 and OH-008 and shows \`NOT_CLEARED\`. Occupational causation remains \`NOT_ESTABLISHED\`, a distinct sourced assertion rather than an adjudicated incident-causality claim.
+6. CASE-002 unlocks and distortion level rises to 1 exactly once. Reload restores the filed report; Start → Reset Demo Progress resets it to the provisional HR baseline.
 
-`js/main.js` creates one store and exposes it as `window.hilfer` after loading JSON. Imported apps receive the same `store` instance.
+## Data model
 
-```js
-const record = hilfer.getRecord('OH-008'); // frozen registry object, undefined if unknown
-hilfer.getRecords();                    // frozen array; render text with textContent
-hilfer.getCases();                      // frozen case definitions
-hilfer.discover(record.id);             // call when inspected; not when merely listed
-const caseId = hilfer.getActiveCaseId(); // currently selected Reconciliation case
-const state = hilfer.getState();        // independent snapshot; edits do not mutate store
-const attached = state.attachedEvidence[caseId] ?? [];
-hilfer.attachEvidence(caseId, record.id); // {ok, message}; also discovers if necessary
-hilfer.removeEvidence(caseId, record.id);
-hilfer.submitResolution(caseId, {
-  field: 'workEligibility', value: 'NOT_CLEARED', sourceId: 'OH-008'
-});
-const unsubscribe = hilfer.subscribe(state => { /* refresh UI */ });
-const stopEvents = hilfer.onEvent(({ type, detail }) => { /* react to milestone */ });
-hilfer.resetProgress(); // also available in Start > Reset Demo Progress
-```
+\`data/records.json\` defines stable record ID, type, title, department, employeeId, employee, timestamp/date, workPeriod, fields, caseIds and note. Static JSON is immutable in the store. Records exposes browsable documents rather than raw JSON.
 
-`getActiveCaseId()` can return a locked/placeholder selection; mutations validate availability. Rejecting any mutation leaves completion/progression unchanged. Completed cases have sealed evidence and idempotent commits. Attachments alone never complete a case. Only the small canonical resolution is persisted, not arbitrary caller properties. Reconciliation includes attach-by-ID controls for keyboard access.
+\`data/cases.json\` defines \`requiredEvidence\`, authoritative \`resolution: {field,value,sourceId}\`, unlock rules, report metadata and optional **\`provisional: {field,value,sourceId}\`**. A provisional source must exist in the registry and support the specified value. It is an **existing report assertion**, not a correct or committed finding. No uninspected evidence or supported replacement value is leaked by the initial report.
 
-## Record drag contract
+\`CASE-001\` is the only fully playable example. \`CASE-002\` remains an explicitly reserved/unimplemented placeholder. Do not invent other tasks simply to show a progress bar.
 
-Resolve IDs through `store.getRecord`; never trust external record objects. Custom MIME is exported from `js/apps/shared.js`. The fixture also exports `beginRecordDrag(event, recordId)`.
+## Ownership and APIs
 
-```js
-event.stopPropagation();
-event.dataTransfer.setData('application/x-hilfer-record-id', recordId);
-event.dataTransfer.setData('text/plain', recordId);
-event.dataTransfer.effectAllowed = 'copy';
-```
+\`js/main.js\` creates \`createStore({records,cases,storage})\` and mounts both apps using the same store.
 
-Drag cards use `draggable="true"` inside window content. Window movement listens only to title bars, excludes controls, and never cancels record dragstart. A successful drop attaches evidence; the player must still submit a supported classification/source pair.
+Public store methods:
 
-## Consolidated Report
+- \`getRecord(id)\`, \`getRecords()\`, \`getCases()\`, \`getState()\`, \`getWarning()\`.
+- \`discover(recordId)\`: mark a record as inspected. Browsing search results does not discover it.
+- **\`reconcileClaim(caseId, recordId, field)\`**: use a *previously inspected*, case-relevant field. Reject locked, completed, unknown, unsupported or baseline-only selections. For a valid revised source, link the baseline and chosen records, validate against the case definition, atomically file the canonical resolution and emit progression events. This is the new primary action.
+- \`attachEvidence(caseId, recordId)\`, \`removeEvidence(caseId, recordId)\`, \`submitResolution(caseId, resolution)\`: existing validated **legacy domain APIs** retained for compatibility and tests. They are not player-facing requirements for this iteration.
+- \`subscribe(fn)\`, \`onEvent(fn)\`: subscribe to state and milestone events.
+- \`resetProgress()\`: revert to a fresh session.
 
-Reconciliation has Case Register / Consolidated Report tabs. `js/apps/report.js` exports `deriveReport(cases, state, getRecord)` and `renderReport(report)`. The document is recomputed from existing attachments, completed IDs and committed resolutions; no report state or save migration exists. Inspection alone adds no references. Uncommitted attachments are provisional; determinations and context fields appear only after a committed resolution. Reserved placeholder sections do not count as playable cases.
+The Records adapter is \`mountRecords(root, store, {onClaim})\` from \`js/apps/records-fixture.js\`. \`renderRecord(record)\` generates a visually differentiated employee/medical form and a \`data-claim-record\` + \`data-claim-field\` button where appropriate. New record types need field-specific interaction metadata; **do not hardcode all records as \`workEligibility\`**.
 
-Optional case `report` metadata: `heading`, `subject`, `disposition`, `pendingText`, and `contextFields: [{field, label}]`. Context fields read the committed authority record and retain its source ID; they are not additional adjudicated questions. Jessica's causation field remains NOT_ESTABLISHED. Never render a case's supported resolution or required IDs as unfiled findings.
+Reconciliation is \`mountReconciliation(root, store, {openRecord})\` from \`js/apps/reconciliation.js\`, returning \`presentClaim(recordId,field)\`, \`getActiveCaseId()\` and \`showReport()\`. \`js/main.js\` bridges Records' \`onClaim\` to Reconciliation's \`presentClaim\`, then focuses the Reconciliation window. The link back to Records is \`openRecord(id)\`, which clears search filters and opens the requested source. \`window.hilfer\` exposes the store and Reconciliation APIs for development and tests.
 
-`mountRecords(root, store)` returns `{openRecord(recordId)}`. `mountReconciliation(root, store, {openRecord})` uses that callback for source links. The bridge in `js/main.js` exposes `hilfer.openRecord(id)`, opens Records, clears restrictive filters, discovers the record and focuses its preview. Unknown IDs return `{ok:false}`. This navigation does not attach or reconcile evidence.
+### Claim workflow contract
 
-## Progress events
+\`Records → onClaim(recordId, field) → Reconciliation.presentClaim(...)\`
 
-Events use `store.onEvent`, not DOM CustomEvents. Subscribers receive `{type, detail}` after the updated state is saved and UI state subscribers run. No replay on load; read the current state on mount. Unsubscribe with the returned function.
+That action opens a comparison but does **not** mutate the official finding. When the player chooses the new source:
 
-| Type | detail |
+\`Reconciliation → store.reconcileClaim(caseId, recordId, field) → saved resolution + milestone events\`
+
+This keeps UI selection, provenance validation, and administrative commitment distinct without forcing separate manual forms. The comparison's "Keep existing" option dismisses the proposal but **does not** falsely mark the discrepancy resolved.
+
+## Living report
+
+\`js/apps/report.js\` exports \`deriveReport(cases,state,getRecord)\` and \`renderReport(report)\`. It renders provisional values before reconciliation and authoritative source/context references after reconciliation. It does not persist a second document or imply that every sourced field is independently verified.
+
+Source references navigate to Records. Report case links navigate to Case Register. The report is the player's work product and a later storytelling device about what HILFER permits to be entered into an official record.
+
+## Persistence and progression
+
+Key: \`hilfer:save:v1\`. Contents: version, discoveredEvidenceIds, attachedEvidence, resolutions, completedCaseIds, unlockedCaseIds, distortionLevel. No images, static JSON or separate report copy.
+
+Save loading validates known/relevant IDs and reconstructs unlocks/distortion by replaying valid resolutions. Invalid/incompatible saves start clean; inaccessible storage allows in-memory play and displays a warning.
+
+Milestone events are delivered by \`store.onEvent\` after state changes:
+
+| Event | Detail |
 | --- | --- |
-| `hilfer:evidence-discovered` | `{recordId}` |
-| `hilfer:evidence-attached` | `{caseId, recordId}` |
-| `hilfer:case-reconciled` | `{caseId, resolution: {field, value, sourceId}}` |
-| `hilfer:case-unlocked` | `{caseId, byCaseId}` |
-| `hilfer:distortion-changed` | `{previousLevel, level}` |
-| `hilfer:progress-reset` | `{}` |
+| \`hilfer:evidence-discovered\` | \`{recordId}\` |
+| \`hilfer:evidence-attached\` | \`{caseId,recordId}\` |
+| \`hilfer:case-reconciled\` | \`{caseId,resolution}\` |
+| \`hilfer:case-unlocked\` | \`{caseId,byCaseId}\` |
+| \`hilfer:distortion-changed\` | \`{previousLevel,level}\` |
+| \`hilfer:progress-reset\` | \`{}\` |
 
-Discovery and milestone events fire once per corresponding transition. Removing/re-attaching may emit another attachment event; removal uses ordinary state subscriptions. Reset starts a fresh progression cycle.
+The distortion module listens for reconciliation milestones, not clicks or elapsed browser time. Replaying the same filed case must not duplicate milestones.
 
-## Persistence and graphics
+## Asset boundaries
 
-`hilfer:save:v1` stores version, discoveredEvidenceIds, attachedEvidence, resolutions, completedCaseIds, unlockedCaseIds and distortionLevel. No static record content. Loading filters unknown IDs/duplicates and derives completion/unlocks/distortion by replaying validated resolutions. Malformed/incompatible saves start clean with a visible warning; unavailable storage leaves a playable in-memory session with a warning. Keep the HTTP origin/port unchanged to share saved progress.
+Original art is in \`assets/arwa/\`, with provenance and usage guidance in \`assets/arwa/CREDITS.md\`. \`css/assets.css\` centralizes shell asset paths; \`css/arwa.css\` styles the shell, and \`css/hilfer.css\` supplies game document layouts, claim comparisons and effects. Original upstream desktop snapshot in \`references/WIN98-template/\` remains unchanged.
 
-`css/hilfer.css` exposes `--wallpaper-clean`, `--wallpaper-distorted` (CSS image values such as `url('../assets/wallpaper.png')`), `--desktop-bg`, `--brand-ink`, `--paper` and titlebar colors. Current shell paths are centralized in `css/assets.css`; see the visual integration notes below. `data-distortion="0|1"` controls the persistent appearance; `microglitch` lasts 650ms only after a newly reconciled case. Reduced-motion disables the animation. No glitch replays on reload, rejected drops or repeated commits. CASE-002 is a labeled placeholder, not a second playable case.
+The initial medical/HR document graphics are placeholders pending Arwa's application-specific work. Prioritize legibility and believable paper/report composition, not more instructions or giant panels.
 
-Upstream snapshot in `references/WIN98-template/` remains unchanged. Root shell CSS and window-management functions adapt pollygon-dev/WIN98-template (original HTML5-Templates.com foundation); public-domain license is preserved in `LICENSE`.
+## Legacy drag contract — not the primary mechanic
 
-## Workspace controls
+The original store still validates ID-based attachment and explicit submission; the \`beginRecordDrag(event,recordId)\` helper is retained for compatibility. MIME was \`application/x-hilfer-record-id\`. Current document views do **not** require a drag or file tray. Do not reintroduce them without a considered UX test.
 
-App toolbars link Records and Reconciliation. Arrange / Start > Arrange workspace opens both side by side on desktop (1000px+); smaller screens keep Reconciliation in front and use the app shortcuts/taskbar. Source links focus Records without reactivating the originating window.
+## Review questions
 
-Shell art lives in `assets/arwa/`; see its `CREDITS.md` for source paths, pinned source commit, optimization and license. Change `--art-*-clean` / `--art-*-distorted` paths in `css/assets.css` to replace graphics. `[data-distortion="1"]` selects the latter without game-module changes. Until matching variants exist, they fall back to the clean art; the existing subtle CSS corruption still applies. `css/arwa.css` loads last and adapts Altynai's palette, shell and paper branding without replacing app layouts. Desktop/Start/taskbar use the same paths. Keep `assets/placeholders/personnel.svg` until an appropriate portrait is supplied.
+- Does selecting a highlighted status field feel discoverable without revealing its significance?
+- Does comparing existing/current source claims communicate why one supersedes another?
+- Can a first-time player finish Jessica without being coached?
+- How should genuinely ambiguous evidence, official procedural constraints, and later nonlinear cases differ without multiplying UI controls?
