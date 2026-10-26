@@ -1,4 +1,4 @@
-import { escapeHTML as h, label } from './shared.js';
+import { escapeHTML as h, label, displayValue, displayField } from './shared.js';
 
 // A projection, never a second save: no rules or supported answers are read here.
 export function deriveReport(cases, state, getRecord) {
@@ -12,6 +12,10 @@ export function deriveReport(cases, state, getRecord) {
     const provisional = !committed && draftSource && draftSource.fields[draft.field] === draft.value
       ? { label: label(draft.field), value: draft.value, sourceId: draft.sourceId } : null;
     return {
+      employee: (authority ?? draftSource)?.employee ?? '',
+      employeeId: (authority ?? draftSource)?.employeeId ?? definition.subjectId ?? '',
+      sourceDepartment: (authority ?? draftSource)?.department ?? '',
+      previous: draftSource ? {id:draftSource.id, department:draftSource.department, value:draft.value} : null,
       id: definition.id, title: metadata.heading ?? definition.category ?? definition.title,
       subject: metadata.subject ?? definition.subjectId ?? '',
       status: committed ? 'RECONCILED' : definition.placeholder ? 'RESERVED' : attached.length ? 'UNDER REVIEW' : 'PENDING',
@@ -37,17 +41,28 @@ export function deriveReport(cases, state, getRecord) {
 
 const reference = (id, text = id) => `<button type="button" class="source-reference" data-open-record="${h(id)}" aria-label="Open record ${h(id)}">${h(text)}</button>`;
 export function renderReport(report) {
+  const sections = report.sections.filter(section => !section.placeholder);
   return `<div class="report-scroll"><article class="incident-report" aria-label="Consolidated Incident Report">
     <header class="report-letterhead"><b>HILFER</b><span>IR / CONSOLIDATED RECORD / 01</span></header>
-    <h1>Incident Reconciliation Report</h1><div class="report-control"><b>${h(report.status)}</b><span>CONTROLLED INTERNAL RECORD</span></div>
-    <p class="report-progress">${report.completed} determination${report.completed === 1 ? '' : 's'} filed · ${report.pending} under review · ${report.reserved} reserved</p>
-    ${report.sections.map((section, index) => `<section class="report-section ${section.determination ? 'report-filed' : 'report-pending'}" id="report-${h(section.id)}" data-report-section="${h(section.id)}" tabindex="-1">
-      <div class="report-section-heading"><h2>${String(index + 1).padStart(3, '0')} / ${h(section.title)}</h2><span class="report-stamp">${h(section.status)}</span></div>
-      ${section.subject ? `<p class="report-subject">${h(section.subject)}</p>` : ''}
-      ${section.determination ? `<dl class="report-findings"><dt>${h(section.determination.label)}</dt><dd><strong>${h(section.determination.value)}</strong></dd><dt>Source of authority</dt><dd>${reference(section.determination.sourceId)}</dd>${section.context.map(field => `<dt>${h(field.label)}</dt><dd>${h(field.value)} <span class="context-source">[${h(field.sourceId)}]</span></dd>`).join('')}<dt>Disposition</dt><dd>${h(section.disposition)}</dd></dl>` : `<div class="report-unfiled">${section.provisional ? `<div class="report-provisional"><small>UNVERIFIED</small><div><span>${h(section.provisional.label)}</span><b>${h(section.provisional.value)}</b></div><p>Current source: ${reference(section.provisional.sourceId)}</p></div>` : `<p>${h(section.pendingText)}</p>`}</div>`}
-      ${section.references.length ? `<div class="report-references"><span>${section.determination ? 'Supporting references' : 'Provisional references'}</span><div>${section.references.map(record => reference(record.id)).join(' · ')}</div></div>` : ''}
-      <button type="button" class="report-case-link" data-report-case="${h(section.id)}">${h(section.id)} / ${section.placeholder ? (section.unlocked ? 'View pending assignment' : 'View reserved assignment') : 'Review case'}</button>
-    </section>`).join('')}
-    <footer class="report-footer"><span>END OF CURRENT ENTRIES</span><span>${report.pending + report.reserved} section${report.pending + report.reserved === 1 ? '' : 's'} outstanding</span></footer>
+    <h1>Incident Report</h1><div class="report-control"><b>${h(report.status)}</b></div>
+    <p class="report-progress">${report.completed} ${report.completed === 1 ? 'entry' : 'entries'} filed${report.pending ? ` · ${report.pending} under review` : ''}</p>
+    ${sections.map(section => {
+      const finding = section.determination ?? section.provisional;
+      return `<section class="report-section ${section.determination ? 'report-filed' : 'report-pending'}" id="report-${h(section.id)}" data-report-section="${h(section.id)}" tabindex="-1">
+      <div class="report-section-heading"><h2>${h(section.employee ? `${section.employee} — ${displayField(finding?.label ?? section.title)}` : section.title)}</h2><span class="report-stamp">${section.determination ? 'Filed' : 'Unverified'}</span></div>
+      ${finding ? `<p class="report-status-value">${h(displayValue(finding.value))}</p><p class="report-basis">Based on: ${reference(finding.sourceId, section.sourceDepartment || finding.sourceId)}</p>` : `<p>${h(section.pendingText)}</p>`}
+      ${section.context.map(field => `<p class="report-context">${h(displayField(field.label))}: <strong>${h(displayValue(field.value))}</strong></p>`).join('')}
+      <details class="record-details" data-audit-id="${h(section.id)}"><summary>Record details${section.references.length ? ` · ${section.references.length} source documents` : ''}</summary>
+        <dl class="report-findings"><dt>Case ID</dt><dd>${h(section.id)}</dd><dt>Employee ID</dt><dd>${h(section.employeeId)}</dd>
+        ${finding ? `<dt>Internal classification</dt><dd>${h(finding.value)}</dd><dt>Current source</dt><dd>${reference(finding.sourceId)}</dd>` : ''}
+        ${section.context.map(field => `<dt>${h(field.label)}</dt><dd>${h(field.value)} · ${reference(field.sourceId)}</dd>`).join('')}
+        ${section.determination && section.previous ? `<dt>Previous entry</dt><dd>${h(section.previous.department)} · ${h(displayValue(section.previous.value))} (${h(section.previous.value)}) · ${reference(section.previous.id)}</dd>` : ''}
+        ${section.determination ? `<dt>Disposition</dt><dd>${h(section.disposition === 'Administrative discrepancy resolved.' ? 'Record discrepancy resolved' : section.disposition)}</dd>` : ''}</dl>
+        ${section.references.length ? `<div class="report-references"><span>${section.determination ? 'Source documents' : 'Provisional references'} (${section.references.length})</span><div>${section.references.map(record => reference(record.id)).join(' · ')}</div></div>` : ''}
+      </details>
+      <button type="button" class="report-case-link" data-report-case="${h(section.id)}">${section.determination ? 'Review history' : 'Review case'}</button>
+    </section>`;
+    }).join('')}
+    <footer class="report-footer"><span>END OF CURRENT ENTRIES</span><span>${report.pending ? 'Review in progress' : 'More records pending'}</span></footer>
   </article></div>`;
 }

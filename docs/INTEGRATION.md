@@ -13,9 +13,9 @@ Open http://127.0.0.1:8080. Node 18+ runs domain tests with `node --test` / `npm
 ## Player-facing flow
 
 1. Reconciliation opens with the **Consolidated Report**. CASE-001 already contains HR-014's **unverified** work-eligibility claim: AVAILABLE. The report does not reveal the competing Occupational Health claim.
-2. Open Records; select a department and inspect a document. The `workEligibility` field is a single contextual button, `Compare with report`. Other metadata and medical classifications remain ordinary information.
+2. Open Records; select a department and inspect a document. The `workEligibility` field is a single contextual button, `Compare status with report`. Other metadata and medical classifications remain ordinary information.
 3. Selecting the field invokes the `onClaim(recordId, field)` callback and opens Reconciliation's **Case Register** with an inline comparison of the initial source and the inspected source. The player sees actual values, source IDs and dates.
-4. Selecting the existing HR source does not complete the case. The player can keep the existing entry to investigate further. Choosing **Use OH-008 in report** immediately validates and files the supported replacement; there is **no extra Commit button, dropdown, or required drag**.
+4. Selecting the existing HR source does not complete the case. The player can keep the existing entry to investigate further. Choosing **Update report** immediately validates and files the supported replacement; there is **no extra Commit button, dropdown, or required drag**.
 5. The consolidated report becomes filed, explicitly cites both HR-014 and OH-008 and shows `NOT_CLEARED`. Occupational causation remains `NOT_ESTABLISHED`, a distinct sourced assertion rather than an adjudicated incident-causality claim.
 6. CASE-002 unlocks and distortion level rises to 1 exactly once. Reload restores the filed report; Start → Reset Demo Progress resets it to the provisional HR baseline.
 
@@ -52,7 +52,7 @@ That action opens a comparison but does **not** mutate the official finding. Whe
 
 `Reconciliation → store.reconcileClaim(caseId, recordId, field) → saved resolution + milestone events`
 
-This keeps UI selection, provenance validation, and administrative commitment distinct without forcing separate manual forms. The comparison's "Keep existing" option dismisses the proposal but **does not** falsely mark the discrepancy resolved.
+This keeps UI selection, provenance validation, and administrative commitment distinct without forcing separate manual forms. The comparison's "Continue reviewing" option dismisses the proposal but **does not** falsely mark the discrepancy resolved.
 
 ## Living report
 
@@ -95,3 +95,7 @@ The original store still validates ID-based attachment and explicit submission; 
 - Does comparing existing/current source claims communicate why one supersedes another?
 - Can a first-time player finish Jessica without being coached?
 - How should genuinely ambiguous evidence, official procedural constraints, and later nonlinear cases differ without multiplying UI controls?
+
+## Editorial presentation
+
+`js/apps/shared.js` formats display values, dates and document titles. Canonical enums, IDs and save data stay unchanged. Records prioritizes employee, document type and issued date; exact references and classifications live in native **Record details** disclosures. The report shows readable status/source/context, with audit provenance inside details. Technical placeholders are omitted from report rendering only; progression and the case register retain them.

@@ -1,4 +1,4 @@
-import { escapeHTML as h, label, RECORD_MIME } from './shared.js';
+import { escapeHTML as h, label, displayValue, displayDate, recordTitle, RECORD_MIME } from './shared.js';
 export { RECORD_MIME } from './shared.js';
 export function beginRecordDrag(event, recordId) {
   event.stopPropagation();
@@ -10,19 +10,20 @@ export function beginRecordDrag(event, recordId) {
 // Presentation only: IDs, discovery and drag validation still belong to the shared store.
 export function renderRecord(record) {
   const fields = (entries) => `<dl class="document-fields">${entries.map(([name, value]) => `<dt>${h(name)}</dt><dd>${h(value)}</dd>`).join('')}</dl>`;
-  const identity = `<div class="document-identity"><span>EMPLOYEE</span><strong>${h(record.employee)}</strong><span>${h(record.employeeId)}</span></div>`;
-  const reference = fields([['Record reference', record.id], ['Issued', record.date.replace('T', ' ')], ['Effective period', record.workPeriod]]);
-  const claimControl = `<button type="button" class="claim-source" data-claim-record="${h(record.id)}" data-claim-field="workEligibility" aria-label="Compare ${h(record.fields.workEligibility)} from ${h(record.id)} with the report"><strong>${h(record.fields.workEligibility)}</strong><small>Compare with report</small></button>`;
+  const identity = `<div class="document-identity"><strong>${h(record.employee)}</strong></div>`;
+  const reference = fields([['Record reference', record.id], ['Issued', displayDate(record.date)], ['Effective period', record.workPeriod]]);
+  const auditDetails = `<details class="record-details"><summary>Record details · ${h(record.id)}</summary>${reference}${fields([['Employee ID',record.employeeId], ...Object.entries(record.fields).map(([key,value]) => [label(key),value])])}</details>`;
+  const claimControl = `<button type="button" class="claim-source" data-claim-record="${h(record.id)}" data-claim-field="workEligibility" aria-label="Compare ${h(displayValue(record.fields.workEligibility))} from ${h(record.id)} with the report"><strong>${h(displayValue(record.fields.workEligibility))}</strong><small>Compare status with report</small></button>`;
   let content;
   if (record.type === 'personnel_status') {
-    content = `<header class="document-heading"><b>HILFER PERSONNEL</b><span>EMPLOYEE RECORD</span></header>
+    content = `<header class="document-heading"><b>HILFER / HUMAN RESOURCES</b><span>Personnel File</span></header>
       <div class="personnel-identity"><figure class="portrait-placeholder"><img src="assets/placeholders/personnel.svg" alt="Employee portrait placeholder"><figcaption>PHOTO / PENDING</figcaption></figure><div>${identity}</div></div>
-      ${reference}<section class="document-determination"><h3>Work eligibility</h3>${claimControl}</section>
-      <p class="document-note">${h(record.note)}</p><footer class="document-authorization"><b>AUTHORIZED HR EXTRACT</b><span>${h(record.department)}</span></footer>`;
+      <p class="document-date">Recorded ${h(displayDate(record.date))}</p><section class="document-determination"><h3>Work status</h3>${claimControl}</section>
+      <p class="document-note">${h(record.note)}</p>${auditDetails}<footer class="document-authorization"><b>AUTHORIZED HR EXTRACT</b><span>${h(record.department)}</span></footer>`;
   } else if (record.type === 'occupational_health_record') {
-    content = `<header class="document-heading medical-heading"><b>HILFER / OCCUPATIONAL HEALTH</b><span>WORK CLEARANCE DETERMINATION</span></header>
-      ${identity}${reference}<section class="document-determination medical-determination"><h3>Work clearance</h3>${claimControl}</section>
-      ${fields([['Occupational causation', record.fields.occupationalCausation]])}<p class="document-note">${h(record.note)}</p>
+    content = `<header class="document-heading medical-heading"><b>HILFER / OCCUPATIONAL HEALTH</b><span>Work Clearance</span></header>
+      ${identity}<p class="document-date">Issued ${h(displayDate(record.date))}</p><section class="document-determination medical-determination"><h3>Medical work clearance</h3>${claimControl}</section>
+      ${fields([['Work-related cause', displayValue(record.fields.occupationalCausation)]])}<p class="document-note">${h(record.note)}</p>${auditDetails}
       <footer class="document-authorization"><span>ISSUING OFFICE</span><b>${h(record.department)}</b></footer>`;
   } else {
     content = `<header class="document-heading"><b>${h(record.department)}</b><span>${h(record.title)}</span></header>${identity}${reference}${fields(Object.entries(record.fields).map(([key, value]) => [label(key), value]))}`;
@@ -39,7 +40,7 @@ export function mountRecords(root, store, { onClaim = () => {} } = {}) {
   root.innerHTML = `<div class="app-toolbar"><span>Records</span><div class="application-actions"><button data-open="reconciliation">Reconciliation</button><button data-arrange aria-label="Arrange workspace">Arrange</button></div></div>
     <form class="records-search" role="search"><label for="records-search">Find</label><input type="search" id="records-search" placeholder="Name, reference or department" autocomplete="off"><button type="button" id="clear-search">Clear</button></form>
     <div class="records-explorer"><nav class="folder-tree" aria-label="Departments"><div class="pane-label">Departments</div><button data-folder="" aria-pressed="true"><span class="folder-symbol" aria-hidden="true"></span>All departments</button>${departments.map(name => `<button data-folder="${h(name)}" aria-pressed="false"><span class="folder-symbol" aria-hidden="true"></span>${h(name)}</button>`).join('')}</nav>
-      <section class="files-pane" aria-label="Record list"><div class="pane-label">Reference / Employee</div><div id="record-files"></div></section>
+      <section class="files-pane" aria-label="Record list"><div class="pane-label">Documents</div><div id="record-files"></div></section>
       <section class="preview-pane" aria-label="Document preview"><div class="preview-reference" id="preview-reference">Document preview</div><div class="preview-scroll" id="record-preview"></div></section></div>
     <div class="preview-drag-bar" id="preview-drag-bar" hidden></div>
     <div class="records-status"><span id="record-count"></span><span id="record-drag-hint">Read-only</span></div>`;
@@ -48,12 +49,11 @@ export function mountRecords(root, store, { onClaim = () => {} } = {}) {
     const records = store.getRecords().filter(record => (!department || record.department === department) &&
       [record.id, record.title, record.employee, record.employeeId, record.department].join(' ').toLowerCase().includes(query.toLowerCase()));
     if (!records.some(r => r.id === selectedId)) selectedId = null;
-    const discovered = store.getState().discoveredEvidenceIds;
-    root.querySelector('#record-files').innerHTML = records.length ? records.map(record => `<button class="record-file" data-file-id="${h(record.id)}" data-record-id="${h(record.id)}" aria-pressed="${selectedId === record.id}"><b><span class="file-symbol" aria-hidden="true"></span>${h(record.id)}</b><span>${h(record.title)}</span><small>${h(record.employeeId)}${discovered.includes(record.id) ? ' · Known' : ''}</small></button>`).join('') : '<p class="files-empty">No matching records.</p>';
-    root.querySelector('#record-count').textContent = `${records.length} file${records.length === 1 ? '' : 's'}`;
+    root.querySelector('#record-files').innerHTML = records.length ? records.map(record => `<button class="record-file" data-file-id="${h(record.id)}" data-record-id="${h(record.id)}" aria-pressed="${selectedId === record.id}"><b><span class="file-symbol" aria-hidden="true"></span>${h(recordTitle(record))}</b><span>${h(record.department)} · ${h(displayDate(record.date, true))}</span><small>${h(record.id)}</small></button>`).join('') : '<p class="files-empty">No matching records.</p>';
+    root.querySelector('#record-count').textContent = `${records.length} document${records.length === 1 ? '' : 's'}`;
     root.querySelectorAll('[data-folder]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.folder === department)));
     const record = store.getRecord(selectedId);
-    root.querySelector('#preview-reference').textContent = record ? `${record.id} / ${record.employeeId}` : 'Preview / no file selected';
+    root.querySelector('#preview-reference').textContent = record ? recordTitle(record) : 'Preview / no file selected';
     root.querySelector('#record-drag-hint').textContent = record ? `Selected / ${record.id}` : 'Read-only';
     root.querySelector('#record-preview').innerHTML = record ? renderRecord(record) : '<div class="preview-empty"><span class="preview-empty-sheet" aria-hidden="true"></span><b>No document selected</b><span>Select a document to inspect its fields.</span></div>';
     root.querySelector('#record-preview').scrollTop = 0;
