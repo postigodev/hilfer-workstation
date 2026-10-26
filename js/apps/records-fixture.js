@@ -12,25 +12,26 @@ export function renderRecord(record) {
   const fields = (entries) => `<dl class="document-fields">${entries.map(([name, value]) => `<dt>${h(name)}</dt><dd>${h(value)}</dd>`).join('')}</dl>`;
   const identity = `<div class="document-identity"><span>EMPLOYEE</span><strong>${h(record.employee)}</strong><span>${h(record.employeeId)}</span></div>`;
   const reference = fields([['Record reference', record.id], ['Issued', record.date.replace('T', ' ')], ['Effective period', record.workPeriod]]);
+  const claimControl = `<button type="button" class="claim-source" data-claim-record="${h(record.id)}" data-claim-field="workEligibility" aria-label="Compare ${h(record.fields.workEligibility)} from ${h(record.id)} with the report"><strong>${h(record.fields.workEligibility)}</strong><small>Compare with report ↗</small></button>`;
   let content;
   if (record.type === 'personnel_status') {
     content = `<header class="document-heading"><b>HILFER PERSONNEL</b><span>EMPLOYEE RECORD</span></header>
       <div class="personnel-identity"><figure class="portrait-placeholder"><img src="assets/placeholders/personnel.svg" alt="Employee portrait placeholder"><figcaption>PHOTO / PENDING</figcaption></figure><div>${identity}</div></div>
-      ${reference}<section class="document-determination"><h3>Work eligibility</h3><strong>${h(record.fields.workEligibility)}</strong></section>
+      ${reference}<section class="document-determination"><h3>Work eligibility</h3>${claimControl}</section>
       <p class="document-note">${h(record.note)}</p><footer class="document-authorization"><b>AUTHORIZED HR EXTRACT</b><span>${h(record.department)}</span></footer>`;
   } else if (record.type === 'occupational_health_record') {
     content = `<header class="document-heading medical-heading"><b>HILFER / OCCUPATIONAL HEALTH</b><span>WORK CLEARANCE DETERMINATION</span></header>
-      ${identity}${reference}<section class="document-determination medical-determination"><h3>Work clearance</h3><strong>${h(record.fields.workEligibility)}</strong></section>
+      ${identity}${reference}<section class="document-determination medical-determination"><h3>Work clearance</h3>${claimControl}</section>
       ${fields([['Occupational causation', record.fields.occupationalCausation]])}<p class="document-note">${h(record.note)}</p>
       <footer class="document-authorization"><span>ISSUING OFFICE</span><b>${h(record.department)}</b></footer>`;
   } else {
     content = `<header class="document-heading"><b>${h(record.department)}</b><span>${h(record.title)}</span></header>${identity}${reference}${fields(Object.entries(record.fields).map(([key, value]) => [label(key), value]))}`;
   }
-  return `<article class="record-document ${record.type === 'occupational_health_record' ? 'medical-document' : ''}" draggable="true" data-record-id="${h(record.id)}" tabindex="0" aria-label="Drag ${h(record.id)}">${content}</article>`;
+  return `<article class="record-document ${record.type === 'occupational_health_record' ? 'medical-document' : ''}" tabindex="0" aria-label="Inspect ${h(record.id)}">${content}</article>`;
 }
 
 // Replaceable Records UI. No case rules or duplicated game state live here.
-export function mountRecords(root, store) {
+export function mountRecords(root, store, { onClaim = () => {} } = {}) {
   let selectedId = null;
   let department = '';
   let query = '';
@@ -48,22 +49,28 @@ export function mountRecords(root, store) {
       [record.id, record.title, record.employee, record.employeeId, record.department].join(' ').toLowerCase().includes(query.toLowerCase()));
     if (!records.some(r => r.id === selectedId)) selectedId = null;
     const discovered = store.getState().discoveredEvidenceIds;
-    root.querySelector('#record-files').innerHTML = records.length ? records.map(record => `<button class="record-file" data-file-id="${h(record.id)}" data-record-id="${h(record.id)}" draggable="true" aria-pressed="${selectedId === record.id}"><b><span class="file-symbol" aria-hidden="true"></span>${h(record.id)}</b><span>${h(record.title)}</span><small>${h(record.employeeId)}${discovered.includes(record.id) ? ' · Viewed' : ''}</small></button>`).join('') : '<p class="files-empty">No matching records.</p>';
+    root.querySelector('#record-files').innerHTML = records.length ? records.map(record => `<button class="record-file" data-file-id="${h(record.id)}" data-record-id="${h(record.id)}" aria-pressed="${selectedId === record.id}"><b><span class="file-symbol" aria-hidden="true"></span>${h(record.id)}</b><span>${h(record.title)}</span><small>${h(record.employeeId)}${discovered.includes(record.id) ? ' · Viewed' : ''}</small></button>`).join('') : '<p class="files-empty">No matching records.</p>';
     root.querySelector('#record-count').textContent = `${records.length} file${records.length === 1 ? '' : 's'}`;
     root.querySelectorAll('[data-folder]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.folder === department)));
     const record = store.getRecord(selectedId);
     root.querySelector('#preview-reference').textContent = record ? `${record.id} / ${record.employeeId}` : 'Preview / no file selected';
-    root.querySelector('#record-drag-hint').textContent = record ? `Read-only / ${record.id}` : 'Read-only';
-    root.querySelector('#record-preview').innerHTML = record ? renderRecord(record) : '<div class="preview-empty"><span class="preview-empty-sheet" aria-hidden="true"></span><b>No document selected</b><span>Select a file from the register.</span></div>';
+    root.querySelector('#record-drag-hint').textContent = record ? `Selected / ${record.id}` : 'Read-only';
+    root.querySelector('#record-preview').innerHTML = record ? renderRecord(record) : '<div class="preview-empty"><span class="preview-empty-sheet" aria-hidden="true"></span><b>No document selected</b><span>Select a document to inspect its fields.</span></div>';
     root.querySelector('#record-preview').scrollTop = 0;
     const dragBar = root.querySelector('#preview-drag-bar');
-    dragBar.hidden = !record;
-    dragBar.innerHTML = record ? `<span class="file-drag-handle" draggable="true" data-record-id="${h(record.id)}">▤ ${h(record.id)} / Drag file to Reconciliation</span>` : '';
+    dragBar.hidden = true;
+    dragBar.innerHTML = '';
   }
   root.querySelector('.records-search').addEventListener('submit', event => event.preventDefault());
   root.querySelector('#records-search').addEventListener('input', event => { query = event.target.value; renderFiles(); });
   root.querySelector('#clear-search').addEventListener('click', () => { query = ''; root.querySelector('#records-search').value = ''; renderFiles(); root.querySelector('#records-search').focus(); });
   root.addEventListener('click', event => {
+    const claim = event.target.closest('[data-claim-record]');
+    if (claim) {
+      const result = onClaim(claim.dataset.claimRecord, claim.dataset.claimField);
+      if (result?.ok === false) root.querySelector('#record-drag-hint').textContent = result.message;
+      return;
+    }
     const folder = event.target.closest('[data-folder]');
     if (folder) { department = folder.dataset.folder; renderFiles(); }
     const file = event.target.closest('[data-file-id]');
