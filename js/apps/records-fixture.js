@@ -67,6 +67,9 @@ export function mountRecords(root, store, { onClaim = () => {} } = {}) {
   root.addEventListener('click', event => {
     const claim = event.target.closest('[data-claim-record]');
     if (claim) {
+      // The shell also focuses clicked windows at document level. Prevent it
+      // from bringing Records back over Reconciliation after this action.
+      event.stopPropagation();
       const result = onClaim(claim.dataset.claimRecord, claim.dataset.claimField);
       if (result?.ok === false) root.querySelector('#record-drag-hint').textContent = result.message;
       return;

@@ -100,7 +100,7 @@ export function mountReconciliation(root, store, { openRecord = () => {} } = {})
       view = tab.dataset.view; render(); root.querySelector('#' + view + '-tab')?.focus(); return;
     }
     const reference = event.target.closest('[data-open-record]');
-    if (reference) { openRecord(reference.dataset.openRecord); return; }
+    if (reference) { event.stopPropagation(); openRecord(reference.dataset.openRecord); return; }
     const choice = event.target.closest('[data-case], [data-report-case]');
     if (choice) {
       selectedCaseId = choice.dataset.case ?? choice.dataset.reportCase;
