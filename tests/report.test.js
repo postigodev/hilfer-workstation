@@ -21,7 +21,10 @@ test('report starts pending without exposing required records or supported findi
   assert.deepEqual(result.sections[0].references, []);
   assert.equal(result.sections[0].determination, null);
   assert.deepEqual(result.sections[0].context, []);
-  assert.doesNotMatch(renderReport(result), /HR-014|OH-008|NOT_CLEARED|NOT_ESTABLISHED|Administrative discrepancy resolved/);
+  assert.equal(result.sections[0].provisional.sourceId, 'HR-014');
+  assert.equal(result.sections[0].provisional.value, 'AVAILABLE');
+  assert.match(renderReport(result), /HR-014|AVAILABLE|EXISTING ENTRY/);
+  assert.doesNotMatch(renderReport(result), /OH-008|NOT_CLEARED|NOT_ESTABLISHED|Administrative discrepancy resolved/);
 });
 test('inspection is not report evidence; attachments are provisional and removal updates projection', () => {
   const { store } = setup(); store.discover('OH-008');
