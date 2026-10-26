@@ -45,7 +45,7 @@ test('one contextual selection files the revised claim, preserves sources and pe
   assert.equal(store.reconcileClaim('CASE-001', 'OH-008', 'workEligibility').ok, true);
   const saved = store.getState();
   assert.deepEqual(saved.attachedEvidence['CASE-001'], ['HR-014', 'OH-008']);
-  assert.deepEqual(saved.discoveredEvidenceIds, ['OH-008']);
+  assert.deepEqual(saved.discoveredEvidenceIds, ['OH-008','HR-014']);
   assert.deepEqual(saved.completedCaseIds, ['CASE-001']);
   assert.equal(saved.resolutions['CASE-001'].value, 'NOT_CLEARED');
   assert.equal(saved.distortionLevel, 1);

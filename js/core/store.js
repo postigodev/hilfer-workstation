@@ -94,6 +94,12 @@ export function createStore({ records, cases, storage }) {
       const attached = state.attachedEvidence[caseId] ??= [];
       const events = [];
       for (const id of definition.requiredEvidence) {
+        if (!state.discoveredEvidenceIds.includes(id)) {
+          // The baseline is part of the displayed report; filing it makes
+          // its provenance available for inspection and consistent on reload.
+          state.discoveredEvidenceIds.push(id);
+          events.push(['hilfer:evidence-discovered', { recordId: id }]);
+        }
         if (!attached.includes(id)) {
           attached.push(id);
           events.push(['hilfer:evidence-attached', { caseId, recordId: id }]);
