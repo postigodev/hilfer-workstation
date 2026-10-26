@@ -7,6 +7,10 @@ export function deriveReport(cases, state, getRecord) {
     const committed = state.completedCaseIds.includes(definition.id) ? state.resolutions[definition.id] : null;
     const authority = committed ? getRecord(committed.sourceId) : null;
     const metadata = definition.report ?? {};
+    const draft = definition.provisional;
+    const draftSource = draft ? getRecord(draft.sourceId) : null;
+    const provisional = !committed && draftSource && draftSource.fields[draft.field] === draft.value
+      ? { label: label(draft.field), value: draft.value, sourceId: draft.sourceId } : null;
     return {
       id: definition.id, title: metadata.heading ?? definition.category ?? definition.title,
       subject: metadata.subject ?? definition.subjectId ?? '',
@@ -14,6 +18,7 @@ export function deriveReport(cases, state, getRecord) {
       unlocked: state.unlockedCaseIds.includes(definition.id), placeholder: Boolean(definition.placeholder),
       references: attached.map(record => ({ id: record.id, title: record.title })),
       determination: committed ? { label: label(committed.field), value: committed.value, sourceId: committed.sourceId } : null,
+      provisional,
       // Context fields are explicitly sourced assertions, not additional resolved questions.
       context: authority ? (metadata.contextFields ?? []).filter(field => authority.fields[field.field] !== undefined)
         .map(field => ({ label: field.label, value: authority.fields[field.field], sourceId: authority.id })) : [],
@@ -39,7 +44,7 @@ export function renderReport(report) {
     ${report.sections.map((section, index) => `<section class="report-section ${section.determination ? 'report-filed' : 'report-pending'}" id="report-${h(section.id)}" data-report-section="${h(section.id)}" tabindex="-1">
       <div class="report-section-heading"><h2>${String(index + 1).padStart(3, '0')} / ${h(section.title)}</h2><span class="report-stamp">${h(section.status)}</span></div>
       ${section.subject ? `<p class="report-subject">${h(section.subject)}</p>` : ''}
-      ${section.determination ? `<dl class="report-findings"><dt>${h(section.determination.label)}</dt><dd><strong>${h(section.determination.value)}</strong></dd><dt>Source of authority</dt><dd>${reference(section.determination.sourceId)}</dd>${section.context.map(field => `<dt>${h(field.label)}</dt><dd>${h(field.value)} <span class="context-source">[${h(field.sourceId)}]</span></dd>`).join('')}<dt>Disposition</dt><dd>${h(section.disposition)}</dd></dl>` : `<p class="report-unfiled">${h(section.pendingText)}</p>`}
+      ${section.determination ? `<dl class="report-findings"><dt>${h(section.determination.label)}</dt><dd><strong>${h(section.determination.value)}</strong></dd><dt>Source of authority</dt><dd>${reference(section.determination.sourceId)}</dd>${section.context.map(field => `<dt>${h(field.label)}</dt><dd>${h(field.value)} <span class="context-source">[${h(field.sourceId)}]</span></dd>`).join('')}<dt>Disposition</dt><dd>${h(section.disposition)}</dd></dl>` : `<div class="report-unfiled">${section.provisional ? `<div class="report-provisional"><small>EXISTING ENTRY / UNVERIFIED</small><div><span>${h(section.provisional.label)}</span><b>${h(section.provisional.value)}</b></div><p>Current source: ${reference(section.provisional.sourceId)}</p></div>` : `<p>${h(section.pendingText)}</p>`}</div>`}
       <div class="report-references"><span>${section.determination ? 'Supporting references' : 'Provisional references'}</span><div>${section.references.length ? section.references.map(record => reference(record.id)).join(' · ') : '<span class="unfiled-line">No records associated</span>'}</div></div>
       <button type="button" class="report-case-link" data-report-case="${h(section.id)}">${h(section.id)} / ${section.placeholder ? (section.unlocked ? 'View pending assignment' : 'View reserved assignment') : 'Return to case'} →</button>
     </section>`).join('')}

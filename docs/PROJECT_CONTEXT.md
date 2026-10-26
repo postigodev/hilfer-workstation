@@ -27,17 +27,17 @@ The player can uncover what happened while inadvertently participating in the pr
 
 Beat 1: routine assignment/tutorial. Beats 2–4: overlapping, **nonlinear** investigations (human/technical cost, Losurdo, institutional contradictions). Beats 5–7: convergence around Recovery 03, the meaning of Reconciliation, and Losurdo; then the endgame. The beats are **not** seven sequential levels.
 
-## Gameplay for the immediate demo
+## Gameplay for the immediate demo — current experiment
 
-Target a complete, compact case named `CASE-001 — Personnel Availability Mismatch`:
+The player opens **Consolidated Report**, which already holds an **unverified HR claim** (`HR-014`: Jessica is AVAILABLE). This report is the primary gameplay surface and becomes a living institutional record, derived from saved resolutions rather than duplicated data.
 
-1. The player opens Reconciliation and reads an assigned case.
-2. They find `HR-014` and `OH-008` through Records.
-3. They drag each record onto the Reconciliation case.
-4. They select an authoritative work-eligibility status and the source supporting it.
-5. They commit the resolution; the consolidated record changes, one meaningful microglitch fires, an enduring low-level anomaly appears, and the next placeholder task unlocks.
+1. Inspect Jessica's report entry: existing status AVAILABLE, source HR-014, unverified.
+2. In Records, open relevant source documents. Values such as Work Clearance are interactive; selecting a claim opens Reconciliation's compact side-by-side source comparison.
+3. Selecting HR-014 alone does not resolve the discrepancy. Finding and selecting OH-008 reveals the competing claim NOT_CLEARED with an updated date.
+4. The player may retain the current entry (leaving the investigation unresolved) or use the supported OH-008 source. The latter choice files the administrative correction immediately — **no drag and drop, dropdown, or separate Commit button**.
+5. Reconciliation updates the report, links HR-014 and OH-008 as sources, advances progression, causes the first persistent OS anomaly, and unlocks the next placeholder case.
 
-Use `HR-014` (HR says Jessica is available for duty) and `OH-008` (later Occupational Health clearance says she is **not cleared**). These **example record IDs and field values are proposed prototype content, not immutable storyline canon**. Their timestamps must refer to the same relevant work period so this is a real contradiction. Importantly, correct reconciliation of work clearance **does not** establish occupational causation or automatically include Jessica in the official incident-casualty count.
+Jessica's verified work eligibility does not establish occupational causation. The approved implementation for this case is deliberately simple; later cases may involve multiple claims, temporal evidence, missing information and constrained report classifications. **Do not generalize the prototype to all puzzles without testing.**
 
 ## Presentation / team ownership (working agreements, not hard restrictions)
 
