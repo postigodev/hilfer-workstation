@@ -50,8 +50,7 @@ export function renderReport(report) {
       const finding = section.determination ?? section.provisional;
       return `<section class="report-section ${section.determination ? 'report-filed' : 'report-pending'}" id="report-${h(section.id)}" data-report-section="${h(section.id)}" tabindex="-1">
       <div class="report-section-heading"><h2>${h(section.employee ? `${section.employee} — ${displayField(finding?.label ?? section.title)}` : section.title)}</h2><span class="report-stamp">${section.determination ? 'Filed' : 'Unverified'}</span></div>
-      ${finding ? `<p class="report-status-value">${h(displayValue(finding.value))}</p><p class="report-basis">Based on: ${reference(finding.sourceId, section.sourceDepartment || finding.sourceId)}</p>` : `<p>${h(section.pendingText)}</p>`}
-      ${section.context.map(field => `<p class="report-context">${h(displayField(field.label))}: <strong>${h(displayValue(field.value))}</strong></p>`).join('')}
+      ${finding ? `<dl class="report-findings report-summary"><dt>${h(displayField(finding.label))}</dt><dd class="report-status-value">${h(displayValue(finding.value))}</dd><dt>Based on</dt><dd>${reference(finding.sourceId, section.sourceDepartment || finding.sourceId)}</dd>${section.context.map(field => `<dt>${h(displayField(field.label))}</dt><dd>${h(displayValue(field.value))}</dd>`).join('')}</dl>` : `<p>${h(section.pendingText)}</p>`}
       <details class="record-details" data-audit-id="${h(section.id)}"><summary>Record details${section.references.length ? ` · ${section.references.length} source documents` : ''}</summary>
         <dl class="report-findings"><dt>Case ID</dt><dd>${h(section.id)}</dd><dt>Employee ID</dt><dd>${h(section.employeeId)}</dd>
         ${finding ? `<dt>Internal classification</dt><dd>${h(finding.value)}</dd><dt>Current source</dt><dd>${reference(finding.sourceId)}</dd>` : ''}

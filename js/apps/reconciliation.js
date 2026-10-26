@@ -24,9 +24,9 @@ export function mountReconciliation(root, store, { openRecord = () => {} } = {})
     let comparison = '';
     if (candidateRecord && candidateValue !== undefined && !done) {
       comparison = '<section class="claim-compare" tabindex="-1" aria-label="Compare source claims">' +
-        '<table class="claim-table"><caption>Source comparison</caption><tbody>' +
-          '<tr><th scope="row">CURRENT REPORT</th><td><span class="claim-department">' + h(source?.department ?? 'Source unavailable') + '</span><strong>' + h(displayValue(current?.value ?? '—')) + '</strong><div>' + h(displayDate(source?.date, true)) + ' · ' + sourceLink(current?.sourceId ?? '') + '</div></td></tr>' +
-          '<tr><th scope="row">NEW SOURCE</th><td><span class="claim-department">' + h(candidateRecord.department) + '</span><strong>' + h(displayValue(candidateValue)) + '</strong><div>' + h(displayDate(candidateRecord.date, true)) + ' · ' + sourceLink(candidateRecord.id) + '</div></td></tr>' +
+        '<table class="claim-table"><caption>Source comparison</caption><thead><tr><th scope="col">Source</th><th scope="col">Issued</th><th scope="col">Work status</th></tr></thead><tbody>' +
+          '<tr><th scope="row">' + h(source?.department ?? 'Source unavailable') + '<small>CURRENT REPORT · ' + sourceLink(current?.sourceId ?? '') + '</small></th><td>' + h(displayDate(source?.date, true)) + '</td><td><strong>' + h(displayValue(current?.value ?? '—')) + '</strong></td></tr>' +
+          '<tr><th scope="row">' + h(candidateRecord.department) + '<small>NEW SOURCE · ' + sourceLink(candidateRecord.id) + '</small></th><td>' + h(displayDate(candidateRecord.date, true)) + '</td><td><strong>' + h(displayValue(candidateValue)) + '</strong></td></tr>' +
         '</tbody></table>' +
         (alreadyCurrent
           ? '<p class="claim-hint">This is the existing source. Examine another record to verify the entry.</p>'
