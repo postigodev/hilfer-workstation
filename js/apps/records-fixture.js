@@ -49,7 +49,7 @@ export function mountRecords(root, store, { onClaim = () => {} } = {}) {
     const records = store.getRecords().filter(record => (!department || record.department === department) &&
       [record.id, record.title, record.employee, record.employeeId, record.department].join(' ').toLowerCase().includes(query.toLowerCase()));
     if (!records.some(r => r.id === selectedId)) selectedId = null;
-    root.querySelector('#record-files').innerHTML = records.length ? records.map(record => `<button class="record-file" data-file-id="${h(record.id)}" data-record-id="${h(record.id)}" aria-pressed="${selectedId === record.id}"><b><span class="file-symbol" aria-hidden="true"></span>${h(recordTitle(record))}</b><span>${h(record.department)} · ${h(displayDate(record.date, true))}</span><small>${h(record.id)}</small></button>`).join('') : '<p class="files-empty">No matching records.</p>';
+    root.querySelector('#record-files').innerHTML = records.length ? records.map(record => `<button class="record-file" data-file-id="${h(record.id)}" data-record-id="${h(record.id)}" aria-pressed="${selectedId === record.id}"><b><span class="file-symbol" aria-hidden="true"></span>${h(recordTitle(record))}</b><span>${h(record.department)} <time datetime="${h(record.date.slice(0, 10))}">· ${h(displayDate(record.date, true))}</time></span><small>${h(record.id)}</small></button>`).join('') : '<p class="files-empty">No matching records.</p>';
     root.querySelector('#record-count').textContent = `${records.length} document${records.length === 1 ? '' : 's'}`;
     root.querySelectorAll('[data-folder]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.folder === department)));
     const record = store.getRecord(selectedId);

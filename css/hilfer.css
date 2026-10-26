@@ -317,11 +317,26 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 1px d
 .medical-document .claim-source strong { font-family: 'Courier New', monospace; }
 .record-file b { font: 11px/1.4 Tahoma, sans-serif; align-items: start; }
 .record-file .file-symbol { margin-top: 2px; }
-.record-file span:not(.file-symbol), .record-file small { padding-left: 0; }
+.record-file span:not(.file-symbol), .record-file small { padding-left: 19px; }
 .record-file small { color: var(--ledger-secondary); font-size: 10px; }
 .record-file[aria-pressed="true"] small { color: inherit; }
 .claim-table td > strong { font: bold 11px/1.4 Tahoma, sans-serif; }
 @container records (max-width: 610px) {
   .records-explorer { grid-template-rows: 145px minmax(0,1fr); }
   .record-file span:not(.file-symbol) { display: block; font-size: 10px; }
+}
+
+/* Finish the existing ledger layout without adding new surface treatments. */
+.report-summary { grid-template-columns: 112px minmax(0, 1fr); align-items: baseline; }
+.report-summary dd { margin-bottom: 0; }
+.claim-table td:nth-child(2) { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.record-file time { white-space: nowrap; }
+.claim-table small { line-height: 1.5; }
+.claim-choice button { min-height: 24px; }
+.record-details summary:hover { text-decoration: underline; }
+.record-details[open] { padding-bottom: 4px; }
+.claim-source:hover { background: transparent; }
+.claim-source:focus-visible { outline-offset: 1px; }
+@media (pointer: coarse) {
+  .claim-choice button, .claim-source, .record-details summary { min-height: 32px; }
 }
