@@ -23,7 +23,7 @@ Open http://127.0.0.1:8080. Node 18+ runs domain tests with `node --test` / `npm
 
 `data/records.json` defines stable record ID, type, title, department, employeeId, employee, timestamp/date, workPeriod, fields, caseIds and note. Static JSON is immutable in the store. Records exposes browsable documents rather than raw JSON.
 
-`data/cases.json` defines `requiredEvidence`, authoritative `resolution: {field,value,sourceId}`, unlock rules, report metadata and optional **`provisional: {field,value,sourceId}`**. A provisional source must exist in the registry and support the specified value. It is an **existing report assertion**, not a correct or committed finding. No uninspected evidence or supported replacement value is leaked by the initial report.
+`data/cases.json` defines `requiredEvidence`, authoritative `resolution: {field,value,sourceId}`, unlock rules, report metadata and optional **`provisional: {field,value,sourceId}`**. A provisional source must exist in the registry and support the specified value. It is an **existing report assertion**, not a correct or committed finding. The initial report reveals only its existing source, never the supported replacement.
 
 `CASE-001` is the only fully playable example. `CASE-002` remains an explicitly reserved/unimplemented placeholder. Do not invent other tasks simply to show a progress bar.
 
@@ -34,15 +34,15 @@ Open http://127.0.0.1:8080. Node 18+ runs domain tests with `node --test` / `npm
 Public store methods:
 
 - `getRecord(id)`, `getRecords()`, `getCases()`, `getState()`, `getWarning()`.
-- `discover(recordId)`: mark a record as inspected. Browsing search results does not discover it.
-- **`reconcileClaim(caseId, recordId, field)`**: use a *previously inspected*, case-relevant field. Reject locked, completed, unknown, unsupported or baseline-only selections. For a valid revised source, link the baseline and chosen records, validate against the case definition, atomically file the canonical resolution and emit progression events. This is the new primary action.
+- `discover(recordId)`: register a known record when inspected. Filing also registers the existing report source; this list is not an independent inspection history. Browsing search results does not discover records.
+- **`reconcileClaim(caseId, recordId, field)`**: use a *previously inspected*, case-relevant field. Reject locked, completed, unknown, unsupported or baseline-only selections. For a valid revised source, link only the valid baseline and chosen records (any other required evidence must already be attached), validate against the case definition, atomically file the canonical resolution and emit progression events. This is the new primary action.
 - `attachEvidence(caseId, recordId)`, `removeEvidence(caseId, recordId)`, `submitResolution(caseId, resolution)`: existing validated **legacy domain APIs** retained for compatibility and tests. They are not player-facing requirements for this iteration.
 - `subscribe(fn)`, `onEvent(fn)`: subscribe to state and milestone events.
 - `resetProgress()`: revert to a fresh session.
 
 The Records adapter is `mountRecords(root, store, {onClaim})` from `js/apps/records-fixture.js`. `renderRecord(record)` generates a visually differentiated employee/medical form and a `data-claim-record` + `data-claim-field` button where appropriate. New record types need field-specific interaction metadata; **do not hardcode all records as `workEligibility`**.
 
-Reconciliation is `mountReconciliation(root, store, {openRecord})` from `js/apps/reconciliation.js`, returning `presentClaim(recordId,field)`, `getActiveCaseId()` and `showReport()`. `js/main.js` bridges Records' `onClaim` to Reconciliation's `presentClaim`, then focuses the Reconciliation window. The link back to Records is `openRecord(id)`, which clears search filters and opens the requested source. `window.hilfer` exposes the store and Reconciliation APIs for development and tests.
+Reconciliation is `mountReconciliation(root, store, {openRecord})` from `js/apps/reconciliation.js`, returning `focusComparison()`, `presentClaim(recordId,field)`, `getActiveCaseId()` and `showReport()`. `js/main.js` bridges Records' `onClaim` to Reconciliation's `presentClaim`, then focuses the Reconciliation window. The link back to Records is `openRecord(id)`, which clears search filters and opens the requested source. `window.hilfer` exposes the store and Reconciliation APIs for development and tests.
 
 ### Claim workflow contract
 

@@ -23,7 +23,7 @@ export function mountReconciliation(root, store, { openRecord = () => {} } = {})
     const alreadyCurrent = candidateRecord?.id === current?.sourceId;
     let comparison = '';
     if (candidateRecord && candidateValue !== undefined && !done) {
-      comparison = '<section class="claim-compare" aria-label="Compare source claims">' +
+      comparison = '<section class="claim-compare" tabindex="-1" aria-label="Compare source claims">' +
         '<div class="pane-label">SOURCE COMPARISON</div>' +
         '<div class="claim-columns">' +
           '<div class="claim-option claim-current"><small>EXISTING ENTRY</small><strong>' + h(current?.value ?? '—') + '</strong><span>' + sourceLink(current?.sourceId ?? '') + '</span><time>' + h(source?.date?.slice(0, 10) ?? '') + '</time></div>' +
@@ -56,8 +56,8 @@ export function mountReconciliation(root, store, { openRecord = () => {} } = {})
     root.innerHTML =
       '<div class="app-toolbar"><span>HILFER / DATA RECONCILIATION</span><div class="application-actions"><button data-open="records">Records</button><button data-arrange>Arrange</button></div></div>' +
       '<div class="reconciliation-tabs" role="tablist" aria-label="Reconciliation views">' +
-      '<button id="report-tab" role="tab" data-view="report" aria-selected="' + (view === 'report') + '" tabindex="' + (view === 'report' ? '0' : '-1') + '">Consolidated Report <span class="tab-progress">' + report.completed + '</span></button>' +
-      '<button id="register-tab" role="tab" data-view="register" aria-selected="' + (view === 'register') + '" tabindex="' + (view === 'register' ? '0' : '-1') + '">Case Register</button></div>' +
+      '<button id="report-tab" role="tab" aria-controls="reconciliation-panel" data-view="report" aria-selected="' + (view === 'report') + '" tabindex="' + (view === 'report' ? '0' : '-1') + '">Consolidated Report <span class="tab-progress">' + report.completed + '</span></button>' +
+      '<button id="register-tab" role="tab" aria-controls="reconciliation-panel" data-view="register" aria-selected="' + (view === 'register') + '" tabindex="' + (view === 'register' ? '0' : '-1') + '">Case Register</button></div>' +
       '<div id="reconciliation-panel" role="tabpanel" aria-labelledby="' + (view === 'report' ? 'report-tab' : 'register-tab') + '">' +
       (view === 'report' ? renderReport(report) :
         '<div class="reconciliation-layout"><nav class="case-list" aria-label="Cases"><div class="pane-label">CASE REGISTER</div>' +
@@ -116,7 +116,11 @@ export function mountReconciliation(root, store, { openRecord = () => {} } = {})
       feedback = result.message;
       if (result.ok) { pendingClaim = null; view = 'report'; }
       render();
-      if (result.ok) root.querySelector('[data-report-section="' + selectedCaseId + '"]')?.scrollIntoView({ block: 'nearest' });
+      if (result.ok) {
+        const section = root.querySelector('[data-report-section="' + selectedCaseId + '"]');
+        section?.scrollIntoView({ block: 'nearest' });
+        section?.focus({ preventScroll: true });
+      }
       return;
     }
     const entry = event.target.closest('[data-view-entry]');
@@ -136,6 +140,7 @@ export function mountReconciliation(root, store, { openRecord = () => {} } = {})
   return {
     getActiveCaseId: () => selectedCaseId,
     presentClaim,
+    focusComparison() { root.querySelector('.claim-compare')?.focus({ preventScroll: true }); },
     showReport() { view = 'report'; render(); }
   };
 }

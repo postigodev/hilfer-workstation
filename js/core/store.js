@@ -82,18 +82,23 @@ export function createStore({ records, cases, storage }) {
           !source.caseIds.includes(caseId) || field !== definition.resolution?.field)
         return { ok: false, message: 'Inspect a relevant source claim before revising this entry.' };
       const baseline = definition.provisional;
-      if (!baseline || recordId === baseline.sourceId)
+      const baselineRecord = getRecord(baseline?.sourceId);
+      if (!baselineRecord || baseline.field !== field ||
+          baselineRecord.fields[field] !== baseline.value || !baselineRecord.caseIds.includes(caseId))
+        return { ok: false, message: 'The existing entry has no valid source provenance.' };
+      if (recordId === baseline.sourceId)
         return { ok: false, message: 'This is already the provisional source. Compare another record.' };
       const candidate = { field, value: source.fields[field], sourceId: recordId };
-      const ids = [...new Set([...(state.attachedEvidence[caseId] ?? []), ...(definition.requiredEvidence ?? [])])];
+      const linkedIds = [baseline.sourceId, recordId];
+      const ids = [...new Set([...(state.attachedEvidence[caseId] ?? []), ...linkedIds])];
       const error = validateResolution(definition, ids, candidate, getRecord);
       if (error) return { ok: false, message: error };
       // The initial entry is an official source already present in the report.
-      // Link its ID together with the inspected replacement, without falsely
-      // marking the baseline record as separately inspected by the player.
+      // File only the two compared sources. Other required evidence must
+      // already be linked; a comparison cannot invent supporting records.
       const attached = state.attachedEvidence[caseId] ??= [];
       const events = [];
-      for (const id of definition.requiredEvidence) {
+      for (const id of linkedIds) {
         if (!state.discoveredEvidenceIds.includes(id)) {
           // The baseline is part of the displayed report; filing it makes
           // its provenance available for inspection and consistent on reload.

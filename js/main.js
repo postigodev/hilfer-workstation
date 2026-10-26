@@ -18,7 +18,10 @@ async function boot() {
     onClaim(recordId, field) {
       if (!reconciliation) return { ok: false, message: 'Reconciliation has not loaded.' };
       const result = reconciliation.presentClaim(recordId, field);
-      if (result.ok) window.openWindow('reconciliation');
+      if (result.ok) {
+        window.openWindow('reconciliation');
+        reconciliation.focusComparison();
+      }
       return result;
     }
   });
