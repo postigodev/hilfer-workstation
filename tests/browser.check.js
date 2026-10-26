@@ -17,27 +17,43 @@ try {
   const report = page.locator('[data-report-section="CASE-001"]');
   await page.locator('[data-open="reconciliation"]').first().click();
   assert.equal(await page.locator('#report-tab').getAttribute('aria-selected'), 'true');
-  for (const text of ['AVAILABLE', 'HR-014', 'UNVERIFIED']) assert.ok((await report.textContent()).includes(text));
+  for (const text of ['Available for duty', 'Human Resources', 'Unverified']) assert.ok((await report.textContent()).includes(text));
   assert.doesNotMatch(await report.textContent(), /OH-008|NOT_CLEARED/);
+  assert.equal(await page.locator('[data-report-section="CASE-002"]').count(), 0);
+  assert.doesNotMatch(await report.innerText(), /EMP-JESSICA|AVAILABLE|CASE-001/);
+  assert.equal(await report.locator('details').getAttribute('open'), null);
 
   // Records is investigative: merely listing files does not attach or reconcile them.
   await page.locator('[data-open="records"]').first().click();
   assert.deepEqual(await page.evaluate(() => hilfer.getState().completedCaseIds), []);
+  assert.match(await page.locator('[data-file-id="HR-014"]').innerText(), /Jessica — Personnel File/);
+  await page.locator('#records-search').fill('HR-014');
+  assert.equal(await page.locator('[data-file-id]').count(), 1);
+  await page.locator('#clear-search').click();
   await page.locator('[data-file-id="HR-014"]').click();
+  assert.match(await page.locator('.document-date').innerText(), /Oct 12, 1998/);
+  assert.doesNotMatch(await page.locator('.record-document').innerText(), /EMP-JESSICA|AVAILABLE|1998-10-12/);
+  await page.locator('.record-document summary').focus();
+  await page.keyboard.press('Enter');
+  for (const text of ['HR-014', 'EMP-JESSICA', 'AVAILABLE', '1998-10-12 / 1998-10-18']) assert.ok((await page.locator('.record-document').innerText()).includes(text));
+  await page.locator('.record-document summary').click();
   assert.equal(await page.locator('.claim-source').count(), 1);
   await page.locator('.claim-source').click();
   assert.equal(await page.locator('.claim-compare').count(), 1);
   assert.ok(await page.locator('#reconciliation-window').evaluate(el => el.classList.contains('active')));
   assert.ok(await page.locator('.claim-compare').evaluate(el => el === document.activeElement), 'focus follows the comparison');
-  assert.match(await page.locator('.claim-compare').textContent(), /EXISTING ENTRY/);
+  assert.match(await page.locator('.claim-compare').textContent(), /CURRENT REPORT/);
   assert.equal(await page.locator('.claim-apply').count(), 0, 'baseline alone cannot complete a case');
   assert.deepEqual(await page.evaluate(() => hilfer.getState().completedCaseIds), []);
 
   await page.locator('[data-open="records"]').first().click();
   await page.locator('[data-file-id="OH-008"]').click();
-  assert.match(await page.locator('.medical-document').textContent(), /NOT_ESTABLISHED/);
+  assert.match(await page.locator('.medical-document').textContent(), /Not established/);
   await page.locator('.claim-source').click();
-  for (const text of ['AVAILABLE', 'NOT_CLEARED', 'OH-008']) assert.ok((await page.locator('.claim-compare').textContent()).includes(text));
+  for (const text of ['Available for duty', 'Not cleared for work', 'Human Resources', 'Occupational Health', 'Oct 12', 'Oct 13', 'OH-008']) assert.ok((await page.locator('.claim-compare').textContent()).includes(text));
+  assert.equal(await page.locator('[data-dismiss-claim]').innerText(), 'Continue reviewing');
+  assert.equal(await page.locator('.claim-apply').innerText(), 'Update report');
+  await page.screenshot({path:join(tmpdir(), 'hilfer-editorial-comparison.png')});
   await page.locator('[data-dismiss-claim]').click();
   assert.deepEqual(await page.evaluate(() => hilfer.getState().completedCaseIds), [], 'keeping baseline remains unresolved');
   await page.locator('[data-open="records"]').first().click();
@@ -50,7 +66,7 @@ try {
   await page.locator('.claim-apply').click();
   await page.waitForFunction(() => window.hilfer.getState().completedCaseIds.includes('CASE-001'));
   assert.equal(await page.locator('#report-tab').getAttribute('aria-selected'), 'true');
-  for (const text of ['RECONCILED', 'NOT_CLEARED', 'OH-008', 'NOT_ESTABLISHED']) assert.ok((await report.textContent()).includes(text));
+  for (const text of ['Filed', 'Not cleared for work', 'Occupational Health', 'Work-related cause', 'Not established']) assert.ok((await report.textContent()).includes(text));
   assert.deepEqual(await page.evaluate(() => hilfer.getState().attachedEvidence['CASE-001']), ['HR-014','OH-008']);
   assert.equal(await page.evaluate(() => hilfer.getState().distortionLevel), 1);
   assert.ok(await page.evaluate(() => hilfer.getState().unlockedCaseIds.includes('CASE-002')));
@@ -63,8 +79,14 @@ try {
   assert.ok(await page.locator('html').evaluate(el => !el.classList.contains('microglitch')), 'repeat filing does not glitch again');
   await page.screenshot({path:process.env.HILFER_SCREENSHOT || join(tmpdir(), 'hilfer-claim-based.png')});
 
+  assert.doesNotMatch(await report.innerText(), /NOT_CLEARED|NOT_ESTABLISHED|Disposition|EMP-JESSICA/);
+  await report.locator('summary').focus();
+  await page.keyboard.press('Enter');
+  assert.ok(await report.locator('details').evaluate(el => el.open));
+  for (const text of ['CASE-001', 'EMP-JESSICA', 'HR-014', 'OH-008', 'NOT_CLEARED', 'NOT_ESTABLISHED', 'Previous entry', 'Record discrepancy resolved']) assert.ok((await report.innerText()).includes(text));
+  await report.locator('summary').click();
   await page.locator('[data-open-record="OH-008"]').first().click();
-  assert.equal(await page.locator('#preview-reference').textContent(), 'OH-008 / EMP-JESSICA');
+  assert.equal(await page.locator('#preview-reference').textContent(), 'Jessica — Medical Clearance');
   assert.ok(await page.locator('#records-window').evaluate(el => el.classList.contains('active')));
   await page.reload(); await page.waitForFunction(() => window.hilfer);
   assert.equal(await page.evaluate(() => hilfer.getState().distortionLevel), 1);
@@ -74,7 +96,7 @@ try {
   assert.equal(await page.evaluate(() => hilfer.getState().completedCaseIds.length), 0);
   assert.equal(await page.evaluate(() => hilfer.getState().distortionLevel), 0);
   await page.locator('[data-open="reconciliation"]').first().click();
-  for (const text of ['AVAILABLE', 'UNVERIFIED']) assert.ok((await report.textContent()).includes(text));
+  for (const text of ['Available for duty', 'Unverified']) assert.ok((await report.textContent()).includes(text));
 
   // Keep the desktop-shell regression coverage alongside the new gameplay.
   await page.getByRole('button', {name:'Minimize Reconciliation',exact:true}).click();
@@ -122,8 +144,10 @@ try {
     await small.keyboard.press('Enter');
     assert.deepEqual(await small.evaluate(() => hilfer.getState().completedCaseIds), ['CASE-001']);
     assert.ok(await small.locator('#reconciliation-app').evaluate(el => el.scrollWidth <= el.clientWidth));
+    await small.screenshot({path:join(tmpdir(), 'hilfer-editorial-mobile.png')});
+    await small.locator('[data-report-section="CASE-001"] summary').click();
     await small.locator('[data-open-record="HR-014"]').first().click();
-    assert.equal(await small.locator('#preview-reference').textContent(), 'HR-014 / EMP-JESSICA');
+    assert.equal(await small.locator('#preview-reference').textContent(), 'Jessica — Personnel File');
     assert.ok(await small.locator('#records-app').evaluate(el => el.scrollWidth <= el.clientWidth));
   } finally { await mobile.close(); }
   assert.deepEqual(errors, [], 'no browser page errors');

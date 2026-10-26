@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createStore } from '../js/core/store.js';
 import { deriveReport, renderReport } from '../js/apps/report.js';
+import { displayValue, displayDate, displayField } from '../js/apps/shared.js';
 const read = name => JSON.parse(readFileSync(new URL(`../data/${name}.json`, import.meta.url), 'utf8').replace(/^\uFEFF/, ''));
 const records = read('records'), cases = read('cases');
 function setup() {
@@ -12,6 +13,17 @@ function setup() {
   return { store: create(), create, saved };
 }
 const report = store => deriveReport(store.getCases(), store.getState(), store.getRecord);
+
+test('presentation keeps precise occupational meaning and dates independent of timezone', () => {
+  assert.equal(displayValue('NOT_CLEARED'), 'Not cleared for work');
+  assert.equal(displayValue('NOT_ESTABLISHED'), 'Not established');
+  assert.equal(displayValue('FUTURE_STATUS'), 'FUTURE_STATUS');
+  assert.equal(displayField('occupationalCausation'), 'Work-related cause');
+  assert.equal(displayDate('1998-10-13T00:30:00'), 'Oct 13, 1998');
+  assert.equal(displayDate('1998-10-13T23:30:00', true), 'Oct 13');
+  assert.equal(displayDate('1998-02-31'), '1998-02-31');
+  assert.equal(displayDate('undated'), 'undated');
+});
 
 test('report starts pending without exposing required records or supported findings', () => {
   const { store } = setup(); const result = report(store);
@@ -23,7 +35,10 @@ test('report starts pending without exposing required records or supported findi
   assert.deepEqual(result.sections[0].context, []);
   assert.equal(result.sections[0].provisional.sourceId, 'HR-014');
   assert.equal(result.sections[0].provisional.value, 'AVAILABLE');
-  assert.match(renderReport(result), /HR-014|AVAILABLE|EXISTING ENTRY/);
+  assert.match(renderReport(result), /Available for duty/);
+  assert.match(renderReport(result), /Human Resources/);
+  assert.doesNotMatch(renderReport(result), /data-report-section="CASE-002"/);
+  assert.match(renderReport(result), /<details/);
   assert.doesNotMatch(renderReport(result), /OH-008|NOT_CLEARED|NOT_ESTABLISHED|Administrative discrepancy resolved/);
 });
 test('inspection is not report evidence; attachments are provisional and removal updates projection', () => {
@@ -50,6 +65,11 @@ test('a committed report cites saved authority, preserves context provenance and
   assert.equal(section.determination.value, 'NOT_CLEARED'); assert.equal(section.determination.sourceId, 'OH-008');
   assert.deepEqual(section.context, [{label:'Occupational causation', value:'NOT_ESTABLISHED', sourceId:'OH-008'}]);
   assert.deepEqual(section.references.map(r => r.id), ['HR-014','OH-008']);
+  assert.match(renderReport(result), /Jessica — Work status/);
+  assert.match(renderReport(result), /Not cleared for work/);
+  assert.match(renderReport(result), /Work-related cause/);
+  assert.match(renderReport(result), /Previous entry/);
+  assert.match(renderReport(result), /Record discrepancy resolved/);
   assert.equal(section.disposition, 'Administrative discrepancy resolved.');
   const stateBefore = store.getState(); report(store); renderReport(result);
   assert.deepEqual(store.getState(), stateBefore);

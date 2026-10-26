@@ -1,4 +1,4 @@
-import { escapeHTML as h, label } from './shared.js';
+import { escapeHTML as h, displayField, displayValue, displayDate } from './shared.js';
 import { deriveReport, renderReport } from './report.js';
 
 // Reconciliation is a document you revise with source claims, not a form or a file tray.
@@ -10,7 +10,7 @@ export function mountReconciliation(root, store, { openRecord = () => {} } = {})
   let feedback = '';
   let feedbackTone = 'neutral';
 
-  const sourceLink = id => '<button type="button" class="source-reference" data-open-record="' + h(id) + '">' + h(id) + '</button>';
+  const sourceLink = (id, text = id) => '<button type="button" class="source-reference" data-open-record="' + h(id) + '">' + h(text) + '</button>';
   function showCase(definition, state) {
     if (!definition) return '<p>No assigned cases.</p>';
     const done = state.completedCaseIds.includes(definition.id);
@@ -24,22 +24,22 @@ export function mountReconciliation(root, store, { openRecord = () => {} } = {})
     let comparison = '';
     if (candidateRecord && candidateValue !== undefined && !done) {
       comparison = '<section class="claim-compare" tabindex="-1" aria-label="Compare source claims">' +
-        '<table class="claim-table"><caption>Source comparison</caption><thead><tr><th scope="col">Record</th><th scope="col">Issued</th><th scope="col">' + h(label(pendingClaim.field)) + '</th></tr></thead><tbody>' +
-          '<tr><th scope="row">' + sourceLink(current?.sourceId ?? '') + '<small>EXISTING ENTRY</small></th><td>' + h(source?.date?.slice(0, 10) ?? '') + '</td><td><strong>' + h(current?.value ?? '—') + '</strong></td></tr>' +
-          '<tr><th scope="row">' + sourceLink(candidateRecord.id) + '<small>INSPECTED SOURCE</small></th><td>' + h(candidateRecord.date?.slice(0, 10) ?? '') + '</td><td><strong>' + h(candidateValue) + '</strong></td></tr>' +
+        '<table class="claim-table"><caption>Source comparison</caption><thead><tr><th scope="col">Source</th><th scope="col">Issued</th><th scope="col">Work status</th></tr></thead><tbody>' +
+          '<tr><th scope="row">' + h(source?.department ?? 'Source unavailable') + '<small>CURRENT REPORT · ' + sourceLink(current?.sourceId ?? '') + '</small></th><td>' + h(displayDate(source?.date, true)) + '</td><td><strong>' + h(displayValue(current?.value ?? '—')) + '</strong></td></tr>' +
+          '<tr><th scope="row">' + h(candidateRecord.department) + '<small>NEW SOURCE · ' + sourceLink(candidateRecord.id) + '</small></th><td>' + h(displayDate(candidateRecord.date, true)) + '</td><td><strong>' + h(displayValue(candidateValue)) + '</strong></td></tr>' +
         '</tbody></table>' +
         (alreadyCurrent
           ? '<p class="claim-hint">This is the existing source. Examine another record to verify the entry.</p>'
-          : '<div class="claim-choice"><button type="button" data-dismiss-claim>Keep existing</button><button type="button" class="claim-apply" data-use-claim="' + h(candidateRecord.id) + '">Use ' + h(candidateRecord.id) + ' in report</button></div>') +
+          : '<div class="claim-choice"><button type="button" data-dismiss-claim>Continue reviewing</button><button type="button" class="claim-apply" data-use-claim="' + h(candidateRecord.id) + '">Update report</button></div>') +
         '</section>';
     }
     return '<div class="claim-case-view">' +
       '<div class="case-metadata"><div><small>CASE</small><b>' + h(definition.id) + '</b></div><div><small>SUBJECT</small><span>' + h(definition.subjectId ?? '—') + '</span></div><div><small>STATE</small><span>' + (done ? 'RECONCILED' : unlocked ? 'OPEN' : 'LOCKED') + '</span></div></div>' +
-      '<h1>' + h(definition.category ?? definition.title) + '</h1>' +
+      '<h1>' + h(source?.employee ? source.employee + ' — ' + displayField(current.field) : definition.category ?? definition.title) + '</h1>' +
       (!unlocked ? '<p>Assignment locked.</p>' : definition.placeholder ? '<p>Records not yet released.</p>' :
         (comparison ? '' : '<div class="claim-existing"><div class="pane-label">' + (done ? 'FILED DETERMINATION' : 'CURRENT REPORT ENTRY / UNVERIFIED') + '</div>' +
-          '<div class="claim-existing-row"><span>' + h(label(current?.field ?? definition.resolution.field)) + '</span><strong>' + h(current?.value ?? '—') + '</strong></div>' +
-          '<div class="claim-existing-source">Source ' + (current ? sourceLink(current.sourceId) : '—') + '</div></div>') +
+          '<div class="claim-existing-row"><span>' + h(displayField(current?.field ?? definition.resolution.field)) + '</span><strong>' + h(displayValue(current?.value ?? '—')) + '</strong></div>' +
+          '<div class="claim-existing-source">Source ' + (current ? sourceLink(current.sourceId, source?.department ?? current.sourceId) : '—') + '</div></div>') +
         (done
           ? '<p class="claim-hint">Determination filed.</p><button type="button" class="claim-open-report" data-view-entry="' + h(definition.id) + '">View report entry</button>'
           : comparison || '<div class="claim-next"><span>Select a determination in Records to compare sources.</span><button type="button" data-open="records">Open Records</button></div>')) +
@@ -49,6 +49,7 @@ export function mountReconciliation(root, store, { openRecord = () => {} } = {})
   function render() {
     const previousFocus = root.contains(document.activeElement) ? document.activeElement.id : '';
     const scroll = root.querySelector('.report-scroll')?.scrollTop ?? 0;
+    const openDetails = [...root.querySelectorAll('[data-audit-id][open]')].map(el => el.dataset.auditId);
     const state = store.getState();
     const report = deriveReport(cases, state, store.getRecord);
     const selected = cases.find(c => c.id === selectedCaseId);
@@ -64,6 +65,7 @@ export function mountReconciliation(root, store, { openRecord = () => {} } = {})
         '</nav><div class="case-detail">' + showCase(selected, state) + '</div></div>') +
       '</div><p class="feedback" data-tone="' + h(feedbackTone) + '" role="status" aria-live="polite">' +
       h(feedback || (view === 'report' ? 'Report / work in progress' : 'Select a source in Records to amend an entry.')) + '</p>';
+    root.querySelectorAll('[data-audit-id]').forEach(el => { el.open = openDetails.includes(el.dataset.auditId); });
     if (previousFocus) root.querySelector('#' + previousFocus)?.focus({ preventScroll: true });
     if (view === 'report') root.querySelector('.report-scroll').scrollTop = scroll;
   }

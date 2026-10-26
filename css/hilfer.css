@@ -275,9 +275,10 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 1px d
 .claim-table caption { text-align: left; font-weight: bold; margin-bottom: 8px; }
 .claim-table th, .claim-table td { text-align: left; vertical-align: top; padding: 8px 5px; border-bottom: 1px solid var(--ledger-rule-soft); overflow-wrap: anywhere; }
 .claim-table thead th { background: var(--cabinet-plastic); font-weight: normal; border-top: 1px solid var(--ledger-rule); border-bottom-color: var(--ledger-rule); }
-.claim-table thead th:nth-child(2) { width: 29%; }
-.claim-table thead th:last-child { width: 39%; }
-.claim-table td:last-child { white-space: nowrap; }
+.claim-table th { font-weight: normal; font-size: 11px; }
+.claim-table thead th:nth-child(1) { width: 40%; }
+.claim-table thead th:nth-child(2) { width: 20%; }
+.claim-table thead th:nth-child(3) { width: 40%; }
 .claim-table tbody th { font-weight: normal; }
 .claim-table small { display: block; margin-top: 4px; font-size: 9px; color: var(--ledger-secondary); }
 .claim-table strong { font-size: 11px; }
@@ -300,4 +301,42 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 1px d
   .claim-choice { justify-content: stretch; }
   .claim-choice button { flex: 1; }
   .claim-table th, .claim-table td { padding: 7px 3px; }
+}
+
+/* Editorial hierarchy: conclusions first, administrative references on demand. */
+.report-status-value { font: bold 12px/1.5 Tahoma, sans-serif; }
+.record-details { margin: 12px 0 4px; font: 11px/1.5 Tahoma, sans-serif; }
+.record-details summary { cursor: pointer; color: var(--ledger-secondary); padding: 5px 0; }
+.record-details summary:focus-visible { outline: 2px dotted var(--control-focus); outline-offset: 2px; }
+.report-section:focus-visible, .claim-compare:focus-visible { outline: 1px dotted var(--control-focus); outline-offset: 2px; }
+.record-details[open] summary { margin-bottom: 7px; }
+.record-details dd { overflow-wrap: anywhere; }
+.report-section .report-findings { margin: 6px 0; row-gap: 5px; }
+.document-date { font: 11px/1.5 Tahoma, sans-serif; margin: 8px 0; }
+.document-determination .claim-source strong { font: bold 12px/1.5 Tahoma, sans-serif; }
+.medical-document .claim-source strong { font-family: 'Courier New', monospace; }
+.record-file b { font: 11px/1.4 Tahoma, sans-serif; align-items: start; }
+.record-file .file-symbol { margin-top: 2px; }
+.record-file span:not(.file-symbol), .record-file small { padding-left: 19px; }
+.record-file small { color: var(--ledger-secondary); font-size: 10px; }
+.record-file[aria-pressed="true"] small { color: inherit; }
+.claim-table td > strong { font: bold 11px/1.4 Tahoma, sans-serif; }
+@container records (max-width: 610px) {
+  .records-explorer { grid-template-rows: 145px minmax(0,1fr); }
+  .record-file span:not(.file-symbol) { display: block; font-size: 10px; }
+}
+
+/* Finish the existing ledger layout without adding new surface treatments. */
+.report-summary { grid-template-columns: 112px minmax(0, 1fr); align-items: baseline; }
+.report-summary dd { margin-bottom: 0; }
+.claim-table td:nth-child(2) { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.record-file time { white-space: nowrap; }
+.claim-table small { line-height: 1.5; }
+.claim-choice button { min-height: 24px; }
+.record-details summary:hover { text-decoration: underline; }
+.record-details[open] { padding-bottom: 4px; }
+.claim-source:hover { background: transparent; }
+.claim-source:focus-visible { outline-offset: 1px; }
+@media (pointer: coarse) {
+  .claim-choice button, .claim-source, .record-details summary { min-height: 32px; }
 }

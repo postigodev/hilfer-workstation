@@ -22,7 +22,7 @@ test('the official report begins with an unverified claim, not a blank field or 
   assert.equal(report.sections[0].provisional.sourceId, 'HR-014');
   assert.equal(report.sections[0].provisional.value, 'AVAILABLE');
   assert.equal(report.sections[0].determination, null);
-  assert.match(renderReport(report), /UNVERIFIED/);
+  assert.match(renderReport(report), /Unverified/);
   assert.doesNotMatch(renderReport(report), /OH-008|NOT_CLEARED/);
 });
 
