@@ -58,3 +58,11 @@ The user approved experimenting with a simpler primary gameplay loop: **inspect 
 ## 2026-11-04 — Contextual assistant for the classroom demo (user approved)
 
 The user approved selective integration of Altynai's assistant and short glitch audio. Assistant correspondence reacts to existing assignment/discovery/reconciliation state, without an LLM or arbitrary message advancement. A filed report produces one unread notification; opening the assistant acknowledges it, and reload/reset remain consistent. The neutral portrait has a slight distortion-level-1 treatment. No new revelations, hostile takeover, causality findings or additional playable cases are introduced. Existing documentary layouts, validation and progression remain authoritative; unused desktop apps and the large ambient recording are excluded.
+
+## 2026-11-04 — HILFER Mail v1 (user-approved demo corpus)
+
+The user authorized the exact five-thread/twelve-message corpus and its implementation contract. Mail is the shared Reconciliation Desk's legitimate mailbox plus authorized Corporate Archive. Reading is UI state only; HR-014 is the sole explicit Records link, with all existing Jessica validation unchanged. Sent Mail exists but is empty, with no Compose or finale implementation. The supplied timestamps, character prose and archival sequence remain demo-only proposals, not a final Incident/Losurdo chronology. No contradictory canon was added: later administrative reviews are retrospective, and the incident/reassignment dates remain unfixed. PR #4 was merged at the user's request before branching Mail from main.
+
+## 2026-11-04 — Classic Mail UI (user-approved second iteration)
+
+The user supplied a 1990s mail-client screenshot as the structural reference and a HILFER mockup as a palette/layout interpretation only. Mail changes from an integrated conversation preview to a folder tree/message table plus non-modal OS message windows. Single-click selects; double-click/Enter opens and marks only that message read. Several actual messages can be compared independently; outgoing actions remain disabled. Corpus, chronology, authorization, game state, Assistant and Jessica are unchanged. Mail v1's pending PR is not merged; this iteration branches from that implementation and is proposed to main as a new PR containing both.

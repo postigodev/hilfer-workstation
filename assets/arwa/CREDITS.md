@@ -61,3 +61,7 @@ Source: Arwa's `assets/arwa/not saturated/` artwork in Altynai's `april-hpxd/HIL
 Icons use nearest-neighbor reduction to 128 x 128; the central logo uses 512 x 512. `saturated/file.png` also supplies `file-pixel.webp` for the standard scheme. Altynai's Graphite multiply-blending treatment is retained on shell artwork, with coverage extended to the two department icons. Original full-size PNGs are not imported. The existing standard logo, wallpaper and five selected standard pixel icons are preserved.
 
 The demo desktop-logo switch also uses `saturated/logo_pixelated.png` as `icons/logo-pixel.webp` (512 x 512, nearest-neighbor, transparent lossless WebP). The original `logo.webp` remains available. This switch affects only the large desktop logo; document and shell branding continue to follow the selected color scheme.
+
+## Mail v1 envelope icon
+
+Arwa's `saturated/emails.png` and `not saturated/emails.png` from Altynai's HILFER (`7ff147e5`) supply `icons/mail-pixel.webp` (7,584 bytes) and `icons/mail-graphite.webp` (6,178 bytes). Both are 128 x 128, nearest-neighbor, lossless WebP with transparency. Only these two derivatives are added for Mail; no full-size PNGs or report mockups are imported.

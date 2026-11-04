@@ -40,6 +40,7 @@ function closeWindow(windowId) {
     const nextWindow = [...openWindows].find(id => document.getElementById(id + '-window').classList.contains('visible'));
     if (nextWindow) setActiveWindow(nextWindow);
     else activeWindow = null;
+    window.dispatchEvent(new CustomEvent('hilfer:window-closed', { detail: { windowId } }));
 }
 
 function minimizeWindow(windowId) {
@@ -139,8 +140,8 @@ function toggleWindow(windowId) {
 }
 
 function getWindowTitle(windowId) {
-    const titles = { reconciliation: 'Reconciliation', records: 'Records', themes: 'Display Properties', ai: 'HILFER Assistant' };
-    return titles[windowId] || windowId;
+    const titles = { reconciliation: 'Reconciliation', records: 'Records', themes: 'Display Properties', ai: 'HILFER Assistant', emails: 'HILFER Mail' };
+    return titles[windowId] || document.getElementById(windowId + '-window')?.querySelector('.window-title')?.textContent || windowId;
 }
 
 function clearIconSelection() {
