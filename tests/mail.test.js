@@ -83,6 +83,35 @@ test('malformed, stale and blocked receipt storage fall back without disabling M
   assert.equal(model.getFolders()[0].unread,2); model.reset(); assert.equal(model.getFolders()[0].unread,3);
 });
 
+test('classic message selection does not read mail; opening and marking affect only one message', () => {
+  const storage=memory(), model=createMailModel(corpus,{storage});
+  assert.equal(model.listMessages().length,7); assert.equal(model.getFolders()[0].unreadMessages,7);
+  assert.equal(model.selectMessage('MAIL-004').ok,true);
+  assert.deepEqual(model.getState().readMessageIds,[]);
+  assert.equal(model.openMessage('MAIL-004').ok,true);
+  assert.deepEqual(model.getState().readMessageIds,['MAIL-004']);
+  assert.equal(model.listMessages().find(m=>m.id==='MAIL-005').unread,true);
+  assert.equal(model.getFolders()[0].unreadMessages,6);
+  const reloaded=createMailModel(corpus,{storage});
+  assert.equal(reloaded.getState().selectedMessageId,'MAIL-004');
+  assert.deepEqual(reloaded.getState().readMessageIds,['MAIL-004']);
+  reloaded.setMessageRead('MAIL-004',false); assert.equal(reloaded.getFolders()[0].unreadMessages,7);
+  reloaded.setQuery('HR-014');assert.deepEqual(reloaded.listMessages().map(m=>m.id),['MAIL-004']);
+  reloaded.setFolder('archive');assert.equal(reloaded.listMessages().length,5);
+  reloaded.reset();assert.equal(reloaded.getState().selectedMessageId,null);assert.deepEqual(reloaded.getState().readMessageIds,[]);
+});
+
+test('message table, selection and single-message receipts use the same authorization gate', () => {
+  const model=createMailModel(fixture());
+  model.setQuery('Sealed');assert.deepEqual(model.listMessages(),[]);
+  assert.equal(model.selectMessage('SEALED-MESSAGE').ok,false);
+  assert.equal(model.setMessageRead('SEALED-MESSAGE',true),false);
+  model.setQuery('');model.setGrants([...corpus.initialGrants,'mail.sealed']);model.openMessage('SEALED-MESSAGE');
+  assert.equal(model.getState().selectedMessageId,'SEALED-MESSAGE');
+  model.setGrants(corpus.initialGrants);assert.equal(model.getState().selectedMessageId,null);
+  assert.doesNotMatch(JSON.stringify(model.getState()),/SEALED/);
+});
+
 test('invalid IDs, references and timestamps fail validation; authored text is escaped without rewriting it', () => {
   for (const mutate of [data=>data.threads[1].messages[0].id='MAIL-001',data=>data.threads[0].messages[0].sentAt='1998-02-31T12:00:00',data=>data.threads[1].messages[0].references[0].id='UNKNOWN']) {
     const data = structuredClone(corpus); mutate(data); assert.throws(()=>validateMailCorpus(data,id=>records.find(r=>r.id===id)));
