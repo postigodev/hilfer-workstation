@@ -1,0 +1,41 @@
+#emails-app { display: flex; flex-direction: column; min-height: 0; overflow: hidden; container: mail / inline-size; }
+.mail-account { padding: 6px 8px; display: flex; flex-wrap: wrap; gap: 3px 12px; background: var(--cabinet-inset); border-bottom: 1px solid var(--control-edge); font-size: 11px; flex: none; }
+.mail-account span { color: var(--ledger-secondary); overflow-wrap: anywhere; }
+.mail-search { display: flex; align-items: center; gap: 6px; padding: 5px 7px; flex: none; }
+.mail-search input { min-width: 0; flex: 1; padding: 3px; background: var(--paper); color: var(--ledger-ink); border: 1px inset var(--control-edge); font: 11px Tahoma, sans-serif; }
+.mail-search button { padding: 3px 7px; }
+.mail-folders { display: flex; flex-wrap: wrap; gap: 3px; padding: 0 6px 5px; border-bottom: 1px solid var(--control-edge); flex: none; }
+.mail-folders button { padding: 4px 7px; font-size: 11px; }
+.mail-folders button[aria-pressed="true"] { border-style: inset; background: var(--cabinet-inset); font-weight: bold; }
+.mail-workspace { display: grid; grid-template-columns: 210px minmax(0,1fr); flex: 1; min-height: 0; }
+.mail-list-pane { display: flex; flex-direction: column; min-height: 0; border-right: 1px solid var(--control-edge); background: var(--paper); }
+.mail-thread-list { overflow-y: auto; min-height: 0; flex: 1; }
+.mail-thread { display: grid; gap: 4px; width: 100%; text-align: left; border: 0; border-bottom: 1px solid var(--ledger-rule-soft); padding: 7px; font: 11px/1.4 Tahoma, sans-serif; background: var(--paper); color: var(--ledger-ink); }
+.mail-thread b { font-weight: normal; }
+.mail-thread.mail-unread b { font-weight: bold; }
+.mail-thread small { font-size: 10px; }
+.mail-thread[aria-pressed="true"] { background: var(--routing-blue); color: white; }
+.mail-thread:focus-visible { outline-offset: -3px; }
+.mail-reader-pane { display: flex; flex-direction: column; min-width: 0; min-height: 0; background: var(--paper); }
+.mail-reader-tools { display: flex; justify-content: flex-end; padding: 4px 6px; background: var(--cabinet-inset); border-bottom: 1px solid var(--control-edge); flex: none; }
+.mail-reader-tools button { font-size: 10px; padding: 3px 6px; }
+.mail-reader { overflow-y: auto; min-height: 0; padding: 10px 12px; flex: 1; }
+.mail-reader:focus-visible { outline: 1px dotted var(--control-focus); outline-offset: -3px; }
+.mail-conversation-heading { border-bottom: 1px solid var(--ledger-rule); padding-bottom: 8px; }
+.mail-conversation-heading h1 { font: bold 13px Tahoma, sans-serif; }
+.mail-conversation-heading p { font-size: 10px; margin-top: 5px; color: var(--ledger-secondary); }
+.mail-message { padding: 10px 0; border-bottom: 1px solid var(--ledger-rule-soft); }
+.mail-message-fields { display: grid; grid-template-columns: 43px minmax(0,1fr); gap: 4px; font: 10px/1.4 Tahoma, sans-serif; }
+.mail-message-fields dt { color: var(--ledger-secondary); }
+.mail-message-fields dd { margin: 0; overflow-wrap: anywhere; }
+.mail-body { margin: 12px 0; white-space: pre-wrap; overflow-wrap: anywhere; font: 12px/1.5 Tahoma, sans-serif; }
+.mail-message-id { display: block; color: var(--ledger-secondary); font-size: 9px; margin-top: 7px; }
+.mail-empty { padding: 10px 7px; font: 11px/1.5 Tahoma, sans-serif; color: var(--ledger-secondary); }
+.mail-status { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 3px 8px; padding: 4px 22px 4px 7px; border-top: 1px solid var(--control-edge); background: var(--cabinet-inset); font-size: 10px; flex: none; }
+#emails-window .window-title::before, .taskbar-item[data-window="emails"]::before, .start-menu-item[data-open="emails"]::before { background-image: var(--art-mail); }
+@container mail (max-width: 580px) {
+  .mail-workspace { grid-template-columns: 1fr; grid-template-rows: 125px minmax(0,1fr); }
+  .mail-list-pane { border-right: 0; border-bottom: 1px solid var(--control-edge); }
+  .mail-thread { padding: 5px 7px; gap: 2px; }
+}
+@media (pointer: coarse) { .mail-folders button, .mail-search button, .mail-reader-tools button { min-height: 28px; } }
