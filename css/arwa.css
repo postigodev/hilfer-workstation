@@ -161,3 +161,6 @@ input, select { caret-color: var(--control-focus); }
 :root[data-theme="archive"] .window-title::before,
 :root[data-theme="archive"] .start-menu-item[data-open]::before,
 :root[data-theme="archive"] .taskbar-item::before { mix-blend-mode: multiply; }
+
+.display-logo-control { display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 11px; }
+.display-logo-control button { padding: 3px 6px; font-size: 11px; }

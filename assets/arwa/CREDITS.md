@@ -59,3 +59,5 @@ Source: Arwa's `assets/arwa/not saturated/` artwork in Altynai's `april-hpxd/HIL
 | `logo_pixelated.png` | `logo-graphite.webp` |
 
 Icons use nearest-neighbor reduction to 128 x 128; the central logo uses 512 x 512. `saturated/file.png` also supplies `file-pixel.webp` for the standard scheme. Altynai's Graphite multiply-blending treatment is retained on shell artwork, with coverage extended to the two department icons. Original full-size PNGs are not imported. The existing standard logo, wallpaper and five selected standard pixel icons are preserved.
+
+The demo desktop-logo switch also uses `saturated/logo_pixelated.png` as `icons/logo-pixel.webp` (512 x 512, nearest-neighbor, transparent lossless WebP). The original `logo.webp` remains available. This switch affects only the large desktop logo; document and shell branding continue to follow the selected color scheme.

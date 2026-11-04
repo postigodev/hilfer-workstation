@@ -113,3 +113,5 @@ Checks: `node --test`, existing `node tests/browser.check.js`, and `node tests/a
 ## Graphite appearance
 
 Display Properties → Color scheme → Archive / Graphite switches to Arwa's desaturated artwork across desktop, title bars, taskbar, Start, department folders, record-file glyphs and the logo. Asset choices live in `css/assets.css`; the palette and Altynai's multiply treatment live in `css/arwa.css`. Theme selection is independent of gameplay/distortion and uses the existing session-only selector. Distortion aliases retain the selected theme; returning to Standard restores its original art. `node tests/theme.browser.check.js` checks both directions, actual Jessica reconciliation, reload and mobile.
+
+Display Properties also offers **Use original logo / Use pixelated logo** for live demo comparisons. It sets presentation-only `data-logo-style` on the root and overrides `--art-desktop-logo`; paper/Start logos are unaffected. An explicit choice remains through color-scheme changes during the session, using the matching pixel variant when appropriate. Reload restores the scheme defaults; no game/save state is changed.
