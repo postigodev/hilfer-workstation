@@ -152,3 +152,15 @@ input, select { caret-color: var(--control-focus); }
 .window-title::before, .taskbar-item::before, .start-menu-item[data-open]::before { image-rendering: pixelated; }
 .folder-tree button:has(.department-icon) { gap: 4px; }
 .department-icon { display: inline-block; flex: 0 0 20px; width: 20px; height: 20px; background-position: center; background-size: contain; background-repeat: no-repeat; image-rendering: pixelated; }
+
+/* Altynai's Graphite treatment: use the supplied desaturated art across the OS. */
+.file-symbol { width: 14px; height: 16px; margin-right: 0; border: 0; background: center / contain no-repeat var(--art-file); image-rendering: pixelated; }
+:root[data-theme="archive"] [data-art],
+:root[data-theme="archive"] .department-icon,
+:root[data-theme="archive"] .file-symbol,
+:root[data-theme="archive"] .window-title::before,
+:root[data-theme="archive"] .start-menu-item[data-open]::before,
+:root[data-theme="archive"] .taskbar-item::before { mix-blend-mode: multiply; }
+
+.display-logo-control { display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 11px; }
+.display-logo-control button { padding: 3px 6px; font-size: 11px; }

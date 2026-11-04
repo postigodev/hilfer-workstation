@@ -1,6 +1,8 @@
 /* Central visual paths. Replace a distorted URL when Arwa supplies a matching variant. */
 :root {
   --art-wallpaper-clean: url('../assets/arwa/wallpaper.webp');
+  --art-desktop-logo: var(--art-logo);
+  --art-desktop-logo-pixel: url('../assets/arwa/icons/logo-pixel.webp');
   --art-logo-clean: url('../assets/arwa/logo.webp');
   --art-reconciliation-clean: url('../assets/arwa/icons/reconciliation-pixel.webp');
   --art-records-clean: url('../assets/arwa/icons/records-pixel.webp');
@@ -8,6 +10,7 @@
   --art-ai-clean: url('../assets/arwa/icons/assistant-pixel.webp');
   --art-ai-distorted: var(--art-ai-clean);
   --art-ai: var(--art-ai-clean);
+  --art-file: url('../assets/arwa/icons/file-pixel.webp');
   --art-hr-folder: url('../assets/arwa/icons/hr-pixel.webp');
   --art-medical-folder: url('../assets/arwa/icons/medical-pixel.webp');
   --art-wallpaper-distorted: var(--art-wallpaper-clean);
@@ -20,6 +23,17 @@
   --art-reconciliation: var(--art-reconciliation-clean);
   --art-records: var(--art-records-clean);
   --art-settings: var(--art-settings-clean);
+}
+:root[data-theme="archive"] {
+  --art-desktop-logo-pixel: url('../assets/arwa/icons/logo-graphite.webp');
+  --art-logo-clean: url('../assets/arwa/icons/logo-graphite.webp');
+  --art-reconciliation-clean: url('../assets/arwa/icons/reconciliation-graphite.webp');
+  --art-records-clean: url('../assets/arwa/icons/records-graphite.webp');
+  --art-settings-clean: url('../assets/arwa/icons/display-graphite.webp');
+  --art-ai-clean: url('../assets/arwa/icons/assistant-graphite.webp');
+  --art-hr-folder: url('../assets/arwa/icons/hr-graphite.webp');
+  --art-medical-folder: url('../assets/arwa/icons/medical-graphite.webp');
+  --art-file: url('../assets/arwa/icons/file-graphite.webp');
 }
 :root[data-distortion="1"] {
   --art-ai: var(--art-ai-distorted);
@@ -38,3 +52,10 @@
 [data-department-icon="medical"] { background-image: var(--art-medical-folder); }
 
 [data-art="ai"] { background-image: var(--art-ai); }
+
+/* Demo-only desktop logo choice; document and shell logos continue following the theme. */
+:root[data-logo-style="smooth"] { --art-desktop-logo: url('../assets/arwa/logo.webp'); }
+:root[data-logo-style="pixel"] { --art-desktop-logo: var(--art-desktop-logo-pixel); }
+.desktop-logo[data-art="logo"] { background-image: var(--art-desktop-logo); }
+:root[data-logo-style="pixel"] .desktop-logo,
+:root[data-theme="archive"]:not([data-logo-style="smooth"]) .desktop-logo { image-rendering: pixelated; }
