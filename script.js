@@ -139,7 +139,7 @@ function toggleWindow(windowId) {
 }
 
 function getWindowTitle(windowId) {
-    const titles = { reconciliation: 'Reconciliation', records: 'Records', themes: 'Display Properties', ai: 'HILFER Assistant' };
+    const titles = { reconciliation: 'Reconciliation', records: 'Records', themes: 'Display Properties', ai: 'HILFER Assistant', emails: 'HILFER Mail' };
     return titles[windowId] || windowId;
 }
 

@@ -7,6 +7,7 @@
   --art-reconciliation-clean: url('../assets/arwa/icons/reconciliation-pixel.webp');
   --art-records-clean: url('../assets/arwa/icons/records-pixel.webp');
   --art-settings-clean: url('../assets/arwa/icons/display-pixel.webp');
+  --art-mail: url('../assets/arwa/icons/mail-pixel.webp');
   --art-ai-clean: url('../assets/arwa/icons/assistant-pixel.webp');
   --art-ai-distorted: var(--art-ai-clean);
   --art-ai: var(--art-ai-clean);
@@ -25,6 +26,7 @@
   --art-settings: var(--art-settings-clean);
 }
 :root[data-theme="archive"] {
+  --art-mail: url('../assets/arwa/icons/mail-graphite.webp');
   --art-desktop-logo-pixel: url('../assets/arwa/icons/logo-graphite.webp');
   --art-logo-clean: url('../assets/arwa/icons/logo-graphite.webp');
   --art-reconciliation-clean: url('../assets/arwa/icons/reconciliation-graphite.webp');
@@ -59,3 +61,5 @@
 .desktop-logo[data-art="logo"] { background-image: var(--art-desktop-logo); }
 :root[data-logo-style="pixel"] .desktop-logo,
 :root[data-theme="archive"]:not([data-logo-style="smooth"]) .desktop-logo { image-rendering: pixelated; }
+
+[data-art="mail"] { background-image: var(--art-mail); }

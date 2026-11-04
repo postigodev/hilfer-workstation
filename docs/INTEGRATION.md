@@ -6,7 +6,7 @@
 
 From the repository root:
 
-    python -m http.server 8080 --bind 127.0.0.1
+    python scripts/serve.py --port 8080
 
 Open http://127.0.0.1:8080. Node 18+ runs domain tests with `node --test` / `npm test`. Optional browser checks: `node tests/browser.check.js` with Playwright and Microsoft Edge installed. `HILFER_URL` defaults to localhost:8080, `HILFER_PLAYWRIGHT_MODULE` can specify the local Playwright package, and `HILFER_SCREENSHOT` controls the screenshot path.
 
@@ -115,3 +115,17 @@ Checks: `node --test`, existing `node tests/browser.check.js`, and `node tests/a
 Display Properties → Color scheme → Archive / Graphite switches to Arwa's desaturated artwork across desktop, title bars, taskbar, Start, department folders, record-file glyphs and the logo. Asset choices live in `css/assets.css`; the palette and Altynai's multiply treatment live in `css/arwa.css`. Theme selection is independent of gameplay/distortion and uses the existing session-only selector. Distortion aliases retain the selected theme; returning to Standard restores its original art. `node tests/theme.browser.check.js` checks both directions, actual Jessica reconciliation, reload and mobile.
 
 Display Properties also offers **Use original logo / Use pixelated logo** for live demo comparisons. It sets presentation-only `data-logo-style` on the root and overrides `--art-desktop-logo`; paper/Start logos are unaffected. An explicit choice remains through color-scheme changes during the session, using the matching pixel variant when appropriate. Reload restores the scheme defaults; no game/save state is changed.
+
+## HILFER Mail v1
+
+The fixed corpus is `data/emails.json`, copied without content changes from `hilfer_mail_demo_v1.json` (5 threads, 12 messages). [MAIL_CONTRACT.md](MAIL_CONTRACT.md) preserves the supplied contract. All message dates are provisional demo timestamps, not approved chronology; Inbox contains 3 conversations, Corporate Archive 2, and Sent Mail is intentionally empty. This is the authorized Reconciliation Desk mailbox/archive, not a personal account. No Compose, outgoing mail, attachments or new narrative messages are implemented.
+
+`js/apps/emails.js` exports `validateMailCorpus`, `createMailModel` and `mountMail`. The model defaults to the corpus's `initialGrants`; `requiredGrants` gates list/search/count/lookup/open/reference access before results are returned. `setGrants(grants)` is the future integration seam and clears unauthorized selection/receipts; no progression unlocks are invented. These are gameplay authorization rules in a static app, not a server-side confidentiality boundary for private data.
+
+`listThreads()`, `getThread(id)`, `getMessage(id)`, `openThread(id)`, `openMessage(id)`, `getReference(messageId,recordId)`, `setFolder(id)`, `setQuery(text)`, `markUnread(id)`, `getFolders()`, `getState()` and `subscribe(fn)` own only Mail UI. Search is across authorized folders; results and conversation messages sort by their supplied facility-local timestamps. Opening a conversation marks its messages read. Search, selection and rendering never call game discovery; only the supplied MAIL-004 reference navigates through existing `openRecord('HR-014')` and normal Records inspection. No OH-008 shortcut or finding is added to Mail.
+
+Read IDs/folder/selection persist under `hilfer:mail-ui:v1` with version 1, independently of game/Assistant saves. Invalid or inaccessible storage falls back to safe in-memory reading. `hilfer:progress-reset` clears Mail receipts, query and selection. Keyboard: arrows/Home/End select conversations or folders; F6 moves between conversation list and reader; native Tab/Enter operate search, controls and Records links.
+
+Checks: `node --test` includes fixed-corpus hash, reference/anchor validation, sorting, access denial/direct lookups/counts, revoked grants, receipt persistence/reset/blocked storage and game-state separation. `node tests/mail.browser.check.js` verifies all 12 exact bodies and metadata, five conversations, empty Sent, search, HR-014 navigation and Jessica, reload/reset, restricted fixture, keyboard/mobile/Graphite, malformed/blocked receipts and window controls.
+
+The standard-library static launcher `scripts/serve.py` (also `npm start`) uses a larger connection accept queue. Default Python HTTP-server backlog intermittently refused simultaneous startup asset requests on this Windows host; five cold boots passed with the increased queue. It serves only static files from the repository, binds localhost and adds no runtime backend or dependency.

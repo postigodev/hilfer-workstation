@@ -7,7 +7,7 @@ A playable institutional-horror prototype inside a fictional corporate Windows 9
 From this folder:
 
 ```sh
-python -m http.server 8080 --bind 127.0.0.1
+python scripts/serve.py --port 8080
 ```
 
 Open [HILFER locally](http://127.0.0.1:8080). No build or packages required. Use a modern desktop browser; keyboard users can attach evidence by ID.
