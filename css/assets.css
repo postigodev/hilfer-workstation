@@ -8,6 +8,7 @@
   --art-ai-clean: url('../assets/arwa/icons/assistant-pixel.webp');
   --art-ai-distorted: var(--art-ai-clean);
   --art-ai: var(--art-ai-clean);
+  --art-file: url('../assets/arwa/icons/file-pixel.webp');
   --art-hr-folder: url('../assets/arwa/icons/hr-pixel.webp');
   --art-medical-folder: url('../assets/arwa/icons/medical-pixel.webp');
   --art-wallpaper-distorted: var(--art-wallpaper-clean);
@@ -20,6 +21,16 @@
   --art-reconciliation: var(--art-reconciliation-clean);
   --art-records: var(--art-records-clean);
   --art-settings: var(--art-settings-clean);
+}
+:root[data-theme="archive"] {
+  --art-logo-clean: url('../assets/arwa/icons/logo-graphite.webp');
+  --art-reconciliation-clean: url('../assets/arwa/icons/reconciliation-graphite.webp');
+  --art-records-clean: url('../assets/arwa/icons/records-graphite.webp');
+  --art-settings-clean: url('../assets/arwa/icons/display-graphite.webp');
+  --art-ai-clean: url('../assets/arwa/icons/assistant-graphite.webp');
+  --art-hr-folder: url('../assets/arwa/icons/hr-graphite.webp');
+  --art-medical-folder: url('../assets/arwa/icons/medical-graphite.webp');
+  --art-file: url('../assets/arwa/icons/file-graphite.webp');
 }
 :root[data-distortion="1"] {
   --art-ai: var(--art-ai-distorted);

@@ -42,3 +42,20 @@ Selective source: [Altynai / april-hpxd/HILFER](https://github.com/april-hpxd/HI
 - `assets/sounds/glitch.mp3` is copied unchanged from Altynai's repository (200,665 bytes); only its first 1.5 seconds are played. The upstream attribution does not identify a separate audio author.
 
 The previously verified five pixel icon derivatives are retained. The existing logo/wallpaper and documentary styles remain unchanged. No ambient WAV, empty applications, static report mockups, additional portraits or full PNG collections are imported.
+
+## Complete Graphite artwork — 2026-11-04
+
+Source: Arwa's `assets/arwa/not saturated/` artwork in Altynai's `april-hpxd/HILFER` (same inspected revision `7ff147e5`). The archive theme selects these lossless, transparent WebP derivatives in `icons/`:
+
+| Source PNG | Runtime WebP |
+|---|---|
+| `reconciliation.png` | `reconciliation-graphite.webp` |
+| `downloads.png` | `records-graphite.webp` |
+| `settings.png` | `display-graphite.webp` |
+| `terminal.png` | `assistant-graphite.webp` |
+| `employee_records.png` | `hr-graphite.webp` |
+| `med_info.png` | `medical-graphite.webp` |
+| `file.png` | `file-graphite.webp` |
+| `logo_pixelated.png` | `logo-graphite.webp` |
+
+Icons use nearest-neighbor reduction to 128 x 128; the central logo uses 512 x 512. `saturated/file.png` also supplies `file-pixel.webp` for the standard scheme. Altynai's Graphite multiply-blending treatment is retained on shell artwork, with coverage extended to the two department icons. Original full-size PNGs are not imported. The existing standard logo, wallpaper and five selected standard pixel icons are preserved.
