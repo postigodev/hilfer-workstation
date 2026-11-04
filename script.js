@@ -102,6 +102,7 @@ function setActiveWindow(windowId) {
     if (taskbarItem) {
         taskbarItem.classList.add('active');
     }
+    if (windowEl) window.dispatchEvent(new CustomEvent('hilfer:window-activated', { detail: { windowId } }));
 }
 
 function addToTaskbar(windowId) {
@@ -138,7 +139,7 @@ function toggleWindow(windowId) {
 }
 
 function getWindowTitle(windowId) {
-    const titles = { reconciliation: 'Reconciliation', records: 'Records', themes: 'Display Properties' };
+    const titles = { reconciliation: 'Reconciliation', records: 'Records', themes: 'Display Properties', ai: 'HILFER Assistant' };
     return titles[windowId] || windowId;
 }
 

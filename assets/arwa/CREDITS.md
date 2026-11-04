@@ -33,3 +33,12 @@ Author: **Arwa**. Source folder: [HILFER Assets / icons / pixelated version / v1
 | [5.png](https://drive.google.com/file/d/1OPuNqo00KmcJOvu7VRqUMSmdz_vcX_6X/view) | `icons/medical-pixel.webp` | `6a9593a7cc3dd595968d2169e653a7d1cf93cbfc` |
 
 Each 3750 x 3750 original was verified by PNG signature, byte size and `git hash-object`, then reduced to 128 x 128 using nearest-neighbor and encoded as lossless WebP with transparency preserved. These five derivatives total **41,880 bytes**; full-size originals are not committed. They replace only application/department icons. The existing logo, wallpaper, artwork credits, upstream license, dynamic report and locked-case UI remain unchanged.
+
+## Contextual assistant integration — 2026-11-04
+
+Selective source: [Altynai / april-hpxd/HILFER](https://github.com/april-hpxd/HILFER), commit `7ff147e5` (latest inspected revision). The assistant's profile/correspondence arrangement and subtle portrait distortion are adapted in `js/apps/ai.js` and `css/ai.css`; contextual English copy is in `data/assistant.json`. The portrait uses the existing neutral `assets/placeholders/personnel.svg` placeholder.
+
+- Arwa's `assets/arwa/saturated/terminal.png` becomes `assets/arwa/icons/assistant-pixel.webp`: 128 x 128, nearest-neighbor, lossless WebP, transparency retained (10,302 bytes).
+- `assets/sounds/glitch.mp3` is copied unchanged from Altynai's repository (200,665 bytes); only its first 1.5 seconds are played. The upstream attribution does not identify a separate audio author.
+
+The previously verified five pixel icon derivatives are retained. The existing logo/wallpaper and documentary styles remain unchanged. No ambient WAV, empty applications, static report mockups, additional portraits or full PNG collections are imported.
