@@ -1,0 +1,15 @@
+{
+  "caseId": "CASE-001",
+  "welcome": {
+    "label": "Assignment received",
+    "text": "Welcome to HILFER. Your current assignment is Post-Incident Data Reconciliation. The Consolidated Report is ready for review."
+  },
+  "investigating": {
+    "label": "Review pending",
+    "text": "Your personnel review remains open. Departmental sources are available in Records; Reconciliation maintains the consolidated entry. No revision has been filed."
+  },
+  "filed": {
+    "label": "Report updated",
+    "text": "The work-status entry for Jessica has been revised in the Consolidated Report. Its source references have been retained. The recorded work-related cause has not changed."
+  }
+}

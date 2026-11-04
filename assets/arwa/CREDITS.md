@@ -19,3 +19,26 @@ Asset paths and clean/distorted aliases live in `css/assets.css`. Matching disto
 `css/arwa.css` selectively adapts the source's burgundy title bars, rose window frames, desktop composition, shell icons, taskbar and Start menu. The wallpaper's embedded OS label is part of the artwork, not a game version declaration. Its decorative composition scales to the desktop to keep that label visible at different aspect ratios.
 
 No source mockup JavaScript, application data, employee identities, case definitions, mail, assistant or security screens were imported. The personnel portrait remains the original neutral placeholder.
+
+## Classroom demo pixel icons
+
+Author: **Arwa**. Source folder: [HILFER Assets / icons / pixelated version / v1 (normal)](https://drive.google.com/drive/folders/1RWOiS3pH9OB7dtDT1f_3QP3WYxQZ1U_d). Downloaded original PNG bytes through authenticated Google Drive. Altynai's public repository also preserves the matching sources under `assets/icons/pixelated version/v1 (normal)/`.
+
+| Original Drive file | Runtime derivative | Verified original Git blob SHA-1 |
+|---|---|---|
+| [15.png](https://drive.google.com/file/d/1Yr9cyiQUE-XqbZ3Nvlwfrot1HSejMzC4/view) | `icons/reconciliation-pixel.webp` | `4b3f688b017bfeb0ba9713b89c13520cb09a3909` |
+| [19.png](https://drive.google.com/file/d/1g1HbXs8Apu8HTgVOpUR8tRo4ksBNAnjY/view) | `icons/records-pixel.webp` | `00e0f472cfe6b70eb1d2b0457b434827e0cd5631` |
+| [4.png](https://drive.google.com/file/d/1-H9Varn3PYpDR8Tw92mSx5IPB7BP5Ixc/view) | `icons/display-pixel.webp` | `c95fc8c7cbb7cdfc8d87e9939d547c9a7f5df611` |
+| [21.png](https://drive.google.com/file/d/10Z458sUuWABR9KkDJcNLkGp2G6uO8wj3/view) | `icons/hr-pixel.webp` | `ef1c022b22b7793a2d4bf06284486d02593942a0` |
+| [5.png](https://drive.google.com/file/d/1OPuNqo00KmcJOvu7VRqUMSmdz_vcX_6X/view) | `icons/medical-pixel.webp` | `6a9593a7cc3dd595968d2169e653a7d1cf93cbfc` |
+
+Each 3750 x 3750 original was verified by PNG signature, byte size and `git hash-object`, then reduced to 128 x 128 using nearest-neighbor and encoded as lossless WebP with transparency preserved. These five derivatives total **41,880 bytes**; full-size originals are not committed. They replace only application/department icons. The existing logo, wallpaper, artwork credits, upstream license, dynamic report and locked-case UI remain unchanged.
+
+## Contextual assistant integration — 2026-11-04
+
+Selective source: [Altynai / april-hpxd/HILFER](https://github.com/april-hpxd/HILFER), commit `7ff147e5` (latest inspected revision). The assistant's profile/correspondence arrangement and subtle portrait distortion are adapted in `js/apps/ai.js` and `css/ai.css`; contextual English copy is in `data/assistant.json`. The portrait uses the existing neutral `assets/placeholders/personnel.svg` placeholder.
+
+- Arwa's `assets/arwa/saturated/terminal.png` becomes `assets/arwa/icons/assistant-pixel.webp`: 128 x 128, nearest-neighbor, lossless WebP, transparency retained (10,302 bytes).
+- `assets/sounds/glitch.mp3` is copied unchanged from Altynai's repository (200,665 bytes); only its first 1.5 seconds are played. The upstream attribution does not identify a separate audio author.
+
+The previously verified five pixel icon derivatives are retained. The existing logo/wallpaper and documentary styles remain unchanged. No ambient WAV, empty applications, static report mockups, additional portraits or full PNG collections are imported.

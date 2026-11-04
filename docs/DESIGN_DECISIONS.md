@@ -54,3 +54,7 @@ The user approved experimenting with a simpler primary gameplay loop: **inspect 
 - Distortion remains milestone-triggered and idempotent.
 - Earlier drag/attach API is retained at the domain layer for compatibility, **not** as a primary gameplay requirement.
 - This is an experimental interaction validated on Jessica only. More complex cases, alternative procedural choices, and deliberate player complicity remain open design questions.
+
+## 2026-11-04 — Contextual assistant for the classroom demo (user approved)
+
+The user approved selective integration of Altynai's assistant and short glitch audio. Assistant correspondence reacts to existing assignment/discovery/reconciliation state, without an LLM or arbitrary message advancement. A filed report produces one unread notification; opening the assistant acknowledges it, and reload/reset remain consistent. The neutral portrait has a slight distortion-level-1 treatment. No new revelations, hostile takeover, causality findings or additional playable cases are introduced. Existing documentary layouts, validation and progression remain authoritative; unused desktop apps and the large ambient recording are excluded.

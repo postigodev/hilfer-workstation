@@ -99,3 +99,13 @@ The original store still validates ID-based attachment and explicit submission; 
 ## Editorial presentation
 
 `js/apps/shared.js` formats display values, dates and document titles. Canonical enums, IDs and save data stay unchanged. Records prioritizes employee, document type and issued date; exact references and classifications live in native **Record details** disclosures. The report shows readable status/source/context, with audit provenance inside details. Technical placeholders are omitted from report rendering only; progression and the case register retain them.
+
+## Contextual HILFER Assistant (demo)
+
+`data/assistant.json` owns English correspondence for the configured case. `deriveAssistant(state, records, content)` in `js/apps/ai.js` projects welcome, investigating (relevant evidence discovered) and filed (committed resolution) phases. `mountAI` uses the existing store subscriptions/events; it never changes evidence, resolutions or progression. There is no LLM or Next-message sequence.
+
+The shell dispatches `hilfer:window-activated` on `window` with `{windowId}` when a window gains focus. Opening/activating `ai` acknowledges its visible update. The discrete taskbar notification remains available while unread, including after reload. Only a versioned UI receipt (`hilfer:assistant:v1`, `{version:1,readId}`) is persisted separately; it is not game state. Demo reset clears the receipt and derives the welcome phase again. Unavailable storage retains session behavior.
+
+The existing `hilfer:case-reconciled` event plays the imported glitch cue at 20% volume for at most 1.5 seconds. The visual microglitch remains 650 ms. Reload/duplicate submissions do not emit another cue; reset/page exit stops playback. Rejected audio playback never interrupts filing or assistant notification.
+
+Checks: `node --test`, existing `node tests/browser.check.js`, and `node tests/assistant.browser.check.js` (same Playwright/Edge environment variables). The assistant check covers fresh play, contextual messages, actual audio start/stop, unread/read reloads, reset/replay, rejected audio, portrait variance, window controls and mobile notification access.

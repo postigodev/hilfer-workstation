@@ -36,10 +36,11 @@ export function mountRecords(root, store, { onClaim = () => {} } = {}) {
   let selectedId = null;
   let department = '';
   let query = '';
+  const departmentIcons = {'Human Resources':'hr', 'Occupational Health':'medical'};
   const departments = [...new Set(store.getRecords().map(r => r.department))];
   root.innerHTML = `<div class="app-toolbar"><span>Records</span><div class="application-actions"><button data-open="reconciliation">Reconciliation</button><button data-arrange aria-label="Arrange workspace">Arrange</button></div></div>
     <form class="records-search" role="search"><label for="records-search">Find</label><input type="search" id="records-search" placeholder="Name, reference or department" autocomplete="off"><button type="button" id="clear-search">Clear</button></form>
-    <div class="records-explorer"><nav class="folder-tree" aria-label="Departments"><div class="pane-label">Departments</div><button data-folder="" aria-pressed="true"><span class="folder-symbol" aria-hidden="true"></span>All departments</button>${departments.map(name => `<button data-folder="${h(name)}" aria-pressed="false"><span class="folder-symbol" aria-hidden="true"></span>${h(name)}</button>`).join('')}</nav>
+    <div class="records-explorer"><nav class="folder-tree" aria-label="Departments"><div class="pane-label">Departments</div><button data-folder="" aria-pressed="true"><span class="folder-symbol" aria-hidden="true"></span>All departments</button>${departments.map(name => `<button data-folder="${h(name)}" aria-pressed="false">${departmentIcons[name] ? `<span class="department-icon" data-department-icon="${departmentIcons[name]}" aria-hidden="true"></span>` : '<span class="folder-symbol" aria-hidden="true"></span>'}${h(name)}</button>`).join('')}</nav>
       <section class="files-pane" aria-label="Record list"><div class="pane-label">Documents</div><div id="record-files"></div></section>
       <section class="preview-pane" aria-label="Document preview"><div class="preview-reference" id="preview-reference">Document preview</div><div class="preview-scroll" id="record-preview"></div></section></div>
     <div class="preview-drag-bar" id="preview-drag-bar" hidden></div>
