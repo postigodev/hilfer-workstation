@@ -77,4 +77,29 @@ additional levels requires corresponding presentation work. At-most-once transie
 on interruption; it does not guarantee completed playback. Content-version increments and migration manifests
 are repository maintenance responsibilities, not inferred automatically from changing file contents.
 
-The feature is proposed for review against main. It must not be merged automatically or used to start PR 2.
+## 2026-11-21 — final acceptance and follow-up requirements
+
+The user authorized squash merge after a final interactive Jessica check, and authorized PR 2 specification
+only. No PR 2 implementation or narrative design is authorized by that instruction.
+
+Final interactive check on the PR branch: opened the provisional report, opened OH-008 in Records, compared
+it with HR-014, selected Update report, and observed the filed NOT_CLEARED entry with unchanged causation.
+The actual glitch audio element was playing after filing (currentTime 0.133183, paused false). After reload
+the filed report persisted, the notification remained, and the cue was stopped at time zero. Reset restored
+the provisional HR-014 entry and zero filings, with the cue stopped. The dedicated Assistant browser check
+separately verifies the once-only audiovisual count, including repeated filing, reload and reset.
+
+Two accepted PR 1 limitations are mandatory PR 2 acceptance criteria:
+
+1. **Validate availability against a content registry.** Today availabilityPolicies.contentId is syntax-checked
+   without verifying an existing target. PR 2 must reject unknown targets and typos at definition load, with
+   versioned migration for that schema change. Do not add restricted narrative content before all app surfaces
+   enforce authorization.
+2. **Execute inspection policies through application adapters.** inspectionPolicyId is currently metadata,
+   while inspectEvidence is a trusted logical command. PR 2 must connect authorized artifact presentation,
+   inspection-policy satisfaction and logical registration in one validated integration path. Opening ordinary
+   mail or the CAM 4 preview must not inspect unrelated evidence or CAM-R03.
+
+These are integration requirements, not automatic player comprehension. A definitive inference interface,
+real investigation evidence maps and Drive narrative work remain outside PR 2 implementation scope until
+the team designs them separately.
