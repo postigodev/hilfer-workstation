@@ -131,3 +131,33 @@ test('no player route can inspect synthetic CAM-R03 media before actual asset in
  assert.equal(s.isArtifactAvailable('records','ASSET-CUSTODY-03'),false);
  assert.equal(act(s,'fileDetermination',{determinationId:'CASE-REC03-PURPOSE:operationalPurpose',sourceEvidenceId:'ASSET-CUSTODY-03'}).ok,false);
 });
+
+test('Communications lineage is an independent G completion route',()=>{
+ const s=fixture(true);jessica(s);archive(s,'OPS-TRANSFER');recovery(s);
+ for(const id of ['OH-SIX-REVIEW','MAIL-015','MAIL-016','INC-SUMMARY'])inspect(s,id);
+ assert.equal(act(s,'establishInference',{inferenceId:'C-I2',evidenceIds:['OH-SIX-REVIEW','MAIL-015','MAIL-016','INC-SUMMARY']}).ok,true);
+ assert.equal(act(s,'fileDetermination',{determinationId:'CASE-LINEAGE:approvedLanguageLevel',sourceEvidenceId:'INC-SUMMARY'}).ok,true);
+ assert.ok(s.getSnapshot().facts.milestones['ARCHIVE:unlocked']);
+ assert.equal(s.getSnapshot().facts.inferences['F-I4'],undefined);
+});
+
+test('an actual saved content-v2 Jessica determination migrates to v3 without invented inspection',()=>{
+ const oldRecords=read('history/records-v2'),oldCases=read('history/cases-v2'),oldProgression=read('history/progression-v2');
+ const storage=memory();
+ const old=createStore({records:oldRecords,cases:oldCases,storage,progression:oldProgression});
+ inspect(old,'HR-014');inspect(old,'OH-008');
+ assert.equal(old.reconcileClaim('CASE-001','OH-008','workEligibility').ok,true);
+ const previous=old.getSnapshot();
+ assert.equal(previous.contentVersion,2);
+ const upgraded=createStore({records,cases,storage,progression,contentMigrations:[
+   {from:2,to:3,sourceDefinition:oldProgression,sourceCases:oldCases,migrate:s=>({...s,contentVersion:3})}
+ ]});
+ assert.equal(upgraded.getWarning(),'');
+ const now=upgraded.getSnapshot();
+ assert.equal(now.contentVersion,3);
+ assert.deepEqual(now.facts.inspectedEvidenceIds,previous.facts.inspectedEvidenceIds);
+ assert.equal(now.facts.determinations['CASE-001:workEligibility'].value,'NOT_CLEARED');
+ assert.ok(now.facts.milestones['CASE-001:filed']);
+ assert.ok(upgraded.getState().unlockedCaseIds.includes('CASE-ARCHIVE'));
+ assert.equal(now.facts.inferences['E-I1'],undefined,'no retroactive inference created');
+});
