@@ -33,7 +33,11 @@ export function deriveReport(cases, state, getRecord, {getSourceForValidation = 
     };
   });
   return {
-    status: sections.some(section => !section.placeholder && section.status !== 'RECONCILED') ? 'IN PROGRESS' : 'CONSOLIDATED',
+    // The original two-entry demo still advertised its reserved next assignment.
+    // Once real assigned cases exist, placeholders must not prevent 100% completion.
+    status: sections.some(section => !section.placeholder && section.status !== 'RECONCILED') ||
+      (sections.filter(section => !section.placeholder).length === 1 && sections.some(section => section.placeholder))
+      ? 'IN PROGRESS' : 'CONSOLIDATED',
     completed: sections.filter(section => section.status === 'RECONCILED').length,
     pending: sections.filter(section => !section.placeholder && section.status !== 'RECONCILED').length,
     reserved: sections.filter(section => section.placeholder).length,
@@ -66,6 +70,6 @@ export function renderReport(report, {canOpenRecord = () => true} = {}) {
       <button type="button" class="report-case-link" data-report-case="${h(section.id)}">${section.determination ? 'Review history' : 'Review case'}</button>
     </section>`;
     }).join('')}
-    <footer class="report-footer"><span>END OF CURRENT ENTRIES</span><span>${report.pending ? 'Review in progress' : 'More records pending'}</span></footer>
+    <footer class="report-footer"><span>END OF CURRENT ENTRIES</span><span>${report.status === 'CONSOLIDATED' ? 'Assigned review complete' : report.pending ? 'Review in progress' : 'More records pending'}</span></footer>
   </article></div>`;
 }
