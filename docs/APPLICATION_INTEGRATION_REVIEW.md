@@ -1,9 +1,14 @@
 # PR 2 — application integration review
 
+**Merged:** the user authorized squash merge of PR #8 after the final review below. It is integrated into main
+as `f8e7e8a74624f89d5c93aa7cd135fa683e26639c`, and the engine implementation scope is concluded. The verification
+results and earlier failures below remain a historical record; current contracts are indexed in [README.md](README.md).
+
 [Review pull request #8](https://github.com/postigodev/hilfer-workstation/pull/8).
 Branch: `codex/progression-application-integration`. Base: verified main
 `f9f3305c8f33f4e7fa14818b5796d0efae99ff32`. The user approved the specification and all three clarifications.
-This delivers PR 2 for review only; do not merge automatically or begin narrative investigation design.
+This delivery originally requested review without automatic merge; the user later explicitly authorized the
+squash merge recorded above. No narrative investigation implementation was authorized.
 
 ## Delivered contracts
 
@@ -107,4 +112,4 @@ revoke→regrant cancellation remain covered. git diff --check passed; authored 
 One initial concurrent Assistant check failed its pre-first-click assertion (an Audio node existed where the test
 expected undefined). The unchanged check passed when run alone and again in the final sequential suite. Its cause
 was not established; no Assistant code or assertions were changed to hide that result. The final passes are local
-verification, not a claim that GitHub CI ran. PR #8 must remain open for final review, without automatic merge.
+verification, not a claim that GitHub CI ran. PR #8 remained open for final review until the later explicit merge authorization.

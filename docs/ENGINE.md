@@ -1,9 +1,12 @@
 # Investigation Engine (PR 1 and PR 2)
 
+**Status:** implemented and merged into main through PRs #7 and #8 (`f8e7e8a`). See the
+[documentation index](README.md) for current guides and historical verification records.
+
 The engine runs in vanilla JavaScript with no dependencies. It separates source inspection, explicit
 inferences, immutable administrative determinations and persistent milestones. The playable Jessica demo
-is unchanged; its dates, record IDs and answer are demonstration content. Nothing in either synthetic
-fixture is story canon. In particular, footage showing severe injury does not establish death.
+is unchanged; its dates, record IDs and answer are demonstration content. Synthetic test fixtures are not
+story canon. In particular, footage showing severe injury does not establish death.
 
 ## Files and ownership
 

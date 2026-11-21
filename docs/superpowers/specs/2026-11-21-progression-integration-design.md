@@ -2,6 +2,9 @@
 
 **Status: APPROVED for implementation, including the three clarifications below (2026-11-21).**
 
+Implemented and squash-merged in PR #8 (`f8e7e8a`), including final-review corrections. This specification records
+the approved design; use [APP_INTEGRATION.md](../../APP_INTEGRATION.md) for the current contract and readiness details.
+
 Base: main `f9f3305c8f33f4e7fa14818b5796d0efae99ff32`, the squash merge of PR #7.
 The user authorized preparing this specification after final interactive Jessica acceptance. It incorporates
 the two review findings: availability targets need a real registry; inspection policy IDs need executable
@@ -9,10 +12,11 @@ application adapters. This document proposes technical contracts, not narrative 
 
 ## Existing behavior and scope
 
-PR 1 owns logical evidence, explicit inferences, independent immutable determinations, milestones, derived
+At the start of this design, PR 1 owned logical evidence, explicit inferences, independent immutable determinations, milestones, derived
 access/availability/presentation and validated persistence. Its 61 tests and original four browser suites
 must retain their guarantees. Jessica remains the single playable case. Mail has authorization internally
-and setGrants(); Assistant owns delivery/read/voice receipts; the effect harness is not mounted.
+and setGrants(); Assistant owned delivery/read/voice receipts; the effect harness was not yet mounted. The
+completed integration now mounts it as described in the current application contract linked above.
 
 PR 2 will consistently authorize application presentation and connect supported artifacts to logical inspection.
 It will not add canonical cases, dialogue, restricted production evidence, inferred death from injury,

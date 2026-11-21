@@ -1,12 +1,23 @@
 # HILFER — Project Context for Codex
 
-_Last updated: October 2026. Working context, not a substitute for the group's live narrative documents._
+_Narrative working context: October 2026. Technical status updated November 21, 2026. Not a substitute for the group's live narrative documents._
 
 ## What is HILFER?
 
 An interactive narrative mystery / institutional horror game experienced entirely through a fictional company's desktop OS. HILFER is a private research-and-defense firm developing experimental **radiological** technology. Following a containment incident, its departmental records disagree. The player, a HILFER research associate, is assigned to finish Post-Incident Data Reconciliation after previous operator **L. Losurdo** becomes medically unavailable.
 
 The player uses an authorized workstation to navigate records, email, technical data, security footage, audio excerpts, and the corporate AI assistant. This is not a hacking game. The player has legitimate access for legitimate assigned work.
+
+## Implementation status — November 21, 2026
+
+The investigation engine and application integrations are complete on main through PRs #7 and #8, ending at
+`f8e7e8a`. They support logical evidence across apps, verified inspection, explicit inferences, individual
+determinations, declarative rules, milestones, access and save migration. This is technical infrastructure,
+not approval of new narrative relationships or a finished full game.
+
+Jessica remains the only playable case; CASE-002 remains a demo placeholder. Real investigation maps, an
+inference interface and the ending are not implemented. Synthetic tests do not establish story canon. Current
+technical guidance starts at [the documentation index](README.md); the narrative premises below are unchanged.
 
 ## Core theme
 
