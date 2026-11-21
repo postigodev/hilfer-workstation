@@ -30,8 +30,14 @@ The player-facing implementation of J remains unchanged; E/F/G use explicit evid
 
 ## Validation
 
-Run `npm test` in the repository root. The new `tests/content-corpus.test.js` checks schema, content counts, independent E alternatives, gated sources, G alternatives and a hypothetical final path. Existing browser suites require the local server/Playwright described in `docs/INTEGRATION.md`. This branch has not been verified against a real browser until those suites run.
+Run `npm test` in the repository root. The new `tests/content-corpus.test.js` contains 11 focused tests for schema, content counts, independent E alternatives, gated sources, all three G branches, a hypothetical final path, and migration from an actual content-v2 save. Existing browser suites require the local server/Playwright described in `docs/INTEGRATION.md`. This branch has not been verified against a real browser until those suites run.
 
 Before merge, test old content-v2 saves, Jessica field comparison, Mail search authorization, Records rendering for new documents, and the absence of restricted information in search results and direct links.
 
 Sources: [Corpus](https://docs.google.com/document/d/1o5JdlHcnU-3L7fUqMHYIMxBbAzyH9msypwdMahxXaQA/edit) · [Crosswalk](https://docs.google.com/document/d/1bhJF-gKd2BsirMQNAWyQr74IapRtnmZ7ZrUKVhPvncI/edit) · [Chronology](https://docs.google.com/document/d/1N76fAczbKn_wI6iWSVgv-hWaUUemEzLlaHtIymE-YCs/edit)
+
+## Backward-compatible test fixtures
+
+Original Jessica and five-thread Mail fixtures are preserved under `data/history/*-v2.json` and used by legacy tests that intentionally pin their old counts and text. New tests validate the current full v3 corpus. This avoids weakening historic behavior checks or pretending the corpus still contains only two Records.
+
+CI on PR #10 runs `npm test` using Node 24. Browser/Playwright suites remain a separate manual integration check; a passing Node workflow does not certify actual browser UI presentation.
