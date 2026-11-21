@@ -6,7 +6,7 @@ import { mountAI } from './apps/ai.js';
 import { mountDistortion } from './effects/distortion.js';
 
 async function boot() {
-  const [records, cases, assistant, emails] = await Promise.all(['records', 'cases', 'assistant', 'emails'].map(async name => {
+  const [records, cases, assistant, emails, progression] = await Promise.all(['records', 'cases', 'assistant', 'emails', 'progression'].map(async name => {
     const response = await fetch(`./data/${name}.json`);
     if (!response.ok) throw new Error(`Could not load ${name}`);
     return response.json();
@@ -14,7 +14,7 @@ async function boot() {
   // Accessing localStorage itself can throw when browser storage is disabled.
   let storage;
   try { storage = window.localStorage; } catch { storage = { getItem() { throw new Error('Storage disabled'); }, setItem() { throw new Error('Storage disabled'); } }; }
-  const store = createStore({ records, cases, storage });
+  const store = createStore({ records, cases, storage, progression });
   let reconciliation;
   const recordsApp = mountRecords(document.querySelector('#records-app'), store, {
     onClaim(recordId, field) {

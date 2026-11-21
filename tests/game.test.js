@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createStore } from '../js/core/store.js';
-import { SAVE_KEY } from '../js/core/persistence.js';
+import { SAVE_KEY, V2_SAVE_KEY } from '../js/core/persistence.js';
 import { validateResolution } from '../js/core/progression.js';
 const read = name => JSON.parse(readFileSync(new URL(`../data/${name}.json`, import.meta.url), 'utf8').replace(/^\uFEFF/, ''));
 const records = read('records'), cases = read('cases');
@@ -66,7 +66,7 @@ test('in-progress and completed saves reload; reset persists and allows another 
   assert.deepEqual(store.getState().completedCaseIds, []);
   assert.deepEqual(store.getState().unlockedCaseIds, ['CASE-001']);
   attachBoth(store); assert.equal(store.submitResolution('CASE-001', correct).ok, true);
-  assert.ok(!storage.getItem(SAVE_KEY).includes('Jessica Personnel Status'));
+  assert.ok(!storage.getItem(V2_SAVE_KEY).includes('Jessica Personnel Status'));
 });
 test('malformed/incompatible and unavailable storage do not crash; forged progression cannot unlock cases', () => {
   const storage = memory();
