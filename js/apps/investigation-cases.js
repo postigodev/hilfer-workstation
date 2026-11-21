@@ -58,10 +58,18 @@ export function renderInvestigationCase(definition, store, artifacts, sourceLink
     const canFile=sources.length&&t.provenanceEvidenceIds.every(key=>inspected.has(key)&&store.canInspectEvidence(key))&&
       (!requiredInference||Boolean(f.inferences[requiredInference]));
     const field=t.field==='archiveAvailability'?'Archive availability':displayField(t.field);
-    return '<div class="claim-existing"><div><b>'+h(field)+'</b> <span>'+h(displayValue(t.value))+'</span></div>'+
-      '<small>Authoritative source: '+(sources.length?validSource(sources[0]):'not yet inspected')+'</small>'+
-      '<div class="claim-choice"><button type="button" class="claim-apply" data-file-determination="'+h(id)+
-      '" data-source-evidence="'+h(t.sourceEvidenceIds[0])+'" '+(canFile?'':'disabled')+'>Update report</button></div></div>';
+    // A determination is a candidate in the rules, not knowledge the player has.
+    // Do not serialize a restricted source's value or ID into the DOM until the
+    // player has actually inspected an authorized source containing that value.
+    const sourceInspected=sources.length>0;
+    const value=sourceInspected?displayValue(t.value):'Pending source review';
+    const button=sourceInspected
+      ? '<button type="button" class="claim-apply" data-file-determination="'+h(id)+
+        '" data-source-evidence="'+h(sources[0])+'" '+(canFile?'':'disabled')+'>Update report</button>'
+      : '<button type="button" class="claim-apply" disabled>Update report</button>';
+    return '<div class="claim-existing"><div><b>'+h(field)+'</b> <span>'+h(value)+'</span></div>'+
+      '<small>Authoritative source: '+(sourceInspected?validSource(sources[0]):'not yet inspected')+'</small>'+
+      '<div class="claim-choice">'+button+'</div></div>';
   }).join('');
   return '<div class="claim-case-view">'+head+
     '<p class="claim-hint">Inspect actual records or messages, then choose one supported evidence route. The system will not infer a conclusion automatically.</p>'+
