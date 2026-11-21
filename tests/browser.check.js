@@ -177,10 +177,13 @@ try {
   assert.ok(Math.abs(dragged.x + dragged.width / 2 - 740) <= 1, 'the restored title bar stays under the pointer');
   await page.mouse.up();
   assert.deepEqual(await recordsWindow.boundingBox(), dragged);
+  const beforeFootage=await page.evaluate(()=>hilfer.getSnapshot().facts.inspectedEvidenceIds);
   await page.locator('.desktop-icons [data-open="footage"]').click();
   const video = page.locator('#footage-window video');
   assert.ok(await video.isVisible());
   assert.ok(await video.evaluate(el => el.paused));
+  assert.deepEqual(await page.evaluate(()=>hilfer.getSnapshot().facts.inspectedEvidenceIds),beforeFootage,'unmapped preview cannot create narrative evidence');
+  assert.equal(await page.evaluate(()=>hilfer.evidenceForArtifact('footage','CAM-R03')),null);
   await video.evaluate(async el => { el.muted = true; await el.play(); });
   assert.ok(await video.evaluate(el => el.videoWidth > 0 && el.duration > 5));
   await page.getByRole('button', {name:'Minimize Footage', exact:true}).click();

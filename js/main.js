@@ -1,12 +1,15 @@
 import { createStore } from './core/store.js';
 import { mountRecords } from './apps/records-fixture.js';
 import { mountReconciliation } from './apps/reconciliation.js';
-import { mountMail } from './apps/emails.js';
+import { mountMail, createMailModel } from './apps/emails.js';
 import { mountAI } from './apps/ai.js';
 import { mountDistortion } from './effects/distortion.js';
+import { createArtifacts } from './core/artifacts.js';
+import { presentationPolicies, mountFootage } from './apps/inspection.js';
+import { mountPresentation } from './apps/presentation.js';
 
 async function boot() {
-  const [records, cases, assistant, emails, progression] = await Promise.all(['records', 'cases', 'assistant', 'emails', 'progression'].map(async name => {
+  const [records, cases, assistant, emails, progression, previousProgression, previousCases] = await Promise.all(['records', 'cases', 'assistant', 'emails', 'progression','history/progression-v1','history/cases-v1'].map(async name => {
     const response = await fetch(`./data/${name}.json`);
     if (!response.ok) throw new Error(`Could not load ${name}`);
     return response.json();
@@ -14,9 +17,14 @@ async function boot() {
   // Accessing localStorage itself can throw when browser storage is disabled.
   let storage;
   try { storage = window.localStorage; } catch { storage = { getItem() { throw new Error('Storage disabled'); }, setItem() { throw new Error('Storage disabled'); } }; }
-  const store = createStore({ records, cases, storage, progression });
+  const contentMigrations=[{from:1,to:2,sourceDefinition:previousProgression,sourceCases:previousCases,migrate:s=>({...s,contentVersion:2})}];
+  const store = createStore({ records, cases, storage, progression, contentMigrations });
+  const mail = createMailModel(emails,{storage,getRecord:store.getRecord,grants:store.getAccess(),
+    isAvailable:id=>store.isArtifactAvailable('mail',id),canReference:id=>store.isArtifactAvailable('records',id)});
+  const artifacts=createArtifacts({store,records,emails,mail,footage:[{id:'CAM4-PREVIEW'}],policies:presentationPolicies});
   let reconciliation;
   const recordsApp = mountRecords(document.querySelector('#records-app'), store, {
+    artifacts,
     onClaim(recordId, field) {
       if (!reconciliation) return { ok: false, message: 'Reconciliation has not loaded.' };
       const result = reconciliation.presentClaim(recordId, field);
@@ -28,27 +36,24 @@ async function boot() {
     }
   });
   function openRecord(recordId) {
-    if (!store.getRecord(recordId)) return { ok: false, message: 'Unknown record ID.' };
+    if (!artifacts.canOpen('records',recordId)) return { ok: false, message: 'Content unavailable.' };
     window.openWindow('records');
     return recordsApp.openRecord(recordId);
   }
-  reconciliation = mountReconciliation(document.querySelector('#reconciliation-app'), store, { openRecord });
-  mountAI(document.querySelector('#ai-app'), store, assistant, { storage });
-  mountMail(document.querySelector('#emails-app'), emails, {storage,store,openRecord});
+  reconciliation = mountReconciliation(document.querySelector('#reconciliation-app'), store, { openRecord, artifacts });
+  const assistantApp=mountAI(document.querySelector('#ai-app'), store, assistant, { storage });
+  mountMail(document.querySelector('#emails-app'), emails, {storage,store,openRecord,artifacts,model:mail});
   const footage = document.querySelector('#footage-window');
   const video = footage.querySelector('video');
-  const stopFootage = () => video.pause();
-  new MutationObserver(() => {
-    if (!footage.classList.contains('visible')) stopFootage();
-  }).observe(footage, {attributes:true, attributeFilter:['class']});
-  window.addEventListener('pagehide', stopFootage);
+  const footageApp=mountFootage(footage,artifacts);
   store.onEvent(({type}) => {
-    if (type === 'hilfer:progress-reset') { stopFootage(); video.currentTime = 0; }
+    if (type === 'hilfer:progress-reset') footageApp.reset();
   });
   video.querySelector('source').addEventListener('error', () => {
     footage.querySelector('.status-bar-field').textContent = 'Preview could not be loaded.';
   });
   mountDistortion(store);
+  mountPresentation(store,{assistant:assistantApp});
   function update() {
     document.querySelector('#save-status').textContent = store.getWarning();
   }

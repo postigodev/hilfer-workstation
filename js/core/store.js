@@ -23,17 +23,30 @@ export function createStore({records = [],cases = [],storage,progression = creat
   const recordForEvidence = id => evidence(id)?.artifacts.find(a=>a.app==='records')?.artifactId;
   const access = s => deriveAccess(s,definition);
   const available = s => deriveAvailability(s,definition);
-  const unlocked = (s,id) => definition.initialCaseIds.includes(id) || available(s).includes(id);
+  const contentAvailable = (s,id) => {
+    if (definition.schemaVersion === 1) return true;
+    const entry = definition.contentCatalog.find(c=>c.id===id);
+    return Boolean(entry && !entry.retired && entry.requiredGrantIds.every(g=>access(s).includes(g)) &&
+      (!definition.availabilityPolicies.some(p=>p.contentId===id) || definition.initialCaseIds.includes(id) || available(s).includes(id)));
+  };
+  const unlocked = (s,id) => (definition.initialCaseIds.includes(id) || available(s).includes(id)) && contentAvailable(s,id);
   const completed = s => definition.caseCompletionPolicies.filter(p=>evaluateCondition(p.when,s,definition)).map(p=>p.caseId);
+  const artifactAvailable = (s,app,id) => {
+    const e=definition.evidence.find(e=>e.artifacts.some(a=>a.app===app && a.artifactId===id));
+    const c=definition.contentCatalog?.find(c=>c.kind==='artifact' && c.app===app && c.artifactId===id);
+    return Boolean((definition.schemaVersion===1 || (c && contentAvailable(s,c.id))) &&
+      (!e || (!e.retired && e.requiredGrantIds.every(g=>access(s).includes(g)))));
+  };
   const legacy = s => {
-    const view = projectLegacy(s,definition,cases,{availability:{content:available(s),completed:completed(s)},distortionLevel:derivePresentation(s,definition)});
+    const view = projectLegacy(s,definition,cases,{availability:{content:available(s),completed:completed(s),unlocked:cases.filter(c=>unlocked(s,c.id)).map(c=>c.id)},distortionLevel:derivePresentation(s,definition)});
     // Preserve historical empty-list normalization without changing canonical saved facts.
     if (restored) for (const c of cases) view.attachedEvidence[c.id] ??= [];
     return view;
   };
   const getState = () => legacy(state);
   const canInspect = (s,id) => {
-    const e = evidence(id); return e && !e.retired && e.requiredGrantIds.every(grant=>access(s).includes(grant));
+    const e = evidence(id); return e && !e.retired && e.requiredGrantIds.every(grant=>access(s).includes(grant)) &&
+      (definition.schemaVersion===1 || e.artifacts.some(a=>definition.contentCatalog.some(c=>c.kind==='artifact' && c.app===a.app && c.artifactId===a.artifactId && contentAvailable(s,c.id))));
   };
   function register(draft,id,events) {
     if (draft.facts.registeredEvidenceIds.includes(id)) return;
@@ -179,6 +192,8 @@ export function createStore({records = [],cases = [],storage,progression = creat
   return {
     getRecord,getRecords:()=>records,getCases:()=>cases,getState,getSnapshot:()=>structuredClone(state),getWarning:()=>warning,
     getAccess:()=>access(state),getAvailability:()=>available(state),getDefinitions:()=>definition,
+    isContentAvailable:id=>contentAvailable(state,id),canInspectEvidence:id=>Boolean(canInspect(state,id)),
+    isArtifactAvailable:(app,id)=>artifactAvailable(state,app,id),
     getCompletedCaseIds:()=>completed(state),
     evidenceForArtifact(app,artifactId) { return definition.evidence.find(e=>!e.retired && e.artifacts.some(a=>a.app===app && a.artifactId===artifactId))?.id ?? null; },
     subscribe(fn) { subscribers.add(fn); return ()=>subscribers.delete(fn); },

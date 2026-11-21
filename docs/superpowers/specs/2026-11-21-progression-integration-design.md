@@ -1,6 +1,6 @@
 # HILFER PR 2 — authorization and application integration
 
-**Status: DRAFT FOR ARCHITECTURAL REVIEW. Implementation is not authorized yet.**
+**Status: APPROVED for implementation, including the three clarifications below (2026-11-21).**
 
 Base: main `f9f3305c8f33f4e7fa14818b5796d0efae99ff32`, the squash merge of PR #7.
 The user authorized preparing this specification after final interactive Jessica acceptance. It incorporates
@@ -167,8 +167,21 @@ Implementation order, after approval:
 - New synthetic browser tests cover grant/revoke, direct links, asynchronous rendering, mapped Mail/media,
   effects, storage failure, reload/reset and receipt migration. Production narrative datasets remain unchanged.
 
+## Required implementation clarifications
+
+- Mail threads are navigation/authorization containers. Individually mapped messages are inspectable only
+  when their own body is presented; attachments have separate identities and presentation. Thread opening
+  never credits all its messages. Keep thread authorization in the existing Mail model.
+- Each pending presentation has an irreversible cancellation token. Revoke, availability loss, close,
+  selection change, content replacement and reset invalidate it. Regrant never rehabilitates an old token;
+  test revoke → regrant → old completion, then a fresh successful open.
+- Preserve schema-1 `document-open` through an explicit alias to document-presented at the adapter boundary.
+  Original source definitions remain valid for historical migrations and createStore() without explicit
+  progression continues to compile the legacy schema. Saved inspections are retained as accepted history.
+
 ## Approval boundary
 
 Requested review decisions: the explicit catalog and schema-2 compatibility path; uniform app authorization;
 the four inspection policy meanings (especially frame access versus full review); preservation of Jessica's
-current effect owner. This is a proposed specification only. No PR 2 implementation has started.
+current effect owner. The user approved these choices and authorized PR 2 only, on a feature branch with
+tests and a reviewable PR; no automatic merge, narrative additions, inference UI or Drive changes.

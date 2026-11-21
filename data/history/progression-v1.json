@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "contentVersion": 1,
+  "evidence": [
+    {
+      "id": "HR-014",
+      "sourceGroupId": "HR-014",
+      "department": "Human Resources",
+      "tags": [],
+      "artifacts": [
+        {
+          "app": "records",
+          "artifactId": "HR-014",
+          "inspectionPolicyId": "document-open"
+        }
+      ],
+      "fields": {
+        "workEligibility": "AVAILABLE"
+      },
+      "caseIds": [
+        "CASE-001"
+      ],
+      "requiredGrantIds": []
+    },
+    {
+      "id": "OH-008",
+      "sourceGroupId": "OH-008",
+      "department": "Occupational Health",
+      "tags": [],
+      "artifacts": [
+        {
+          "app": "records",
+          "artifactId": "OH-008",
+          "inspectionPolicyId": "document-open"
+        }
+      ],
+      "fields": {
+        "workEligibility": "NOT_CLEARED",
+        "occupationalCausation": "NOT_ESTABLISHED"
+      },
+      "caseIds": [
+        "CASE-001"
+      ],
+      "requiredGrantIds": []
+    }
+  ],
+  "inferences": [],
+  "determinations": [
+    {
+      "id": "CASE-001:workEligibility",
+      "caseId": "CASE-001",
+      "claimId": "workEligibility",
+      "field": "workEligibility",
+      "value": "NOT_CLEARED",
+      "sourceEvidenceIds": [
+        "OH-008"
+      ],
+      "provenanceEvidenceIds": [
+        "HR-014",
+        "OH-008"
+      ],
+      "legacy": true
+    }
+  ],
+  "milestoneIds": [
+    "CASE-001:filed"
+  ],
+  "grants": [],
+  "initialGrantIds": [],
+  "initialCaseIds": [
+    "CASE-001"
+  ],
+  "caseCompletionPolicies": [
+    {
+      "caseId": "CASE-001",
+      "when": {
+        "determinationFiled": {
+          "determinationId": "CASE-001:workEligibility"
+        }
+      }
+    }
+  ],
+  "accessPolicies": [],
+  "availabilityPolicies": [
+    {
+      "contentId": "CASE-002",
+      "when": {
+        "any": [
+          {
+            "milestoneReached": {
+              "milestoneId": "CASE-001:filed"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "presentationPolicies": [
+    {
+      "id": "CASE-001:appearance",
+      "when": {
+        "milestoneReached": {
+          "milestoneId": "CASE-001:filed"
+        }
+      },
+      "distortionLevel": 1
+    }
+  ],
+  "effects": [],
+  "rules": [
+    {
+      "id": "CASE-001:completion",
+      "mode": "once",
+      "when": {
+        "determinationFiled": {
+          "determinationId": "CASE-001:workEligibility"
+        }
+      },
+      "consequences": [
+        {
+          "reachMilestone": {
+            "milestoneId": "CASE-001:filed"
+          }
+        }
+      ]
+    }
+  ]
+}

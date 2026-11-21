@@ -151,7 +151,13 @@ try {
  await small.close();
 
  const restricted=structuredClone(corpus),secret=structuredClone(corpus.threads[0]);Object.assign(secret,{id:'TEST-RESTRICTED',subject:'Restricted fixture subject',access:{requiredGrants:['mail.desk.read','mail.test-restricted']}});secret.messages=[{...secret.messages[0],id:'TEST-SECRET-MESSAGE',body:'Restricted fixture body',from:{id:'test-sender',name:'Restricted fixture sender',address:'fixture@hilfer.internal'}}];restricted.threads.push(secret);
- const isolated=await browser.newPage();watch(isolated);await isolated.route('**/data/emails.json',route=>route.fulfill({json:restricted}));await isolated.goto(target);await ready(isolated);await open(isolated,'emails');assert.equal(await isolated.locator('[data-mail-row]').count(),3);
+ const isolated=await browser.newPage();watch(isolated);await isolated.route('**/data/emails.json',route=>route.fulfill({json:restricted}));
+ await isolated.route('**/data/progression.json',async route=>{
+  const response=await route.fetch(),definition=await response.json();definition.grants.push('mail.test-restricted');
+  definition.contentCatalog.push({id:'mail:TEST-RESTRICTED',kind:'artifact',app:'mail',artifactId:'TEST-RESTRICTED',artifactType:'thread',requiredGrantIds:[]},{id:'mail:TEST-SECRET-MESSAGE',kind:'artifact',app:'mail',artifactId:'TEST-SECRET-MESSAGE',artifactType:'message',requiredGrantIds:[]});
+  await route.fulfill({json:definition});
+ });
+ await isolated.goto(target);await ready(isolated);await open(isolated,'emails');assert.equal(await isolated.locator('[data-mail-row]').count(),3);
  assert.doesNotMatch(await isolated.locator('#emails-app').textContent(),/TEST-RESTRICTED|Restricted fixture/);
  for(const query of ['Restricted fixture subject','Restricted fixture body','fixture@hilfer.internal']){await isolated.locator('#mail-search').fill(query);assert.equal(await isolated.locator('[data-mail-row]').count(),0);}
  const access=await isolated.evaluate(async()=>{const {createMailModel}=await import('/js/apps/emails.js');const model=createMailModel(await(await fetch('/data/emails.json')).json());return {thread:model.openThread('TEST-RESTRICTED').ok,message:model.openMessage('TEST-SECRET-MESSAGE').ok,lookup:model.getMessage('TEST-SECRET-MESSAGE'),unread:model.getFolders()[0].unreadMessages};});assert.deepEqual(access,{thread:false,message:false,lookup:null,unread:7});

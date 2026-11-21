@@ -169,4 +169,8 @@ export function mountAI(root, store, content, { storage } = {}) {
   });
   update();
   root.hidden = false;
+  return {deliverSignal(signal) {
+    if(!content.dialogue.some(entry=>entry.on===signal)) return false;
+    deliver(signal); return true;
+  }};
 }

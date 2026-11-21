@@ -1,7 +1,7 @@
 import { escapeHTML as h, label, displayValue, displayField } from './shared.js';
 
 // A projection, never a second save: no rules or supported answers are read here.
-export function deriveReport(cases, state, getRecord) {
+export function deriveReport(cases, state, getRecord, {getSourceForValidation = getRecord} = {}) {
   const sections = cases.map(definition => {
     const attached = (state.attachedEvidence[definition.id] ?? []).map(getRecord).filter(Boolean);
     const committed = state.completedCaseIds.includes(definition.id) ? state.resolutions[definition.id] : null;
@@ -9,7 +9,8 @@ export function deriveReport(cases, state, getRecord) {
     const metadata = definition.report ?? {};
     const draft = definition.provisional;
     const draftSource = draft ? getRecord(draft.sourceId) : null;
-    const provisional = !committed && draftSource && draftSource.fields[draft.field] === draft.value
+    const validDraft = draft ? getSourceForValidation(draft.sourceId) : null;
+    const provisional = !committed && validDraft && validDraft.fields[draft.field] === draft.value
       ? { label: label(draft.field), value: draft.value, sourceId: draft.sourceId } : null;
     return {
       employee: (authority ?? draftSource)?.employee ?? '',
@@ -39,8 +40,10 @@ export function deriveReport(cases, state, getRecord) {
   };
 }
 
-const reference = (id, text = id) => `<button type="button" class="source-reference" data-open-record="${h(id)}" aria-label="Open record ${h(id)}">${h(text)}</button>`;
-export function renderReport(report) {
+export function renderReport(report, {canOpenRecord = () => true} = {}) {
+  const reference = (id,text=id) => canOpenRecord(id)
+    ? `<button type="button" class="source-reference" data-open-record="${h(id)}" aria-label="Open record ${h(id)}">${h(text)}</button>`
+    : '<span class="source-unavailable">Source unavailable</span>';
   const sections = report.sections.filter(section => !section.placeholder);
   return `<div class="report-scroll"><article class="incident-report" aria-label="Consolidated Incident Report">
     <header class="report-letterhead"><b>HILFER</b><span>IR / CONSOLIDATED RECORD / 01</span></header>

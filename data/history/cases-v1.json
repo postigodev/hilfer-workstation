@@ -1,0 +1,24 @@
+[
+  {
+    "id": "CASE-001", "title": "Personnel Availability Mismatch", "initiallyUnlocked": true,
+    "description": "Record mismatch detected.",
+    "subjectId": "EMP-JESSICA", "category": "Personnel / Work Eligibility",
+    "scope": "Work eligibility only. A clearance decision does not establish occupational causation or incident-casualty status.",
+    "requiredEvidence": ["HR-014", "OH-008"],
+    "provisional": {"field":"workEligibility", "value":"AVAILABLE", "sourceId":"HR-014"},
+    "resolution": {"field": "workEligibility", "value": "NOT_CLEARED", "sourceId": "OH-008"},
+    "statusOptions": ["AVAILABLE", "NOT_CLEARED"],
+    "report": {
+      "heading": "Personnel / Work Eligibility", "subject": "Jessica / EMP-JESSICA",
+      "disposition": "Administrative discrepancy resolved.",
+      "contextFields": [{"field": "occupationalCausation", "label": "Occupational causation"}]
+    },
+    "progression": {"unlockCaseIds": ["CASE-002"], "distortionLevel": 1}
+  },
+  {
+    "id": "CASE-002", "title": "Further Review", "initiallyUnlocked": false, "placeholder": true,
+    "description": "Placeholder — awaiting departmental records. This assignment is not playable in the first prototype.",
+    "report": {"heading": "Pending Review", "pendingText": "Awaiting departmental records."},
+    "requiredEvidence": []
+  }
+]
