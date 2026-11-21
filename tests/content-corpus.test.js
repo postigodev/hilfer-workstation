@@ -5,6 +5,7 @@ import {validateDefinitions} from '../js/core/rules.js';
 import {createStore} from '../js/core/store.js';
 import {validateMailCorpus} from '../js/apps/emails.js';
 import {renderRecord} from '../js/apps/records-fixture.js';
+import {renderInvestigationCase} from '../js/apps/investigation-cases.js';
 
 const read=name=>JSON.parse(readFileSync(new URL('../data/'+name+'.json',import.meta.url),'utf8'));
 const records=read('records'),cases=read('cases'),emails=read('emails'),progression=read('progression');
@@ -160,4 +161,39 @@ test('an actual saved content-v2 Jessica determination migrates to v3 without in
  assert.ok(now.facts.milestones['CASE-001:filed']);
  assert.ok(upgraded.getState().unlockedCaseIds.includes('CASE-ARCHIVE'));
  assert.equal(now.facts.inferences['E-I1'],undefined,'no retroactive inference created');
+});
+
+test('Reconciliation never serializes a candidate value before its source is inspected',()=>{
+ const byId=id=>cases.find(c=>c.id===id);
+ const render=(store,id)=>renderInvestigationCase(byId(id),store,null,ref=>'<span>'+ref+'</span>');
+ const s=fixture();
+ jessica(s);
+ let html=render(s,'CASE-ARCHIVE');
+ assert.doesNotMatch(html,/PARTIAL_LOCAL_VERIFIED/);
+ assert.doesNotMatch(html,/data-source-evidence/);
+ assert.match(html,/Pending source review/);
+
+ archive(s,'ENG-LOCAL-SEGMENT');
+ html=render(s,'CASE-REC03-PURPOSE');
+ assert.match(html,/Pending source review/);
+ assert.doesNotMatch(html,/PROTOTYPE_RETRIEVAL/);
+ assert.doesNotMatch(html,/ASSET-CUSTODY-03/);
+ assert.doesNotMatch(html,/data-source-evidence/);
+ assert.equal(s.isArtifactAvailable('records','ASSET-CUSTODY-03'),false);
+});
+
+test('Even after the media grant, a source must be inspected before its determination appears',()=>{
+ const s=fixture(true);
+ jessica(s); archive(s,'OPS-TRANSFER');
+ const c=cases.find(x=>x.id==='CASE-REC03-PURPOSE');
+ const render=()=>renderInvestigationCase(c,s,null,id=>'<span>'+id+'</span>');
+ assert.equal(s.isArtifactAvailable('records','ASSET-CUSTODY-03'),true);
+ const before=render();
+ assert.doesNotMatch(before,/PROTOTYPE_RETRIEVAL/);
+ assert.doesNotMatch(before,/data-source-evidence/);
+ inspect(s,'ASSET-CUSTODY-03');
+ const after=render();
+ assert.match(after,/PROTOTYPE_RETRIEVAL/);
+ assert.match(after,/data-source-evidence="ASSET-CUSTODY-03"/);
+ assert.match(after,/disabled>Update report/,'Other source provenance is still required');
 });
