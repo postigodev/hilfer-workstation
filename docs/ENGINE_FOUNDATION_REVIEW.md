@@ -1,6 +1,7 @@
 # Engine Foundation — implementation review
 
-PR 1 only, branch `codex/progression-engine-foundation`, based on verified main
+PR 1: [review pull request #7](https://github.com/postigodev/hilfer-workstation/pull/7),
+branch `codex/progression-engine-foundation`, based on verified main
 `39c750017daea2ba3116d5bfa896c8cbbf4e73da`. Implementation authorized by the approved Phase A addendum.
 
 ## Result
