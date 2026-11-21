@@ -4,7 +4,11 @@ const visible = node => Boolean(node?.isConnected && node.getClientRects().lengt
 export const presentationPolicies = {
   'document-presented': ({node,artifactId},signal) => !signal.aborted && visible(node) && node.dataset.artifactId===artifactId && node.matches('.record-document'),
   'message-body-presented': ({node,artifactId},signal) => !signal.aborted && visible(node?.querySelector('.mail-body')) && node.dataset.messageId===artifactId && node.open,
-  'attachment-presented': ({node,artifactId},signal) => !signal.aborted && visible(node) && node.dataset.attachmentId===artifactId,
+  'attachment-presented': ({node,artifactId},signal) => {
+    const content=node?.querySelector('[data-attachment-content]');
+    return !signal.aborted && visible(node) && node.dataset.attachmentId===artifactId &&
+      node.dataset.attachmentState==='ready' && visible(content) && Boolean(content.textContent?.trim());
+  },
   'media-frame-presented': ({node,artifactId},signal) => new Promise(resolve=>{
     if (!node || node.dataset.artifactId!==artifactId || signal.aborted) return resolve(false);
     let frame;

@@ -89,7 +89,13 @@ export function createArtifacts({store,records = [],emails,mail,footage = [],pol
       return source.type==='attachment' ? message?.attachments?.find(a=>a.id===id) ?? null : message;
     },
     listRecords:()=>records.filter(r=>canOpen('records',r.id)),
-    caseVisible:id=>{const c=catalog.find(c=>c.kind==='case' && c.caseId===id);return Boolean(c && !c.retired && c.requiredGrantIds.every(g=>store.getAccess().includes(g)) && (store.isContentAvailable(id) || store.getCases().find(c=>c.id===id)?.placeholder));},
+    caseVisible:id=>{
+      const c=catalog.find(c=>c.kind==='case' && c.caseId===id);
+      // Compatibility for the one authored demo teaser, never a general placeholder permission.
+      const demoTeaser=id==='CASE-002' && store.getCases().find(c=>c.id===id)?.placeholder===true;
+      const available=d.schemaVersion===1 ? store.getState().unlockedCaseIds.includes(id) : store.isContentAvailable(id);
+      return Boolean(c && !c.retired && c.requiredGrantIds.every(g=>store.getAccess().includes(g)) && (available || demoTeaser));
+    },
     subscribe(fn){subscribers.add(fn);return()=>subscribers.delete(fn);},
     dispose(){cancelAll();off();offReset();subscribers.clear();}
   };

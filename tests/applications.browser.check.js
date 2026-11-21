@@ -10,7 +10,7 @@ async function pageWithFixture({blockedStorage=false}={}) {
   const page=await browser.newPage({viewport:{width:1440,height:1000}}),data=applicationFixture();
   page.on('pageerror',e=>errors.push(e.message));
   page.on('response',r=>{if(r.status()>=400)errors.push(r.status()+' '+r.url());});
-  for(const name of ['records','emails','progression']) await page.route('**/data/'+name+'.json',route=>route.fulfill({json:data[name]}));
+  for(const name of ['records','cases','emails','progression']) await page.route('**/data/'+name+'.json',route=>route.fulfill({json:data[name]}));
   await page.addInitScript(()=>{
     window.engineAudioPlays=0;const play=HTMLMediaElement.prototype.play;
     HTMLMediaElement.prototype.play=function(){
@@ -30,6 +30,14 @@ const inspected=page=>page.evaluate(()=>hilfer.getSnapshot().facts.inspectedEvid
 async function shellOpen(page,name) {await page.locator('[data-open="'+name+'"]').first().click();}
 try {
   const page=await pageWithFixture();
+  await shellOpen(page,'reconciliation');await page.locator('#register-tab').click();
+  assert.ok(await page.locator('[data-case="CASE-002"]').isVisible());
+  assert.match(await page.locator('[data-case="CASE-002"]').innerText(),/LOCKED/);
+  assert.equal(await page.locator('[data-case="TEST-LOCKED-PLACEHOLDER"]').count(),0);
+  assert.doesNotMatch(await page.locator('#reconciliation-app').textContent(),/Synthetic reserved title|Synthetic private metadata/);
+  await shellOpen(page,'records');await page.locator('[data-file-id="HR-014"]').click();
+  await shellOpen(page,'reconciliation');await page.locator('#register-tab').click();
+  assert.ok(await page.locator('[data-case="TEST-LOCKED-PLACEHOLDER"]').isVisible());
   await shellOpen(page,'emails');
   await page.locator('[data-mail-row="TEST-THREAD"]').dblclick();
   await page.waitForFunction(()=>hilfer.getSnapshot().facts.inspectedEvidenceIds.includes('TEST-MAIL-B'));
@@ -84,11 +92,19 @@ try {
   await delayed.evaluate(()=>{window.newInspection=delayedArtifacts.present('test-viewer','records','TEST-SEALED',{node:delayedNode});finishDocument();});
   assert.equal(await delayed.evaluate(()=>newInspection.then(r=>r.ok)),true);
   assert.ok((await inspected(delayed)).includes('TEST-SHARED'));
-  assert.equal(await delayed.evaluate(async()=>{
+  assert.deepEqual(await delayed.evaluate(async()=>{
     const attachment=delayedArtifacts.get('mail','TEST-ATTACHMENT');
-    const node=document.createElement('section');node.dataset.attachmentId=attachment.id;node.textContent=attachment.body;document.body.append(node);
-    return (await delayedArtifacts.present('attachment','mail',attachment.id,{node})).ok;
-  }),true);
+    const node=document.createElement('section');node.dataset.attachmentId=attachment.id;
+    const content=document.createElement('div');content.dataset.attachmentContent='';node.append(content);document.body.append(node);
+    const results=[];
+    for(const [state,text] of [['loading','Loading…'],['error','Load failed'],['ready','']]) {
+      node.dataset.attachmentState=state;content.textContent=text;
+      results.push((await delayedArtifacts.present('attachment','mail',attachment.id,{node})).ok);
+      if(hilfer.getSnapshot().facts.inspectedEvidenceIds.includes('TEST-ATTACHMENT-EVIDENCE')) throw Error('Incomplete attachment was inspected');
+    }
+    content.textContent=attachment.body;node.dataset.attachmentState='ready';
+    results.push((await delayedArtifacts.present('attachment','mail',attachment.id,{node})).ok);return results;
+  }),[false,false,false,true]);
   assert.ok((await inspected(delayed)).includes('TEST-ATTACHMENT-EVIDENCE'));
 
   const blocked=await pageWithFixture({blockedStorage:true});await shellOpen(blocked,'records');

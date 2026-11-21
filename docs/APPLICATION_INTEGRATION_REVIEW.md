@@ -39,7 +39,7 @@ an unrelated baseline clip or mark an unplayed voice completed.
 
 | Check | Result |
 | --- | --- |
-| `npm test` | **76 passed, 0 failed, 0 skipped**; original 61 tests retained plus 15 focused regressions. |
+| `npm test` | **78 passed, 0 failed, 0 skipped**; original 61 tests retained plus 17 focused regressions. |
 | `node tests/browser.check.js` | PASS: Jessica/report/OS shell/desktop/mobile and unmapped Footage playback. |
 | `node tests/assistant.browser.check.js` | PASS: actual audio, correspondence, notification, focus, reload/reset and mobile. |
 | `node tests/mail.browser.check.js` | PASS: Mail readers/search/receipts/navigation, restricted fixture, revocation and blocked storage. |
@@ -84,3 +84,27 @@ references/win98-icons directory remains outside commits.
   outside scope. Do not begin implementing the seven beats or create Drive narrative documents automatically.
 
 See [APP_INTEGRATION.md](APP_INTEGRATION.md) for teammate-facing API and policy details.
+
+## 2026-11-21 — final review follow-up
+
+Both requested findings are fixed without a new schema, save migration, production attachment viewer or narrative
+content. Only the exact demo ID CASE-002, still marked placeholder and authorized by its grants, can retain a
+locked teaser. A future placeholder must satisfy normal availability; legacy schema-1 callers use the actual
+unlocked-case projection. Tests cover that compatibility path and verify a synthetic reserved title/metadata
+is absent from the actual Case Register DOM until its availability condition succeeds.
+
+The text-attachment adapter now requires a matching ID, explicit successful ready state and a visible nonempty
+data-attachment-content child. Visible loading/error messages, ready-but-empty content and incomplete containers
+cannot create inspection. A completed text presentation succeeds through a fresh authorized operation. Both
+unit and real-DOM browser tests exercise loading, error, empty-ready and successful states. Binary/image-only
+attachments remain unsupported until a resource-specific viewer/policy is separately approved.
+
+The two new unit regressions failed against the prior implementation, then passed with the focused fixes.
+Final verification: 78 unit tests passed, and all five browser suites passed in a final sequential run. Jessica's
+filing/report/reload/reset and single audiovisual cue, Mail authorization/revoked readers, and stale async
+revoke→regrant cancellation remain covered. git diff --check passed; authored narrative datasets are unchanged.
+
+One initial concurrent Assistant check failed its pre-first-click assertion (an Audio node existed where the test
+expected undefined). The unchanged check passed when run alone and again in the final sequential suite. Its cause
+was not established; no Assistant code or assertions were changed to hide that result. The final passes are local
+verification, not a claim that GitHub CI ran. PR #8 must remain open for final review, without automatic merge.

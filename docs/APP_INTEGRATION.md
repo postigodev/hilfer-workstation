@@ -24,8 +24,9 @@ against the actual supplied sources and checks Mail grants against the central r
 duplicate bindings, message/thread mismatches or unsupported inspection policies fail before apps mount.
 
 Content without an availability policy is unrestricted by progression, but still requires its grants. Cases
-have explicit catalog entries. Existing CASE-002 alone retains the authored placeholder presentation while
-locked; restricted ordinary cases and source metadata are filtered. Historical retired definitions may remain
+have explicit catalog entries. A narrow compatibility check for the exact demo ID CASE-002 retains its authored
+placeholder presentation while locked, still subject to grants. placeholder:true alone never grants visibility
+to another case. Restricted cases and source metadata are filtered. Historical retired definitions may remain
 for save provenance but cannot be opened or newly inspected.
 
 ## Shared boundary
@@ -54,7 +55,7 @@ This is correctness for a local static game, not a browser anti-tamper security 
 | --- | --- |
 | document-presented | Connected, visible rendered record article with the expected artifact ID. |
 | message-body-presented | Its own open message details and visible body in an authorized reader. |
-| attachment-presented | A connected, visible attachment presentation with its own attachment ID. |
+| attachment-presented | Matching ID, explicit ready state and a visible, nonempty rendered text-content child. |
 | media-frame-presented | A real advancing decoded playback frame, not paused, in a visible authorized player. |
 
 Original schema-1 `document-open` explicitly resolves to document-presented at the adapter boundary; schema-2
@@ -77,6 +78,14 @@ Only mapped, actually expanded message bodies count. A parent message never cred
 There are no authored attachments or attachment viewer in the current production corpus. The attachment policy
 and independent identity/getter are executable and tested with an injected synthetic presentation; adding an
 actual narrative attachment/viewer remains a separately authored content task. No definitive inference UI is added.
+
+The minimal text-attachment contract is `data-attachment-id` on the presentation root,
+`data-attachment-state="loading"|"error"|"ready"`, and a child marked `data-attachment-content`.
+A renderer must keep loading during fetch/render, set error on failure, and set ready only after successful
+content population. The policy independently rejects a missing/empty/whitespace-only or hidden content child,
+even when the root claims ready. A loading/error root never counts, including when it displays spinner/error
+text. A completed load starts a fresh authorized presentation operation. This contract does not claim readiness
+for binary/image-only attachments; those need an explicit resource-specific policy if a real viewer is approved.
 
 ## Effect ownership
 

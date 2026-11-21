@@ -9,6 +9,7 @@ import {memory} from './fixtures/investigation.js';
 import {SAVE_KEY,V2_SAVE_KEY} from '../js/core/persistence.js';
 import {applicationFixture} from './fixtures/application.js';
 import {deriveReport,renderReport} from '../js/apps/report.js';
+import {presentationPolicies} from '../js/apps/inspection.js';
 
 const read = name=>JSON.parse(readFileSync(new URL('../data/'+name+'.json',import.meta.url),'utf8'));
 function fixture() {
@@ -167,4 +168,35 @@ test('Mail applies content availability before message search, counts, lookups a
   assert.equal(mail.openMessage('TEST-MESSAGE-A').ok,false);assert.equal(artifacts.get('mail','TEST-ATTACHMENT'),null);
   store.discover('HR-014');assert.equal(mail.getThread('TEST-THREAD').messages.length,2);
   assert.equal(mail.listThreads().length,1);assert.ok(artifacts.get('mail','TEST-ATTACHMENT'));
+});
+
+test('a future locked placeholder is hidden while the CASE-002 compatibility label is preserved',()=>{
+  const f=fixture();
+  f.cases.push({id:'TEST-LOCKED-PLACEHOLDER',title:'Synthetic reserved title',description:'Synthetic private metadata',placeholder:true});
+  f.progression.contentCatalog.push({id:'TEST-LOCKED-PLACEHOLDER',kind:'case',caseId:'TEST-LOCKED-PLACEHOLDER',requiredGrantIds:[]});
+  f.progression.availabilityPolicies.push({contentId:'TEST-LOCKED-PLACEHOLDER',when:{evidenceInspected:{evidenceId:'HR-014'}}});
+  const {store,artifacts}=setup(f);
+  assert.equal(artifacts.caseVisible('CASE-002'),true);
+  assert.equal(artifacts.caseVisible('TEST-LOCKED-PLACEHOLDER'),false);
+  assert.deepEqual(store.getCases().filter(c=>artifacts.caseVisible(c.id)).map(c=>c.id),['CASE-001','CASE-002']);
+  store.discover('HR-014');assert.equal(artifacts.caseVisible('TEST-LOCKED-PLACEHOLDER'),true);
+  const legacy=createStore({records:f.records,cases:f.cases,storage:memory()});
+  const legacyArtifacts=createArtifacts({store:legacy,records:f.records,policies:presentationPolicies});
+  assert.equal(legacyArtifacts.caseVisible('CASE-002'),true);
+  assert.equal(legacyArtifacts.caseVisible('TEST-LOCKED-PLACEHOLDER'),false);
+});
+
+test('attachment inspection requires completed presentation and nonempty visible content',async()=>{
+  const {store,artifacts}=setup(applicationFixture(),{...presentationPolicies});
+  function node(state,text) {
+    const content={isConnected:true,textContent:text,getClientRects:()=>[{}],closest:()=>null};
+    return {isConnected:true,dataset:{attachmentId:'TEST-ATTACHMENT',attachmentState:state},getClientRects:()=>[{}],closest:()=>null,
+      querySelector:selector=>selector==='[data-attachment-content]'?content:null};
+  }
+  for(const [state,text] of [['loading','Loading…'],['error','Load failed'],['ready','   ']]) {
+    assert.equal((await artifacts.present('attachment','mail','TEST-ATTACHMENT',{node:node(state,text)})).ok,false,state);
+    assert.ok(!store.getSnapshot().facts.inspectedEvidenceIds.includes('TEST-ATTACHMENT-EVIDENCE'));
+  }
+  assert.equal((await artifacts.present('attachment','mail','TEST-ATTACHMENT',{node:node('ready','Separate attachment body')})).ok,true);
+  assert.deepEqual(store.getSnapshot().facts.inspectedEvidenceIds,['TEST-ATTACHMENT-EVIDENCE']);
 });

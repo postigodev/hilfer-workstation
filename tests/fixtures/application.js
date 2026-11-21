@@ -5,6 +5,9 @@ const read=name=>JSON.parse(readFileSync(new URL('../../data/'+name+'.json',impo
 export function applicationFixture() {
   const f={records:read('records'),cases:read('cases'),emails:read('emails'),progression:read('progression')};
   const d=f.progression;
+  f.cases.push({id:'TEST-LOCKED-PLACEHOLDER',title:'Synthetic reserved title',description:'Synthetic private metadata',placeholder:true});
+  d.contentCatalog.push({id:'TEST-LOCKED-PLACEHOLDER',kind:'case',caseId:'TEST-LOCKED-PLACEHOLDER',requiredGrantIds:[]});
+  d.availabilityPolicies.push({contentId:'TEST-LOCKED-PLACEHOLDER',when:{evidenceInspected:{evidenceId:'HR-014'}}});
   d.grants.push('test.access');
   d.accessPolicies.push({grantId:'test.access',when:{any:[{not:{evidenceInspected:{evidenceId:'TEST-REVOKE'}}},{evidenceInspected:{evidenceId:'TEST-REGRANT'}}]}});
   function binding(app,id,type){d.contentCatalog.push({id:app+':'+id,kind:'artifact',app,artifactId:id,artifactType:type,requiredGrantIds:[]});}
