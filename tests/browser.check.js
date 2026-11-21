@@ -188,6 +188,7 @@ try {
   assert.ok(await video.evaluate(el => el.videoWidth > 0 && el.duration > 5));
   await page.getByRole('button', {name:'Minimize Footage', exact:true}).click();
   assert.ok(await video.evaluate(el => el.paused));
+  assert.deepEqual(await page.evaluate(()=>hilfer.getSnapshot().facts.inspectedEvidenceIds),beforeFootage,'actual preview playback is not narrative inspection');
   for (const asset of ['logo', 'wallpaper', 'records', 'reconciliation', 'settings']) {
     assert.equal((await page.request.get(new URL('/assets/arwa/' + asset + '.webp', target).href)).status(), 200);
   }

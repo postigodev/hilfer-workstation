@@ -1,4 +1,4 @@
-# Engine Foundation (PR 1)
+# Investigation Engine (PR 1 and PR 2)
 
 The engine runs in vanilla JavaScript with no dependencies. It separates source inspection, explicit
 inferences, immutable administrative determinations and persistent milestones. The playable Jessica demo
@@ -13,13 +13,16 @@ fixture is story canon. In particular, footage showing severe injury does not es
 | `js/core/rules.js` | Closed schema validation, cycle rejection, pure conditions/projections and finite rule settlement. |
 | `js/core/progression.js` | Historical resolution validator and v1 loading helper, legacy-definition compiler and legacy state projection. |
 | `js/core/persistence.js` | Snapshot validation, verified v2 storage, original-v1 and sequential content migrations. |
-| `js/core/effects.js` | Unmounted PR 1 delivery harness for registered handlers and durable acknowledgment. |
+| `js/core/effects.js` | Delivery harness for registered handlers, cancellation and durable acknowledgment. |
+| `js/core/artifacts.js` | Catalog/source validation, authorized queries and irreversible presentation tokens. |
+| `js/apps/inspection.js` | Rendered document/message/attachment and actual media-frame policies. |
+| `js/apps/presentation.js` | Mounted fixed dialogue/audio/animation adapters; preserves Jessica's existing cue owner. |
 | `data/progression.json` | Explicit production definition for the existing demo only. |
 
 `main.js` loads production progression alongside the existing datasets. Callers that omit it get definitions
 compiled from their existing records/cases. No demo IDs occur in the store or evaluator.
-`records-fixture.js` still calls `discover(recordId)` when it presents a record; this now translates to a logical
-inspection. Reconciliation checks that history rather than manufacturing it while opening a comparison.
+`records-fixture.js` renders through the artifact boundary, then credits its mapped logical source after
+the document-presented policy succeeds. Reconciliation checks that history rather than manufacturing it.
 Filing may register the displayed baseline as provenance without claiming it was inspected in Records.
 
 ## Read interfaces and state
@@ -34,14 +37,15 @@ store.getCompletedCaseIds();
 store.evidenceForArtifact('records', 'HR-014'); // logical evidence ID, or null
 ```
 
-Catalog getters return frozen definitions. They are internal integration surfaces, not authorization-filtered
-application queries. PR 1 does not add restricted production content while those surfaces await PR 2.
+Catalog getters return frozen definitions and remain trusted internal integration surfaces. Applications use
+the authorized artifact boundary; the low-level logical command remains available to tests/legacy callers.
+See [APP_INTEGRATION.md](APP_INTEGRATION.md) for the schema-2 registry, actual app policies and cancellation.
 
 The canonical save has exactly this structure (ID-keyed entries shown as examples):
 
 ```js
 {
-  version: 2, contentVersion: 1,
+  version: 2, contentVersion: 2,
   facts: {
     registeredEvidenceIds: [], inspectedEvidenceIds: [], attachedEvidence: {},
     inferences: { /* inferenceId: {evidenceIds: []} */ },
@@ -118,15 +122,19 @@ separate subscription so existing exact-sequence consumers remain compatible.
 
 ## Definition schema
 
-Top-level required properties: `schemaVersion:1`, integer `contentVersion`, `evidence`, `inferences`,
+Top-level required properties: `schemaVersion:1|2`, integer `contentVersion`, `evidence`, `inferences`,
 `determinations`, `milestoneIds`, `grants`, `initialGrantIds`, `initialCaseIds`, `caseCompletionPolicies`,
 `accessPolicies`, `availabilityPolicies`, `presentationPolicies`, `effects`, `rules`.
+Schema 2 additionally requires `contentCatalog` and validates availability targets, bindings and supported
+inspection policies. Schema 1 remains accepted for original callers and historical migration sources.
 IDs must be unique safe strings; unknown properties and references are rejected. Array order is not a rule priority.
 
 - Evidence: `{id,sourceGroupId,department,tags,artifacts,fields,caseIds,requiredGrantIds,retired?}`.
   Each artifact is `{app:'records'|'mail'|'footage',artifactId,inspectionPolicyId}`. A presentation can map to
   only one evidence; many presentations may share that evidence. Inspection policy IDs describe an adapter
-  contract, not executable JSON. Only explicitly mapped artifacts count. PR 2 will wire non-Records adapters.
+  contract, not executable JSON. Only explicitly mapped artifacts count. Mail threads are containers; individual
+  message bodies and attachments are separately inspectable. `document-open` is an explicit legacy adapter alias
+  of document-presented; schema-2 definitions use the canonical name. Saved inspections are not reinterpreted.
 - Inference: `{id,supportAlternatives,requires,retired?}`. Each support alternative is a nonempty exact set
   of known evidence IDs. Sources must be inspected and currently authorized. Availability never establishes it.
 - Determination: `{id,caseId,claimId,field,value,sourceEvidenceIds,provenanceEvidenceIds,requires?,legacy?,retired?}`.
@@ -177,8 +185,11 @@ acknowledge accepted delivery. Failures become skipped, and interrupted pending/
 skipped on reload. Reset cancels acknowledgments from earlier asynchronous deliveries. Concurrent drains
 cannot claim an occurrence twice. At-most-once delivery accepts possible omissions on interruption.
 
-The harness is **not mounted in production**. Jessica still has exactly one existing reconciled-event audio/
-microglitch path. Assistant delivery, notification and completed-voice receipts remain separate and unchanged.
+The harness is mounted through fixed presentation adapters. Jessica still has exactly one existing reconciled-event
+audio/microglitch path; its progression config adds no duplicate effects. Generic engine sound/animation instances
+are separate from that legacy cue, so cancellation cannot stop Jessica's own transition. Assistant delivery,
+notification and completed-voice receipts remain separate. Cancellation stops only a freshly delivered engine
+voice cue, without marking it completed or stopping another cue that was already narrating.
 No engine acknowledgment claims that a voice clip completed. Persistent unread notifications remain UI projections.
 
 ## Save and content migration
@@ -224,7 +235,7 @@ unverifiable backup blocks writes. Malformed/future v2 or missing/invalid migrat
 and block progress writes; they do not silently load older v1. Explicit reset may replace that save with fresh
 v2. Reset clears UI receipts through the existing reset event; the retained v1 cannot resurrect the old game.
 
-## Verification and PR 2 boundary
+## Verification and remaining scope
 
 Run `npm test`, then serve with `python scripts/serve.py --port 8080` and run the four browser checks in
 INTEGRATION.md. No new test dependency is added. The only changed existing unit assertion reads the new
@@ -235,6 +246,9 @@ relationships and multiple administrative claims. `tests/fixtures/calibration.js
 different investigation from JSON and public commands alone, with two application presentations of one source.
 Neither fixture is loaded by the production app.
 
-Deferred to PR 2: authorization-filtered app queries, Mail dynamic grant wiring, reader revocation, Mail/Footage
-inspection adapters, production narrative effect adapter mounting and their browser integration. New narrative
-content, determination revisions, inference UI and ending mechanics remain unapproved/out of scope.
+`tests/artifacts.test.js` and `tests/applications.browser.check.js` additionally validate catalog errors, granular
+Mail authorization/inspection, separate attachments, real media frames, effect adapters and stale work after
+revoke→regrant. Run that fifth browser suite alongside the four existing checks. Production uses schema/content
+2 with an explicit identity migration from retained `data/history/` definitions. No narrative fixture is installed.
+
+New narrative content, determination revisions, inference UI and ending mechanics remain unapproved/out of scope.

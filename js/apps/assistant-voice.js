@@ -25,6 +25,7 @@ export function createAssistantVoice(storage, caseId, {
 
   return {
     stop,
+    cancelCue(id) { if(activeId===id) stop(); },
     reset() {
       stop();
       completed.clear();

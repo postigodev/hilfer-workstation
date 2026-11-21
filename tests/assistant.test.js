@@ -37,6 +37,14 @@ test('narration only speaks fresh cues and ignores canceled completions', () => 
   assert.match(played.at(-1), /welcome\.mp3$/);
 });
 const read = name => JSON.parse(readFileSync(new URL('../data/' + name + '.json', import.meta.url), 'utf8'));
+test('canceling a queued engine voice cannot interrupt another cue or mark it completed',()=>{
+  const saved=new Map(),storage={getItem:k=>saved.get(k),setItem:(k,v)=>saved.set(k,v)};
+  let pauses=0;const audio={play(){},pause(){pauses++;}},voice=createAssistantVoice(storage,'TEST',{audio});
+  voice.play({id:'baseline',src:'baseline.mp3'});const before=pauses;
+  voice.cancelCue('queued-engine');assert.equal(pauses,before);
+  voice.cancelCue('baseline');assert.equal(pauses,before+1);
+  assert.equal(saved.size,0);
+});
 const records = read('records'), cases = read('cases'), content = read('assistant');
 const memory = () => {
   const data = new Map();

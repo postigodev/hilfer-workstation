@@ -17,6 +17,7 @@ node tests/browser.check.js
 node tests/assistant.browser.check.js
 node tests/mail.browser.check.js
 node tests/theme.browser.check.js
+node tests/applications.browser.check.js
 ```
 
 ## Player-facing flow
@@ -76,7 +77,7 @@ Current key: `hilfer:save:v2`. Saves contain canonical facts and rule/effect rec
 
 `hilfer:save:v1` remains an untouched migration source. Valid historical determinations and links survive; discoveries become registration, never retrospective inspection. v2/content validation preserves incompatible saves and blocks writes rather than replacing them or loading stale v1. Storage failure permits in-memory play with warning. Explicit reset writes fresh v2 and resets existing UI receipts. Detailed schema, sequential content migrations, effect acknowledgment and limitations are documented in [ENGINE.md](ENGINE.md).
 
-`data/progression.json` declares the existing demo's logical evidence, individual determination, completion rule, persistent milestone and appearance policy. Distortion is derived from milestones; Jessica's existing reconciliation event remains its only transient audiovisual path. Mail/Assistant/Footage integrations are otherwise unchanged. Dynamic application authorization and cross-app inspection/effect adapters are deferred to PR 2; PR 1 adds no restricted narrative content.
+`data/progression.json` now uses definition schema/content 2 and a validated contentCatalog. `data/history/` retains the original migration sources; the save envelope remains v2. Distortion remains milestone-derived and Jessica retains her one existing transient cue. Applications use the shared authorization/presentation boundary; Mail retains its internal thread-grant model and UI receipts. See [APP_INTEGRATION.md](APP_INTEGRATION.md) for message/attachment granularity, policy aliases, cancellation and mounted effects. No restricted narrative content is added.
 
 Milestone events are delivered by `store.onEvent` after state changes:
 
