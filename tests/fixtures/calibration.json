@@ -1,0 +1,16 @@
+{
+  "cases": [{"id":"TEST-CALIBRATION","initiallyUnlocked":true}],
+  "records": [],
+  "progression": {
+    "schemaVersion":1,"contentVersion":1,
+    "evidence":[
+      {"id":"TEST-BENCH","sourceGroupId":"TEST-INSTRUMENT","department":"Test Laboratory","tags":["calibration"],"fields":{"calibration":"VERIFIED"},"caseIds":["TEST-CALIBRATION"],"requiredGrantIds":[],"artifacts":[{"app":"records","artifactId":"BENCH-ARTIFACT","inspectionPolicyId":"document-open"},{"app":"mail","artifactId":"BENCH-ATTACHMENT","inspectionPolicyId":"attachment-open"}]}
+    ],
+    "inferences":[],
+    "determinations":[{"id":"TEST-CALIBRATION-ENTRY","caseId":"TEST-CALIBRATION","claimId":"instrument","field":"calibration","value":"VERIFIED","sourceEvidenceIds":["TEST-BENCH"],"provenanceEvidenceIds":["TEST-BENCH"]}],
+    "milestoneIds":["TEST-BENCH-ACCEPTED"],"grants":[],"initialGrantIds":[],"initialCaseIds":["TEST-CALIBRATION"],
+    "caseCompletionPolicies":[{"caseId":"TEST-CALIBRATION","when":{"determinationFiled":{"determinationId":"TEST-CALIBRATION-ENTRY"}}}],
+    "accessPolicies":[],"availabilityPolicies":[],"presentationPolicies":[],"effects":[],
+    "rules":[{"id":"TEST-CALIBRATION-FILED","mode":"once","when":{"determinationFiled":{"determinationId":"TEST-CALIBRATION-ENTRY"}},"consequences":[{"reachMilestone":{"milestoneId":"TEST-BENCH-ACCEPTED"}}]}]
+  }
+}

@@ -78,7 +78,9 @@ export function mountReconciliation(root, store, { openRecord = () => {} } = {})
       return { ok: false, message: 'No available report entry matches this claim.' };
     if (store.getState().completedCaseIds.includes(definition.id))
       return { ok: false, message: 'This report entry is already filed.' };
-    store.discover(recordId);
+    const evidenceId = store.evidenceForArtifact('records', recordId);
+    if (!store.getSnapshot().facts.inspectedEvidenceIds.includes(evidenceId))
+      return { ok: false, message: 'Inspect this source in Records before comparing its claim.' };
     selectedCaseId = definition.id;
     pendingClaim = { caseId: definition.id, recordId, field };
     view = 'register';

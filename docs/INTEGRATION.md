@@ -40,13 +40,14 @@ node tests/theme.browser.check.js
 
 `js/main.js` creates `createStore({records,cases,storage})` and mounts both apps using the same store.
 
-Public store methods:
+Public store methods (legacy adapters remain supported; see [ENGINE.md](ENGINE.md) for v2 commands):
 
 - `getRecord(id)`, `getRecords()`, `getCases()`, `getState()`, `getWarning()`.
-- `discover(recordId)`: register a known record when inspected. Filing also registers the existing report source; this list is not an independent inspection history. Browsing search results does not discover records.
+- `discover(recordId)`: explicitly inspect the logical evidence mapped to a Records document. Filing/attachment register provenance without marking inspection. The legacy `discoveredEvidenceIds` projection remains registration, not inspection history. Browsing search results does not inspect records.
 - **`reconcileClaim(caseId, recordId, field)`**: use a *previously inspected*, case-relevant field. Reject locked, completed, unknown, unsupported or baseline-only selections. For a valid revised source, link only the valid baseline and chosen records (any other required evidence must already be attached), validate against the case definition, atomically file the canonical resolution and emit progression events. This is the new primary action.
 - `attachEvidence(caseId, recordId)`, `removeEvidence(caseId, recordId)`, `submitResolution(caseId, resolution)`: existing validated **legacy domain APIs** retained for compatibility and tests. They are not player-facing requirements for this iteration.
-- `subscribe(fn)`, `onEvent(fn)`: subscribe to state and milestone events.
+- `getSnapshot()`, `dispatch(command)`, `getAccess()`, `getAvailability()`, `getCompletedCaseIds()`, `evidenceForArtifact(app,id)`: canonical v2 engine interfaces.
+- `subscribe(fn)`, `onEvent(fn)`: subscribe to compatible state and the unchanged legacy event stream. `onEngineEvent(fn)` additionally receives logical inspection, inference, individual determination, milestone, access and availability events.
 - `resetProgress()`: revert to a fresh session.
 
 The Records adapter is `mountRecords(root, store, {onClaim})` from `js/apps/records-fixture.js`. `renderRecord(record)` generates a visually differentiated employee/medical form and a `data-claim-record` + `data-claim-field` button where appropriate. New record types need field-specific interaction metadata; **do not hardcode all records as `workEligibility`**.
@@ -71,9 +72,11 @@ Source references navigate to Records. Report case links navigate to Case Regist
 
 ## Persistence and progression
 
-Key: `hilfer:save:v1`. Contents: version, discoveredEvidenceIds, attachedEvidence, resolutions, completedCaseIds, unlockedCaseIds, distortionLevel. No images, static JSON or separate report copy.
+Current key: `hilfer:save:v2`. Saves contain canonical facts and rule/effect receipts; `getState()` is the historical v1-shaped projection, not the persisted object. No static datasets or separate report copy are stored.
 
-Save loading validates known/relevant IDs and reconstructs unlocks/distortion by replaying valid resolutions. Invalid/incompatible saves start clean; inaccessible storage allows in-memory play and displays a warning.
+`hilfer:save:v1` remains an untouched migration source. Valid historical determinations and links survive; discoveries become registration, never retrospective inspection. v2/content validation preserves incompatible saves and blocks writes rather than replacing them or loading stale v1. Storage failure permits in-memory play with warning. Explicit reset writes fresh v2 and resets existing UI receipts. Detailed schema, sequential content migrations, effect acknowledgment and limitations are documented in [ENGINE.md](ENGINE.md).
+
+`data/progression.json` declares the existing demo's logical evidence, individual determination, completion rule, persistent milestone and appearance policy. Distortion is derived from milestones; Jessica's existing reconciliation event remains its only transient audiovisual path. Mail/Assistant/Footage integrations are otherwise unchanged. Dynamic application authorization and cross-app inspection/effect adapters are deferred to PR 2; PR 1 adds no restricted narrative content.
 
 Milestone events are delivered by `store.onEvent` after state changes:
 

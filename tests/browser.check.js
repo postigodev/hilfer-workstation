@@ -17,6 +17,10 @@ try {
   const report = page.locator('[data-report-section="CASE-001"]');
   await page.locator('[data-open="reconciliation"]').first().click();
   assert.equal(await page.locator('#report-tab').getAttribute('aria-selected'), 'true');
+  assert.equal(await page.evaluate(() => hilfer.getSnapshot().version), 2);
+  assert.deepEqual(await page.evaluate(() => hilfer.getSnapshot().facts.inspectedEvidenceIds), []);
+  assert.equal(await page.evaluate(() => hilfer.presentClaim('OH-008', 'workEligibility').ok), false);
+  assert.deepEqual(await page.evaluate(() => hilfer.getSnapshot().facts.inspectedEvidenceIds), []);
   for (const text of ['Available for duty', 'Human Resources', 'Unverified']) assert.ok((await report.textContent()).includes(text));
   assert.doesNotMatch(await report.textContent(), /OH-008|NOT_CLEARED/);
   assert.equal(await page.locator('[data-report-section="CASE-002"]').count(), 0);
@@ -31,6 +35,7 @@ try {
   assert.equal(await page.locator('[data-file-id]').count(), 1);
   await page.locator('#clear-search').click();
   await page.locator('[data-file-id="HR-014"]').click();
+  assert.deepEqual(await page.evaluate(() => hilfer.getSnapshot().facts.inspectedEvidenceIds), ['HR-014']);
   assert.match(await page.locator('.document-date').innerText(), /Oct 12, 1998/);
   assert.doesNotMatch(await page.locator('.record-document').innerText(), /EMP-JESSICA|AVAILABLE|1998-10-12/);
   await page.locator('.record-document summary').focus();
