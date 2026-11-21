@@ -1,5 +1,6 @@
 # PR 2 — application integration review
 
+[Review pull request #8](https://github.com/postigodev/hilfer-workstation/pull/8).
 Branch: `codex/progression-application-integration`. Base: verified main
 `f9f3305c8f33f4e7fa14818b5796d0efae99ff32`. The user approved the specification and all three clarifications.
 This delivers PR 2 for review only; do not merge automatically or begin narrative investigation design.

@@ -26,4 +26,6 @@ No new narrative, cases, inference UI, ending, Drive writes or auto-merge. Keep 
 ### 4. Verification and delivery
 - [x] Add synthetic browser coverage for real adapters, grant revocation and asynchronous cancellation.
 - [x] Run all unit and browser suites, inspect screenshots, document actual outcomes/limits.
-- [ ] Commit explicit paths, push feature branch, open PR against main without merging.
+- [x] Commit explicit paths, push feature branch, open PR against main without merging.
+
+Delivered: [PR #8](https://github.com/postigodev/hilfer-workstation/pull/8); see [verification report](../../APPLICATION_INTEGRATION_REVIEW.md).
