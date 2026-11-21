@@ -169,4 +169,11 @@ export function mountAI(root, store, content, { storage } = {}) {
   });
   update();
   root.hidden = false;
+  return {hasDelivered:signal=>delivered.has(signal),cancelSignal(signal) {
+    const cue=content.dialogue.find(entry=>entry.on===signal)?.voice;
+    if(cue && voiceCue?.id===cue.id){voiceCue=null;needsGesture=false;voice.cancelCue(cue.id);}
+  },deliverSignal(signal) {
+    if(!content.dialogue.some(entry=>entry.on===signal)) return false;
+    deliver(signal); return true;
+  }};
 }

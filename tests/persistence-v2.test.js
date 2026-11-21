@@ -8,7 +8,8 @@ import {drainEffects} from '../js/core/effects.js';
 import {investigation,memory} from './fixtures/investigation.js';
 
 const read = name => JSON.parse(readFileSync(new URL(`../data/${name}.json`,import.meta.url),'utf8'));
-const demo = () => ({records:read('records'),cases:read('cases'),progression:read('progression')});
+// These PR 1 migration fixtures intentionally retain original content-1 definitions.
+const demo = () => ({records:read('records'),cases:read('cases'),progression:read('history/progression-v1')});
 function inspected(storage=memory()) {
   const store = createStore({...investigation(),storage});
   for(const evidenceId of ['TEST-CAMERA','TEST-HR','TEST-MAINTENANCE','TEST-RECOVERY']) store.dispatch({type:'inspectEvidence',evidenceId});
@@ -200,4 +201,11 @@ test('a delivery requested by a store subscriber claims after publication and de
   store.dispatch({type:'fileDetermination',determinationId:'TEST-AUTHORIZATION',sourceEvidenceId:'TEST-HR'});
   await Promise.all(pending); unsubscribe();
   assert.equal(calls,1); assert.equal(Object.values(store.getSnapshot().effectReceipts)[0].status,'delivered');
+});
+
+test('revocation cancellation skips an in-flight engine effect without acknowledging delivery',async()=>{
+  const {store}=filed(),controller=new AbortController();let finish;
+  const pending=drainEffects(store,{animation:()=>new Promise(resolve=>{finish=resolve;})},{signal:controller.signal});
+  await Promise.resolve();controller.abort();finish(true);await pending;
+  assert.equal(Object.values(store.getSnapshot().effectReceipts)[0].status,'skipped');
 });

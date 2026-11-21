@@ -1,4 +1,6 @@
 import { escapeHTML as h, label, displayValue, displayDate, recordTitle, RECORD_MIME } from './shared.js';
+import { createArtifacts } from '../core/artifacts.js';
+import { presentationPolicies, watchViewer } from './inspection.js';
 export { RECORD_MIME } from './shared.js';
 export function beginRecordDrag(event, recordId) {
   event.stopPropagation();
@@ -31,16 +33,17 @@ export function renderRecord(record) {
   } else {
     content = `<header class="document-heading"><b>${h(record.department)}</b><span>${h(record.title)}</span></header>${identity}${reference}${fields(Object.entries(record.fields).map(([key, value]) => [label(key), value]))}`;
   }
-  return `<article class="record-document ${record.type === 'occupational_health_record' ? 'medical-document' : ''}" tabindex="0" aria-label="Inspect ${h(record.id)}">${content}</article>`;
+  return `<article data-artifact-id="${h(record.id)}" class="record-document ${record.type === 'occupational_health_record' ? 'medical-document' : ''}" tabindex="0" aria-label="Inspect ${h(record.id)}">${content}</article>`;
 }
 
 // Replaceable Records UI. No case rules or duplicated game state live here.
-export function mountRecords(root, store, { onClaim = () => {} } = {}) {
+export function mountRecords(root, store, { onClaim = () => {}, artifacts } = {}) {
+  artifacts ??= createArtifacts({store,records:store.getRecords(),policies:presentationPolicies});
   let selectedId = null;
   let department = '';
   let query = '';
   const departmentIcons = {'Human Resources':'hr', 'Occupational Health':'medical'};
-  const departments = [...new Set(store.getRecords().map(r => r.department))];
+  const departments = [];
   root.innerHTML = `<div class="app-toolbar"><span>Records</span><div class="application-actions"><button data-open="reconciliation">Reconciliation</button><button data-arrange aria-label="Arrange workspace">Arrange</button></div></div>
     <form class="records-search" role="search"><label for="records-search">Find</label><input type="search" id="records-search" placeholder="Name, reference or department" autocomplete="off"><button type="button" id="clear-search">Clear</button></form>
     <div class="records-explorer"><nav class="folder-tree" aria-label="Departments"><div class="pane-label">Departments</div><button data-folder="" aria-pressed="true"><span class="folder-symbol" aria-hidden="true"></span>All departments</button>${departments.map(name => `<button data-folder="${h(name)}" aria-pressed="false">${departmentIcons[name] ? `<span class="department-icon" data-department-icon="${departmentIcons[name]}" aria-hidden="true"></span>` : '<span class="folder-symbol" aria-hidden="true"></span>'}${h(name)}</button>`).join('')}</nav>
@@ -50,13 +53,17 @@ export function mountRecords(root, store, { onClaim = () => {} } = {}) {
     <div class="records-status status-bar"><span class="status-bar-field" id="record-count"></span><span class="status-bar-field" id="record-drag-hint">Read-only</span></div>`;
 
   function renderFiles() {
-    const records = store.getRecords().filter(record => (!department || record.department === department) &&
+    artifacts.cancel('records');
+    const allowed=artifacts.listRecords();
+    root.querySelector('.folder-tree').innerHTML='<div class="pane-label">Departments</div><button data-folder="" aria-pressed="true"><span class="folder-symbol" aria-hidden="true"></span>All departments</button>'+[...new Set(allowed.map(r=>r.department))].map(name=>`<button data-folder="${h(name)}" aria-pressed="false">${departmentIcons[name] ? `<span class="department-icon" data-department-icon="${departmentIcons[name]}" aria-hidden="true"></span>` : '<span class="folder-symbol" aria-hidden="true"></span>'}${h(name)}</button>`).join('');
+    if(department && !allowed.some(r=>r.department===department)) department='';
+    const records = allowed.filter(record => (!department || record.department === department) &&
       [record.id, record.title, record.employee, record.employeeId, record.department].join(' ').toLowerCase().includes(query.toLowerCase()));
     if (!records.some(r => r.id === selectedId)) selectedId = null;
     root.querySelector('#record-files').innerHTML = records.length ? records.map(record => `<button class="record-file" data-file-id="${h(record.id)}" data-record-id="${h(record.id)}" aria-pressed="${selectedId === record.id}"><b><span class="file-symbol" aria-hidden="true"></span>${h(recordTitle(record))}</b><span>${h(record.department)} <time datetime="${h(record.date.slice(0, 10))}">· ${h(displayDate(record.date, true))}</time></span><small>${h(record.id)}</small></button>`).join('') : '<p class="files-empty">No matching records.</p>';
     root.querySelector('#record-count').textContent = `${records.length} document${records.length === 1 ? '' : 's'}`;
     root.querySelectorAll('[data-folder]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.folder === department)));
-    const record = store.getRecord(selectedId);
+    const record = artifacts.get('records',selectedId);
     root.querySelector('#preview-reference').textContent = record ? recordTitle(record) : 'Preview / no file selected';
     root.querySelector('#record-drag-hint').textContent = record ? `Selected / ${record.id}` : 'Read-only';
     root.querySelector('#record-preview').innerHTML = record ? renderRecord(record) : '<div class="preview-empty"><span class="preview-empty-sheet" aria-hidden="true"></span><b>No document selected</b><span>Select a document to inspect its fields.</span></div>';
@@ -64,6 +71,7 @@ export function mountRecords(root, store, { onClaim = () => {} } = {}) {
     const dragBar = root.querySelector('#preview-drag-bar');
     dragBar.hidden = true;
     dragBar.innerHTML = '';
+    if(record) void artifacts.present('records','records',record.id,{node:root.querySelector('.record-document')});
   }
   root.querySelector('.records-search').addEventListener('submit', event => event.preventDefault());
   root.querySelector('#records-search').addEventListener('input', event => { query = event.target.value; renderFiles(); });
@@ -81,7 +89,7 @@ export function mountRecords(root, store, { onClaim = () => {} } = {}) {
     const folder = event.target.closest('[data-folder]');
     if (folder) { department = folder.dataset.folder; renderFiles(); }
     const file = event.target.closest('[data-file-id]');
-    if (file) { selectedId = file.dataset.fileId; store.discover(selectedId); renderFiles(); }
+    if (file) { selectedId = file.dataset.fileId; renderFiles(); }
   });
   root.addEventListener('dragstart', event => {
     const file = event.target.closest('[data-record-id]');
@@ -96,7 +104,7 @@ export function mountRecords(root, store, { onClaim = () => {} } = {}) {
     const next = event.key === 'Home' ? 0 : event.key === 'End' ? files.length - 1
       : Math.max(0, Math.min(files.length - 1, index + (event.key === 'ArrowDown' ? 1 : -1)));
     selectedId = files[next].dataset.fileId;
-    store.discover(selectedId); renderFiles();
+    renderFiles();
     root.querySelector(`[data-file-id="${selectedId}"]`)?.focus({ preventScroll: true });
   });
   store.onEvent(({type}) => {
@@ -105,14 +113,19 @@ export function mountRecords(root, store, { onClaim = () => {} } = {}) {
     }
   });
   function openRecord(recordId) {
-    if (!store.getRecord(recordId)) return { ok: false, message: 'Unknown record ID.' };
+    if (!artifacts.canOpen('records',recordId)) return { ok: false, message: 'Content unavailable.' };
     // A source link must reach its document even when a previous search hid it.
     selectedId = recordId; department = ''; query = '';
     root.querySelector('#records-search').value = '';
-    store.discover(recordId); renderFiles();
+    renderFiles();
     root.querySelector('.record-document')?.focus({ preventScroll: true });
     return { ok: true };
   }
+  artifacts.subscribe(renderFiles);
+  if(root.closest('.window')) watchViewer(root.closest('.window'),()=>artifacts.cancel('records'),()=>{
+    const node=root.querySelector('.record-document');
+    if(node && selectedId) void artifacts.present('records','records',selectedId,{node});
+  });
   renderFiles();
   return { openRecord };
 }

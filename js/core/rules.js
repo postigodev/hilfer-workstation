@@ -19,17 +19,39 @@ function registry(values, label) {
   return result;
 }
 const byId = (values, id) => values.find(value => value.id === id);
+export const INSPECTION_POLICIES = Object.freeze({records:['document-presented'],mail:['message-body-presented','attachment-presented'],footage:['media-frame-presented']});
+export const inspectionPolicy = id => id === 'document-open' ? 'document-presented' : id;
 
 export function validateDefinitions(input, cases = []) {
   exact(input, ['schemaVersion','contentVersion','evidence','inferences','determinations','milestoneIds','grants',
-    'initialGrantIds','initialCaseIds','caseCompletionPolicies','accessPolicies','availabilityPolicies','presentationPolicies','effects','rules']);
-  if (input.schemaVersion !== 1 || !Number.isSafeInteger(input.contentVersion) || input.contentVersion < 1) fail('unsupported version');
+    'initialGrantIds','initialCaseIds','caseCompletionPolicies','accessPolicies','availabilityPolicies','presentationPolicies','effects','rules',
+    ...(input.schemaVersion === 2 ? ['contentCatalog'] : [])]);
+  if (![1,2].includes(input.schemaVersion) || !Number.isSafeInteger(input.contentVersion) || input.contentVersion < 1) fail('unsupported version');
   const d = structuredClone(input);
   registry(cases, 'case');
   const evidence = registry(d.evidence, 'evidence'), inferences = registry(d.inferences, 'inference');
   const determinations = registry(d.determinations, 'determination'), rules = registry(d.rules, 'rule'), effects = registry(d.effects, 'effect');
   ids(d.milestoneIds); ids(d.grants); ids(d.initialGrantIds, new Set(d.grants));
   const caseIds = new Set(cases.map(c => c.id)); ids(d.initialCaseIds, caseIds);
+  const catalog = d.schemaVersion === 2 ? registry(d.contentCatalog,'content') : null;
+  if (catalog) {
+    const bindings = new Set();
+    for (const item of d.contentCatalog) {
+      if (item.kind === 'case') {
+        exact(item,['id','kind','caseId','requiredGrantIds'],['retired']);
+        if (!caseIds.has(item.caseId) || item.id !== item.caseId) fail('invalid case content binding');
+      } else {
+        exact(item,['id','kind','app','artifactId','artifactType','requiredGrantIds'],['retired']);
+        const types = {records:['document'],mail:['thread','message','attachment'],footage:['media']};
+        if (item.kind !== 'artifact' || !types[item.app]?.includes(item.artifactType) || !idValid(item.artifactId)) fail('invalid artifact content binding');
+      }
+      ids(item.requiredGrantIds,new Set(d.grants));
+      if (item.retired !== undefined && typeof item.retired !== 'boolean') fail('invalid retired content flag');
+      const key = JSON.stringify(item.kind==='case' ? ['case',item.caseId] : [item.app,item.artifactId]);
+      if (bindings.has(key)) fail('duplicate content binding'); bindings.add(key);
+    }
+    if(cases.some(c=>!c.retired && !d.contentCatalog.some(item=>item.kind==='case' && item.caseId===c.id))) fail('missing case content binding');
+  }
   const tags = new Set(d.evidence.flatMap(e => e.tags)), departments = new Set(d.evidence.map(e => e.department));
   function condition(value, presentation = false, depth = 0, budget = {nodes:0}) {
     if (depth > 16 || ++budget.nodes > 256 || !object(value) || Object.keys(value).length !== 1) fail('condition bounds or shape');
@@ -65,6 +87,11 @@ export function validateDefinitions(input, cases = []) {
       exact(a, ['app','artifactId','inspectionPolicyId']);
       if (!['records','mail','footage'].includes(a.app) || !idValid(a.artifactId) || !idValid(a.inspectionPolicyId)) fail('artifact metadata');
       const key = JSON.stringify([a.app,a.artifactId]); if (artifactKeys.has(key)) fail('ambiguous artifact mapping'); artifactKeys.add(key);
+      if (catalog) {
+        const binding = d.contentCatalog.find(item=>item.kind==='artifact' && item.app===a.app && item.artifactId===a.artifactId);
+        if (!binding || !INSPECTION_POLICIES[a.app].includes(a.inspectionPolicyId) || binding.artifactType==='thread' ||
+            (a.app==='mail' && a.inspectionPolicyId !== (binding.artifactType==='message' ? 'message-body-presented' : 'attachment-presented'))) fail('unknown or incompatible inspection policy/binding');
+      }
     }
   }
   for (const i of d.inferences) {
@@ -111,6 +138,7 @@ export function validateDefinitions(input, cases = []) {
       if (!idValid(p[field]) || seen.has(p[field])) fail('duplicate policy'); seen.add(p[field]);
       if (key === 'caseCompletionPolicies' && !caseIds.has(p.caseId)) fail('unknown case policy');
       if (key === 'accessPolicies' && !d.grants.includes(p.grantId)) fail('unknown grant policy');
+      if (key === 'availabilityPolicies' && catalog && !catalog.has(p.contentId)) fail('unknown availability content target');
       condition(p.when, key === 'presentationPolicies');
       if (key === 'presentationPolicies' && (!Number.isSafeInteger(p.distortionLevel) || p.distortionLevel < 0 || p.distortionLevel > 1)) fail('unsupported distortion level');
     }

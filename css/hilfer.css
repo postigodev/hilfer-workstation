@@ -171,9 +171,9 @@ select { font: 11px var(--font-ui); min-width: 0; width: 100%; padding: 2px; bac
 :root[data-distortion="1"] #desktop { background-image: var(--wallpaper-distorted); }
 :root[data-distortion="1"] #desktop::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(0deg,transparent 0px,transparent 4px,#bcc69b08 5px); z-index: 99999; }
 :root[data-distortion="1"] .desktop-brand { text-shadow: 2px 0 #abb38355; transform: translateX(2px); }
-.microglitch #desktop { animation: microglitch .6s steps(1) 1; }
+.microglitch #desktop, .engine-microglitch #desktop { animation: microglitch .6s steps(1) 1; }
 @keyframes microglitch { 15% { filter: sepia(.3); transform: translateX(2px); } 30% { transform: translateX(-2px); } 55% { filter: contrast(1.12); transform: translateY(1px); } 75% { transform: none; } }
-@media (prefers-reduced-motion: reduce) { .microglitch #desktop { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .microglitch #desktop, .engine-microglitch #desktop { animation: none; } }
 @media (max-width: 700px) {
   .window { width: calc(100vw - 12px) !important; height: calc(100dvh - 48px) !important; }
   .reconciliation-layout { grid-template-columns: 95px minmax(0,1fr); }

@@ -2,7 +2,7 @@ import { escapeHTML as h, displayField, displayValue, displayDate } from './shar
 import { deriveReport, renderReport } from './report.js';
 
 // Reconciliation is a document you revise with source claims, not a form or a file tray.
-export function mountReconciliation(root, store, { openRecord = () => {} } = {}) {
+export function mountReconciliation(root, store, { openRecord = () => {}, artifacts } = {}) {
   const cases = store.getCases();
   let selectedCaseId = cases[0]?.id;
   let view = 'report';
@@ -10,15 +10,17 @@ export function mountReconciliation(root, store, { openRecord = () => {} } = {})
   let feedback = '';
   let feedbackTone = 'neutral';
 
-  const sourceLink = (id, text = id) => '<button type="button" class="source-reference" data-open-record="' + h(id) + '">' + h(text) + '</button>';
+  const canOpenRecord = id => !artifacts || artifacts.canOpen('records',id);
+  const getVisibleRecord = id => canOpenRecord(id) ? store.getRecord(id) : null;
+  const sourceLink = (id, text = id) => canOpenRecord(id) ? '<button type="button" class="source-reference" data-open-record="' + h(id) + '">' + h(text) + '</button>' : '<span>Source unavailable</span>';
   function showCase(definition, state) {
     if (!definition) return '<p>No assigned cases.</p>';
     const done = state.completedCaseIds.includes(definition.id);
     const unlocked = state.unlockedCaseIds.includes(definition.id);
     const current = done ? state.resolutions[definition.id] : definition.provisional;
-    const source = current ? store.getRecord(current.sourceId) : null;
+    const source = current ? getVisibleRecord(current.sourceId) : null;
     const candidateRecord = pendingClaim && pendingClaim.caseId === definition.id
-      ? store.getRecord(pendingClaim.recordId) : null;
+      ? getVisibleRecord(pendingClaim.recordId) : null;
     const candidateValue = candidateRecord?.fields?.[pendingClaim?.field];
     const alreadyCurrent = candidateRecord?.id === current?.sourceId;
     let comparison = '';
@@ -51,17 +53,18 @@ export function mountReconciliation(root, store, { openRecord = () => {} } = {})
     const scroll = root.querySelector('.report-scroll')?.scrollTop ?? 0;
     const openDetails = [...root.querySelectorAll('[data-audit-id][open]')].map(el => el.dataset.auditId);
     const state = store.getState();
-    const report = deriveReport(cases, state, store.getRecord);
-    const selected = cases.find(c => c.id === selectedCaseId);
+    const visibleCases = cases.filter(c=>!artifacts || artifacts.caseVisible(c.id));
+    const report = deriveReport(visibleCases, state, getVisibleRecord,{getSourceForValidation:store.getRecord});
+    const selected = visibleCases.find(c => c.id === selectedCaseId);
     root.innerHTML =
       '<div class="app-toolbar"><span>Reconciliation</span><div class="application-actions"><button data-open="records">Records</button><button data-arrange>Arrange</button></div></div>' +
       '<div class="reconciliation-tabs" role="tablist" aria-label="Reconciliation views">' +
       '<button id="report-tab" role="tab" aria-controls="reconciliation-panel" data-view="report" aria-selected="' + (view === 'report') + '" tabindex="' + (view === 'report' ? '0' : '-1') + '">Consolidated Report</button>' +
       '<button id="register-tab" role="tab" aria-controls="reconciliation-panel" data-view="register" aria-selected="' + (view === 'register') + '" tabindex="' + (view === 'register' ? '0' : '-1') + '">Case Register</button></div>' +
       '<div id="reconciliation-panel" role="tabpanel" aria-labelledby="' + (view === 'report' ? 'report-tab' : 'register-tab') + '">' +
-      (view === 'report' ? renderReport(report) :
+      (view === 'report' ? renderReport(report,{canOpenRecord}) :
         '<div class="reconciliation-layout"><nav class="case-list" aria-label="Cases"><div class="pane-label">CASE REGISTER</div>' +
-          cases.map(c => '<button type="button" data-case="' + h(c.id) + '" aria-pressed="' + (selectedCaseId === c.id) + '"><b>' + h(c.id) + '</b><span>' + h(c.title) + '</span><small>' + (state.completedCaseIds.includes(c.id) ? 'FILED' : !state.unlockedCaseIds.includes(c.id) ? 'LOCKED' : c.placeholder ? 'RESERVED' : 'OPEN') + '</small></button>').join('') +
+          visibleCases.map(c => '<button type="button" data-case="' + h(c.id) + '" aria-pressed="' + (selectedCaseId === c.id) + '"><b>' + h(c.id) + '</b><span>' + h(c.title) + '</span><small>' + (state.completedCaseIds.includes(c.id) ? 'FILED' : !state.unlockedCaseIds.includes(c.id) ? 'LOCKED' : c.placeholder ? 'RESERVED' : 'OPEN') + '</small></button>').join('') +
         '</nav><div class="case-detail">' + showCase(selected, state) + '</div></div>') +
       '</div><div class="feedback status-bar" data-tone="' + h(feedbackTone) + '" role="status" aria-live="polite"><span class="status-bar-field">' +
       h(feedback || (view === 'report' ? 'Report / work in progress' : 'Select a source in Records to amend an entry.')) + '</span></div>';
@@ -71,11 +74,12 @@ export function mountReconciliation(root, store, { openRecord = () => {} } = {})
   }
 
   function presentClaim(recordId, field) {
-    const record = store.getRecord(recordId);
+    const record = getVisibleRecord(recordId);
     const definition = cases.find(c => c.initiallyUnlocked && c.resolution?.field === field && record?.caseIds?.includes(c.id))
       ?? cases.find(c => c.resolution?.field === field && record?.caseIds?.includes(c.id));
     if (!record || !definition || !store.getState().unlockedCaseIds.includes(definition.id))
       return { ok: false, message: 'No available report entry matches this claim.' };
+    if(artifacts && !artifacts.caseVisible(definition.id)) return {ok:false,message:'Content unavailable.'};
     if (store.getState().completedCaseIds.includes(definition.id))
       return { ok: false, message: 'This report entry is already filed.' };
     const evidenceId = store.evidenceForArtifact('records', recordId);
@@ -133,6 +137,7 @@ export function mountReconciliation(root, store, { openRecord = () => {} } = {})
     }
   });
   store.subscribe(render);
+  artifacts?.subscribe(render);
   store.onEvent(({ type }) => {
     if (type === 'hilfer:progress-reset') {
       selectedCaseId = cases[0]?.id; pendingClaim = null; view = 'report';

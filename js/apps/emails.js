@@ -33,7 +33,7 @@ export function validateMailCorpus(corpus, getRecord) {
 }
 
 // This model owns UI receipts and authorization only. It has no gameplay-write API.
-export function createMailModel(input, { storage, grants = input.initialGrants, getRecord } = {}) {
+export function createMailModel(input, { storage, grants = input.initialGrants, getRecord, isAvailable = () => true, canReference = () => true } = {}) {
   validateMailCorpus(input, getRecord);
   const corpus = copy(input);
   for (const thread of corpus.threads) thread.messages.sort((a,b) => a.sentAt.localeCompare(b.sentAt) || a.id.localeCompare(b.id));
@@ -43,7 +43,11 @@ export function createMailModel(input, { storage, grants = input.initialGrants, 
   const deleted = new Set();
   const folders = corpus.folders.map(folder => folder.id === 'archive' ? {...folder, label:'Archive'} : folder);
   folders.push({id:'deleted', label:'Deleted Items'});
-  const authorized = () => corpus.threads.filter(thread => thread.access.requiredGrants.every(grant => effectiveGrants.has(grant)));
+  const authorized = () => corpus.threads.filter(thread => isAvailable(thread.id) && thread.access.requiredGrants.every(grant => effectiveGrants.has(grant)))
+    .map(thread=>({...thread,messages:thread.messages.filter(message=>isAvailable(message.id)).map(message=>({...message,
+      references:message.references.filter(reference=>canReference(reference.id)),
+      ...(message.attachments ? {attachments:message.attachments.filter(attachment=>isAvailable(attachment.id))} : {})
+    }))})).filter(thread=>thread.messages.length);
   const find = id => authorized().find(thread => thread.id === id);
   const isMe = person => person.address.toLowerCase() === corpus.mailbox.address.toLowerCase();
   const outgoing = thread => thread.messages.filter(message => isMe(message.from));
@@ -217,8 +221,8 @@ function renderConversation(thread, expandedId) {
   }).join('');
 }
 
-export function mountMail(root, corpus, { storage, store, openRecord }) {
-  const model = createMailModel(corpus, {storage,getRecord:store.getRecord});
+export function mountMail(root, corpus, { storage, store, openRecord, artifacts, model:providedModel }) {
+  const model = providedModel ?? createMailModel(corpus, {storage,getRecord:store.getRecord});
   const mailbox = model.getMailbox(), threadWindows = new Map();
   const action = (name,label,extra='') => `<button type="button" data-mail-command="${name}" ${extra}>${label}</button>`;
   const menu = (label,items) => `<details class="mail-menu"><summary>${label}</summary><div class="mail-menu-panel">${items}</div></details>`;
@@ -252,12 +256,14 @@ export function mountMail(root, corpus, { storage, store, openRecord }) {
   }
   function closeThread(id) {
     const node = threadWindows.get(id); if (!node) return;
+    for(const message of node.querySelectorAll('[data-message-id]')) artifacts?.cancel('mail:'+message.dataset.messageId);
     threadWindows.delete(id); window.closeWindow(node.id.slice(0,-7)); node.remove();
   }
   const closeThreads = () => [...threadWindows.keys()].forEach(closeThread);
   function openThread(id) {
     const row = currentRows().find(thread => thread.id === id);
     if (!row || !model.openThread(id).ok) return;
+    if(artifacts && !artifacts.canOpen('mail',id)) return;
     let node = threadWindows.get(id);
     if (!node) {
       node = document.createElement('section'); node.id = 'mail-message-' + id + '-window'; node.className = 'window mail-message-window';
@@ -273,21 +279,48 @@ export function mountMail(root, corpus, { storage, store, openRecord }) {
         if (reference) { event.stopPropagation(); if (model.getReference(reference.dataset.mailMessage,reference.dataset.mailReference)) openRecord(reference.dataset.mailReference); }
       });
       node.addEventListener('keydown',event=>{ if (event.key==='Escape') { event.preventDefault(); window.closeWindow(node.id.slice(0,-7)); } });
+      node.addEventListener('toggle',event=>{
+        const message=event.target;
+        if(!message.matches('.mail-thread-message')) return;
+        const viewer='mail:'+message.dataset.messageId;
+        artifacts?.cancel(viewer);
+        if(message.open && node.classList.contains('visible')) void artifacts?.present(viewer,'mail',message.dataset.messageId,{node:message});
+      },true);
+      new MutationObserver(()=>{
+        if(!node.classList.contains('visible')) {
+          for(const message of node.querySelectorAll('[data-message-id]')) artifacts?.cancel('mail:'+message.dataset.messageId);
+        } else {
+          for(const message of node.querySelectorAll('.mail-thread-message[open]')) void artifacts?.present('mail:'+message.dataset.messageId,'mail',message.dataset.messageId,{node:message});
+        }
+      }).observe(node,{attributes:true,attributeFilter:['class']});
       document.querySelector('#desktop').append(node); threadWindows.set(id,node);
     }
     const content = node.querySelector('.mail-thread-content');
     if (!content.firstElementChild || !node.classList.contains('visible') || node.dataset.expandedId !== row.expandedId) {
+      for(const message of content.querySelectorAll('[data-message-id]')) artifacts?.cancel('mail:'+message.dataset.messageId);
       content.innerHTML = renderConversation(row, row.expandedId);
       node.dataset.expandedId = row.expandedId;
+      node.dataset.contentSignature=JSON.stringify(model.getThread(id));
     }
     window.openWindow(node.id.slice(0,-7));
     const header = content.querySelector('.mail-thread-message[open] > summary');
     header?.scrollIntoView({block:'nearest'});
     (header ?? content).focus({preventScroll:true});
     render();
+    for(const message of content.querySelectorAll('.mail-thread-message[open]')) void artifacts?.present('mail:'+message.dataset.messageId,'mail',message.dataset.messageId,{node:message});
   }
   function render() {
     for (const id of [...threadWindows.keys()]) if (!model.getThread(id)) closeThread(id);
+    for(const [id,node] of threadWindows) {
+      const thread=model.getThread(id), signature=JSON.stringify(thread);
+      if(node.dataset.contentSignature===signature) continue;
+      const content=node.querySelector('.mail-thread-content');
+      const openIds=[...content.querySelectorAll('.mail-thread-message[open]')].map(el=>el.dataset.messageId);
+      for(const message of content.querySelectorAll('[data-message-id]')) artifacts?.cancel('mail:'+message.dataset.messageId);
+      content.innerHTML=renderConversation(thread,null);
+      for(const message of content.querySelectorAll('[data-message-id]')) message.open=openIds.includes(message.dataset.messageId);
+      node.dataset.contentSignature=signature;
+    }
     const state=model.getState(), folders=model.getFolders(), rows=currentRows();
     const selected=rows.find(message=>message.id===state.selectedThreadId), selectedIndex=rows.findIndex(message=>message.id===state.selectedThreadId);
     const inDeleted = state.folderId === 'deleted';
@@ -368,6 +401,7 @@ export function mountMail(root, corpus, { storage, store, openRecord }) {
   document.addEventListener('pointerdown',event=>{if(!root.querySelector('.mail-menubar').contains(event.target))root.querySelectorAll('.mail-menu[open]').forEach(menu=>menu.open=false);});
   window.addEventListener('hilfer:window-closed',({detail})=>{if([...threadWindows.values()].some(node=>node.id===detail.windowId+'-window')){render();if(root.closest('.window').classList.contains('active'))selectRow(model.getState().selectedThreadId);}});
   model.subscribe(render);
+  artifacts?.subscribe(render);
   store.onEvent(({type})=>{if(type==='hilfer:progress-reset'){closeThreads();model.reset();}});
   render();return model;
 }

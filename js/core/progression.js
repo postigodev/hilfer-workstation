@@ -82,7 +82,7 @@ export function projectLegacy(state, definition, cases, {availability,distortion
       const policy = definition.caseCompletionPolicies.find(p => p.caseId === c.id);
       return policy && availability.completed.includes(c.id);
     }).map(c => c.id),
-    unlockedCaseIds:cases.filter(c => definition.initialCaseIds.includes(c.id) || availability.content.includes(c.id)).map(c => c.id),
+    unlockedCaseIds:cases.filter(c => availability.unlocked ? availability.unlocked.includes(c.id) : definition.initialCaseIds.includes(c.id) || availability.content.includes(c.id)).map(c => c.id),
     distortionLevel
   };
 }
