@@ -1,10 +1,11 @@
 import { escapeHTML as h, label, displayValue, displayField } from './shared.js';
 
 // A projection, never a second save: no rules or supported answers are read here.
-export function deriveReport(cases, state, getRecord, {getSourceForValidation = getRecord} = {}) {
+export function deriveReport(cases, state, getRecord, {getSourceForValidation = getRecord,formalFindings = {}} = {}) {
   const sections = cases.map(definition => {
     const attached = (state.attachedEvidence[definition.id] ?? []).map(getRecord).filter(Boolean);
-    const committed = state.completedCaseIds.includes(definition.id) ? state.resolutions[definition.id] : null;
+    const committed = state.completedCaseIds.includes(definition.id)
+      ? state.resolutions[definition.id] ?? formalFindings[definition.id] ?? null : null;
     const authority = committed ? getRecord(committed.sourceId) : null;
     const metadata = definition.report ?? {};
     const draft = definition.provisional;
@@ -32,7 +33,7 @@ export function deriveReport(cases, state, getRecord, {getSourceForValidation = 
     };
   });
   return {
-    status: sections.some(section => section.status !== 'RECONCILED') ? 'IN PROGRESS' : 'CONSOLIDATED',
+    status: sections.some(section => !section.placeholder && section.status !== 'RECONCILED') ? 'IN PROGRESS' : 'CONSOLIDATED',
     completed: sections.filter(section => section.status === 'RECONCILED').length,
     pending: sections.filter(section => !section.placeholder && section.status !== 'RECONCILED').length,
     reserved: sections.filter(section => section.placeholder).length,
