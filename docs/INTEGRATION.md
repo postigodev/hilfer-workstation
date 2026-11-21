@@ -2,13 +2,16 @@
 
 **Current experiment:** source-to-report reconciliation. This is the implemented vertical-slice UX for Jessica, not a finalized rule for every future case. Static evidence/case content lives in JSON. The central store owns gameplay state. The report remains a derived projection — never a second save.
 
+The engine and application integrations are complete on main through PRs #7 and #8. See the
+[documentation index](README.md) for current references versus historical implementation records.
+
 ## Run and checks
 
 From the repository root:
 
     python scripts/serve.py --port 8080
 
-Open http://127.0.0.1:8080. The launcher binds to localhost and serves static files. Node 18+ runs the unit suites with `node --test` or `npm test`.
+Open http://127.0.0.1:8080. The launcher binds to localhost and serves static files. Use Node.js 24, the verified test runtime, for `node --test` or `npm test`.
 
 For browser checks, keep the server running and install Playwright and Microsoft Edge in your test environment. Set `HILFER_PLAYWRIGHT_MODULE` to the absolute path to Playwright's `index.mjs` if it is installed outside the project. `HILFER_URL` defaults to `http://127.0.0.1:8080`.
 
@@ -19,6 +22,23 @@ node tests/mail.browser.check.js
 node tests/theme.browser.check.js
 node tests/applications.browser.check.js
 ```
+
+Run the suites sequentially. The final recorded verification passed 78 unit tests and all five browser suites;
+it was local verification, not a CI run. An initial concurrent Assistant run failed its pre-first-click audio
+assertion; the unchanged check then passed alone and in the final sequential run. See the
+[verification report](APPLICATION_INTEGRATION_REVIEW.md#2026-11-21--final-review-follow-up) for the record.
+
+In PowerShell, a separately installed Playwright module and a different server port can be selected with:
+
+```powershell
+$env:HILFER_PLAYWRIGHT_MODULE = 'C:\absolute\path\to\playwright\index.mjs'
+$env:HILFER_URL = 'http://127.0.0.1:8080'
+```
+
+The module must already be installed; these environment variables do not install dependencies. Serve over HTTP
+rather than opening index.html directly. Saves belong to the exact browser origin: changing host or port changes
+which save is visible. Storage warnings permit in-memory play; incompatible saves are preserved and writes blocked
+until migration or an explicit reset. Assistant narration retries after a trusted interaction when autoplay is blocked.
 
 ## Player-facing flow
 
@@ -37,23 +57,32 @@ node tests/applications.browser.check.js
 
 `CASE-001` is the only fully playable example. `CASE-002` remains an explicitly reserved/unimplemented placeholder. Do not invent other tasks simply to show a progress bar.
 
+Those case fields preserve the demo and legacy APIs. General progression lives in `data/progression.json`:
+logical evidence, individually identified determinations, explicit inference support, rule conditions, milestone
+consequences, grants, content catalog and presentation policies. One investigation can contain multiple
+determinations; the Jessica case definition is not a universal narrative template.
+
 ## Ownership and APIs
 
-`js/main.js` creates `createStore({records,cases,storage})` and mounts both apps using the same store.
+`js/main.js` loads the current datasets and retained migration sources, creates
+`createStore({records,cases,storage,progression,contentMigrations})`, then constructs a shared artifact boundary
+and mounts the apps. `createStore({records,cases,storage})` remains the legacy-compatible factory for callers
+without explicit progression definitions; it is not the current production bootstrap.
 
 Public store methods (legacy adapters remain supported; see [ENGINE.md](ENGINE.md) for v2 commands):
 
 - `getRecord(id)`, `getRecords()`, `getCases()`, `getState()`, `getWarning()`.
 - `discover(recordId)`: explicitly inspect the logical evidence mapped to a Records document. Filing/attachment register provenance without marking inspection. The legacy `discoveredEvidenceIds` projection remains registration, not inspection history. Browsing search results does not inspect records.
-- **`reconcileClaim(caseId, recordId, field)`**: use a *previously inspected*, case-relevant field. Reject locked, completed, unknown, unsupported or baseline-only selections. For a valid revised source, link only the valid baseline and chosen records (any other required evidence must already be attached), validate against the case definition, atomically file the canonical resolution and emit progression events. This is the new primary action.
+- **`reconcileClaim(caseId, recordId, field)`**: use a *previously inspected*, case-relevant field. Reject locked, unknown, unsupported or baseline-only selections. For a valid revised source, link only the valid baseline and chosen records (any other required evidence must already be attached), validate against the case definition, atomically file the canonical resolution and emit progression events. Repeating an accepted filing returns alreadyCompleted without replaying consequences. This remains Jessica's primary filing action.
 - `attachEvidence(caseId, recordId)`, `removeEvidence(caseId, recordId)`, `submitResolution(caseId, resolution)`: existing validated **legacy domain APIs** retained for compatibility and tests. They are not player-facing requirements for this iteration.
 - `getSnapshot()`, `dispatch(command)`, `getAccess()`, `getAvailability()`, `getCompletedCaseIds()`, `evidenceForArtifact(app,id)`: canonical v2 engine interfaces.
+- `isContentAvailable(id)`, `isArtifactAvailable(app,id)`, `canInspectEvidence(id)`: derived permission queries used by the shared artifact boundary. Raw registry getters remain trusted internal/debug APIs, not app authorization filters.
 - `subscribe(fn)`, `onEvent(fn)`: subscribe to compatible state and the unchanged legacy event stream. `onEngineEvent(fn)` additionally receives logical inspection, inference, individual determination, milestone, access and availability events.
 - `resetProgress()`: revert to a fresh session.
 
-The Records adapter is `mountRecords(root, store, {onClaim})` from `js/apps/records-fixture.js`. `renderRecord(record)` generates a visually differentiated employee/medical form and a `data-claim-record` + `data-claim-field` button where appropriate. New record types need field-specific interaction metadata; **do not hardcode all records as `workEligibility`**.
+The Records adapter is `mountRecords(root, store, {onClaim,artifacts})` from `js/apps/records-fixture.js`. It uses authorized queries before listing departments/files, then registers inspection only after the rendered document policy succeeds. `renderRecord(record)` generates a visually differentiated employee/medical form and a `data-claim-record` + `data-claim-field` button where appropriate. New record types need field-specific interaction metadata; **do not hardcode all records as `workEligibility`**.
 
-Reconciliation is `mountReconciliation(root, store, {openRecord})` from `js/apps/reconciliation.js`, returning `focusComparison()`, `presentClaim(recordId,field)`, `getActiveCaseId()` and `showReport()`. `js/main.js` bridges Records' `onClaim` to Reconciliation's `presentClaim`, then focuses the Reconciliation window. The link back to Records is `openRecord(id)`, which clears search filters and opens the requested source. `window.hilfer` exposes the store and Reconciliation APIs for development and tests.
+Reconciliation is `mountReconciliation(root, store, {openRecord,artifacts})` from `js/apps/reconciliation.js`, returning `focusComparison()`, `presentClaim(recordId,field)`, `getActiveCaseId()` and `showReport()`. `js/main.js` bridges Records' `onClaim` to Reconciliation's `presentClaim`, then focuses the Reconciliation window. The link back to Records is `openRecord(id)`, which rechecks authorization, clears search filters and opens the requested source. `window.hilfer` exposes trusted store and Reconciliation APIs for development and tests.
 
 ### Claim workflow contract
 
@@ -67,7 +96,10 @@ This keeps UI selection, provenance validation, and administrative commitment di
 
 ## Living report
 
-`js/apps/report.js` exports `deriveReport(cases,state,getRecord)` and `renderReport(report)`. It renders provisional values before reconciliation and authoritative source/context references after reconciliation. It does not persist a second document or imply that every sourced field is independently verified.
+`js/apps/report.js` exports `deriveReport(cases,state,getRecord,{getSourceForValidation}?)` and
+`renderReport(report,{canOpenRecord}?)`. The original three-argument/default calls remain compatible. Current
+integration filters source metadata while separately validating the preexisting official claim; inaccessible
+source links render as unavailable without deleting accepted findings. There is no separately persisted report.
 
 Source references navigate to Records. Report case links navigate to Case Register. The report is the player's work product and a later storytelling device about what HILFER permits to be entered into an official record.
 
@@ -111,7 +143,7 @@ The original store still validates ID-based attachment and explicit submission; 
 
 ## Editorial presentation
 
-`js/apps/shared.js` formats display values, dates and document titles. Canonical enums, IDs and save data stay unchanged. Records prioritizes employee, document type and issued date; exact references and classifications live in native **Record details** disclosures. The report shows readable status/source/context, with audit provenance inside details. Technical placeholders are omitted from report rendering only; progression and the case register retain them.
+`js/apps/shared.js` formats display values, dates and document titles. Canonical enums, IDs and save data stay unchanged. Records prioritizes employee, document type and issued date; exact references and classifications live in native **Record details** disclosures. The report shows readable status/source/context, with audit provenance inside details. Report rendering omits placeholders. The case register retains only the explicitly authored CASE-002 locked teaser; future placeholders must satisfy normal availability.
 
 ## Contextual HILFER Assistant (demo)
 

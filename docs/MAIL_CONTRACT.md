@@ -1,5 +1,11 @@
 # HILFER Mail v1 — Codex implementation contract (2026-11-04)
 
+> [!NOTE]
+> Historical implementation brief. The current corpus is [data/emails.json](../data/emails.json), and the current
+> conversation UI, grants and save contracts are in [INTEGRATION.md](INTEGRATION.md) and
+> [APP_INTEGRATION.md](APP_INTEGRATION.md). References below to the original input filename, v1 save or repository
+> state describe that earlier stage; current game progress uses v2 with an explicit v1 migration source.
+
 ## Source of truth
 - Use the accompanying `hilfer_mail_demo_v1.json` as the *fixed demo corpus*. There are **5 threads and 12 messages**, not 11; THREAD-DESK-HANDOFF has three messages. **Do not add, rewrite or omit prose** to make the mailbox look fuller. If editorial revision is needed, report it rather than silently editing copy.
 - `sentAt` dates are **provisional demonstration timestamps**, not canonical Incident chronology. The older archive messages and retrospective administrative reviews are compatible with the two existing record timestamps, but the Incident date and Losurdo reassignment date are not fixed.

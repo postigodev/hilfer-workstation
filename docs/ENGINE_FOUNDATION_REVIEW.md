@@ -1,5 +1,10 @@
 # Engine Foundation — implementation review
 
+> [!NOTE]
+> Historical PR #7 delivery snapshot, squash-merged as `f9f3305`. PR #8 subsequently completed the integrations
+> deferred in this report, ending at `f8e7e8a`. Use [ENGINE.md](ENGINE.md) and [APP_INTEGRATION.md](APP_INTEGRATION.md)
+> for current contracts; the stage-specific test counts and review gates below are retained as history.
+
 PR 1: [review pull request #7](https://github.com/postigodev/hilfer-workstation/pull/7),
 branch `codex/progression-engine-foundation`, based on verified main
 `39c750017daea2ba3116d5bfa896c8cbbf4e73da`. Implementation authorized by the approved Phase A addendum.
@@ -65,9 +70,9 @@ The legacy test's only structural change reads V2_SAVE_KEY for its unchanged no-
 No assets, upstream notices, authored Mail/Assistant prose, Google Drive documents or reference artwork were
 modified. The preexisting untracked references/win98-icons directory is excluded from commits.
 
-## Limits and deferred work
+## Limits and deferred work at PR 1 delivery
 
-PR 2 is not implemented: consistent authorization across app listing/search/open surfaces; dynamic Mail grants
+At this delivery stage, PR 2 was not implemented: consistent authorization across app listing/search/open surfaces; dynamic Mail grants
 and revocation; Mail/Footage inspection adapters; production effect-dispatcher mounting and integration tests.
 PR 1 therefore adds no real restricted content. Registry getters remain internal unfiltered catalog APIs.
 

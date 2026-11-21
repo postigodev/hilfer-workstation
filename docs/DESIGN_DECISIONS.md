@@ -2,6 +2,9 @@
 
 This document prevents a brainstorm, a technical placeholder, or an AI suggestion from silently turning into a requirement. Update it when the team explicitly decides something.
 
+Entries describe decisions at their stated date. Current technical contracts are indexed in [README.md](README.md);
+historical references to pending work do not override the later implementation-completion entry below.
+
 ## Established direction
 
 | Topic | Current status | Notes |
@@ -65,4 +68,27 @@ The user authorized the exact five-thread/twelve-message corpus and its implemen
 
 ## 2026-11-04 — Classic Mail UI (user-approved second iteration)
 
-The user supplied a 1990s mail-client screenshot as the structural reference and a HILFER mockup as a palette/layout interpretation only. Mail changes from an integrated conversation preview to a folder tree/message table plus non-modal OS message windows. Single-click selects; double-click/Enter opens and marks only that message read. Several actual messages can be compared independently; outgoing actions remain disabled. Corpus, chronology, authorization, game state, Assistant and Jessica are unchanged. Mail v1's pending PR is not merged; this iteration branches from that implementation and is proposed to main as a new PR containing both.
+The user supplied a 1990s mail-client screenshot as the structural reference and a HILFER mockup as a palette/layout interpretation only. Mail changes from an integrated conversation preview to a folder tree/message table plus non-modal OS message windows. Single-click selects; double-click/Enter opens and marks only that message read. Several actual messages can be compared independently; outgoing actions remain disabled. Corpus, chronology, authorization, game state, Assistant and Jessica are unchanged. At this iteration's design stage, Mail v1's pending PR was not merged; the iteration branched from that implementation and was proposed to main as a new PR containing both. The current conversation-level reading contract is documented in INTEGRATION.md.
+
+## 2026-11-21 — Investigation engine implementation completed (user approved)
+
+The user approved the Engine Foundation specification and addendum, then the application integration design
+with explicit Mail granularity, irreversible cancellation and legacy-policy compatibility. PR #7 was
+squash-merged as `f9f3305`; PR #8, including final-review fixes, was explicitly authorized for squash merge
+and integrated as `f8e7e8a`. The user closed the motor/engine implementation scope after those merges.
+
+- One authoritative store separates registered/inspected logical evidence, explicit inference, independently
+  identified immutable determinations and persistent milestones. Availability, access, report and distortion
+  remain derived; audiovisual receipt acknowledgment is distinct from completed voice playback.
+- Schema/content 2 adds a validated catalog and app presentation policies. Save v2 and the original v1 migration
+  source are preserved; legacy schema-1 factory callers remain functional. Canceling presentation is irreversible
+  across revoke/regrant, closure, replacement and reset.
+- Only the exact authored CASE-002 demo placeholder retains a locked teaser, subject to its grants. Future
+  placeholders follow normal availability. Text-attachment inspection requires ready state and actual visible,
+  nonempty content; no production attachment viewer was introduced.
+- Final recorded verification: 78 unit tests and five browser suites passed locally. The integration review
+  records an earlier concurrent Assistant failure and subsequent isolated/sequential passes; this is not CI evidence.
+
+No new cases, canonical evidence map, inference UI, revisions, seven-beat gameplay or ending mechanics were approved
+or implemented. Future Investigation & Evidence Architecture work with the team is a separate design task;
+these repository updates do not authorize Google Drive changes.

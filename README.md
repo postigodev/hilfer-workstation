@@ -2,7 +2,15 @@
 
 # HILFER Workstation
 
-HILFER is a playable institutional-horror prototype set inside a fictional corporate Windows 98 workstation. Investigate conflicting personnel records, decide what belongs in the official incident report, and watch the desktop react.
+HILFER is a browser-based institutional-horror investigation set inside a fictional corporate Windows 98 workstation. Inspect contradictory departmental sources, decide what belongs in the official incident report, and watch the desktop react.
+
+[Play locally](#run-the-demo) · [Current scope](#current-scope) · [Engine](#investigation-engine) · [Documentation](docs/README.md)
+
+## Current scope
+
+The investigation engine and application integrations are implemented and merged into `main`: [Engine Foundation #7](https://github.com/postigodev/hilfer-workstation/pull/7) and [Application Integration #8](https://github.com/postigodev/hilfer-workstation/pull/8).
+
+The playable content remains **one Jessica reconciliation demo**. CASE-002 is an unimplemented placeholder. Real investigation maps, an inference interface, further cases and ending mechanics are not implemented; the engine's synthetic test fixtures are not story canon.
 
 ## Run the demo
 
@@ -13,6 +21,9 @@ python scripts/serve.py --port 8080
 ```
 
 Open [http://127.0.0.1:8080](http://127.0.0.1:8080). The demo runs on local HTML, CSS, vanilla JavaScript and JSON, with no build step or runtime packages. If the port is in use, pass a different port and open the matching URL. Saves are local to the browser and origin.
+
+> [!TIP]
+> Keep the same host and port to resume a save. Use **Start → Reset Demo Progress** for a fresh playthrough.
 
 ## What to try
 
@@ -25,12 +36,47 @@ Open [http://127.0.0.1:8080](http://127.0.0.1:8080). The demo runs on local HTML
 | **Footage** | Play a short, read-only CAM 4 preview. |
 | **Display Properties** | Switch between Standard and Archive / Graphite or toggle the desktop logo treatment. |
 
-CASE-001 is the playable investigation. Filing its correction changes the report, unlocks the CASE-002 placeholder, and triggers the first audiovisual anomaly. Reload preserves progress. Use **Start → Reset Demo Progress** before another run.
+Start with **Reconciliation → Consolidated Report**, then inspect relevant source fields in Records. Choosing the initial source leaves the discrepancy unresolved. Filing a supported correction updates the report, unlocks CASE-002 and triggers one audiovisual anomaly. Reload preserves progress; the clearance decision does not establish occupational causation. Footage's CAM 4 preview creates no narrative evidence.
 
-## Implementation and checks
+## Investigation engine
 
-- [Integration guide](docs/INTEGRATION.md) covers app interfaces, dialogue signals, saves, and browser checks.
-- [Project context](docs/PROJECT_CONTEXT.md) and [design decisions](docs/DESIGN_DECISIONS.md) distinguish current behavior from future story and mechanics.
-- [Credits](CREDITS.md) and [artwork provenance](assets/arwa/CREDITS.md) identify the template, type, icons and team assets.
+```text
+UI action → authorized artifact presentation → validated command
+          → authoritative state → rule evaluation → consequences and effects
+```
 
-Run `node --test` with Node 18 or newer. The optional browser suites use Playwright and Microsoft Edge against the running local server. See the [browser setup](docs/INTEGRATION.md#run-and-checks).
+Evidence inspection, explicit player-established inferences, official determinations and persistent milestones are separate facts. Logical evidence IDs work across applications; reading enough files never automatically establishes an inference. Cases can contain multiple determinations and progress through declarative alternative routes.
+
+The engine validates catalog references and access, rejects rule cycles, and cancels stale presentation operations after revocation, replacement or reset. Mail retains its thread-level authorization and separate UI receipts; only mapped, presented message bodies or attachments count as evidence.
+
+Progress uses `hilfer:save:v2`. Explicit migration preserves valid v1 progress without inventing inspection history. The report, effective access and distortion remain derived projections. Transient effect receipts prevent historical cues replaying on reload.
+
+| Location | Responsibility |
+| --- | --- |
+| `js/core/` | Authoritative store, commands, rules, saves, artifact authorization and effect receipts. |
+| `js/apps/` | Application UI, inspection policies and presentation adapters. |
+| `data/` | Current demo sources and schema/content-2 progression definitions. |
+| `data/history/` | Original definitions retained for migration validation. |
+| `tests/` | Unit checks and browser regressions; additional relationships exist only in synthetic fixtures. |
+
+## Checks
+
+Use **Node.js 24**, the verified test runtime, for unit checks:
+
+```sh
+npm test
+```
+
+The final engine verification recorded **78 unit tests and five browser suites passing locally**, not a GitHub CI run. Browser checks require Playwright and Microsoft Edge plus the running local server. Run them sequentially; setup, all five commands and the recorded Assistant concurrency failure are covered in the [integration guide](docs/INTEGRATION.md#run-and-checks) and [verification report](docs/APPLICATION_INTEGRATION_REVIEW.md).
+
+## Documentation
+
+| Guide | Read it for |
+| --- | --- |
+| [Documentation index](docs/README.md) | Current guides, completed implementation records and remaining scope. |
+| [Integration contracts](docs/INTEGRATION.md) | Local setup, app interfaces, signals and browser checks. |
+| [Engine reference](docs/ENGINE.md) | State, commands, condition language, persistence and migration. |
+| [Application integration](docs/APP_INTEGRATION.md) | Catalog validation, authorization, inspection readiness and cancellation. |
+| [Project context](docs/PROJECT_CONTEXT.md) / [decisions](docs/DESIGN_DECISIONS.md) | Working narrative premises, approved technical decisions and unresolved mechanics. |
+
+Template, icons, typography and team artwork are documented in [credits](CREDITS.md) and [artwork provenance](assets/arwa/CREDITS.md).

@@ -1,5 +1,8 @@
 # HILFER Engine Foundation — approved specification
 
+Implemented in PR #7 (`f9f3305`). This approved design is a historical delivery record; current engine and app
+contracts are indexed in [docs/README.md](../../README.md), including the completed PR #8 integration.
+
 Approved in chat on 2026-11-20, including the Phase A addendum. PR 1 only.
 
 ## Scope and authority

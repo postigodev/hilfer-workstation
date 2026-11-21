@@ -1,5 +1,8 @@
 # Application authorization and inspection (PR 2)
 
+**Status:** implemented and squash-merged through PR #8 (`f8e7e8a`). This is a current contract reference;
+the [verification report](APPLICATION_INTEGRATION_REVIEW.md) preserves its test and review history.
+
 The engine remains authoritative. Applications present approved content; neither opening a container nor
 receiving a DOM announcement is proof of inspection or player comprehension. Production content is unchanged.
 
