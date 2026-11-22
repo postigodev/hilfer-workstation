@@ -1,23 +1,82 @@
-{
-  "caseId": "CASE-001",
-  "dialogue": [
-    {
-      "on": "assignment.available",
-      "label": "Assignment received",
-      "text": "Welcome to HILFER. Your current assignment is Post-Incident Data Reconciliation. The Consolidated Report is ready for review.",
-      "voice": { "id": "welcome-v3", "src": "assets/sounds/assistant/welcome-v3.mp3" }
-    },
-    {
-      "on": "case.review-started",
-      "label": "Review pending",
-      "text": "Your personnel review remains open. Departmental sources are available in Records; Reconciliation maintains the consolidated entry. No revision has been filed.",
-      "voice": { "id": "investigating-v3", "src": "assets/sounds/assistant/investigating-v3.mp3" }
-    },
-    {
-      "on": "case.report-filed",
-      "label": "Report updated",
-      "text": "The work-status entry for Jessica has been revised in the Consolidated Report. Its source references have been retained. The recorded work-related cause has not changed.",
-      "voice": { "id": "filed-v3", "src": "assets/sounds/assistant/filed-v3.mp3" }
-    }
-  ]
-}
+{
+  "caseId": "CASE-001",
+  "dialogue": [
+    {
+      "on": "assignment.available",
+      "label": "Assignment received",
+      "text": "Welcome to HILFER. Your current assignment is Post-Incident Data Reconciliation. The Consolidated Report is ready for review.",
+      "voice": {
+        "id": "welcome-v3",
+        "src": "assets/sounds/assistant/welcome-v3.mp3"
+      }
+    },
+    {
+      "on": "case.review-started",
+      "label": "Review pending",
+      "text": "Your personnel review remains open. Departmental sources are available in Records; Reconciliation maintains the consolidated entry. No revision has been filed.",
+      "voice": {
+        "id": "investigating-v3",
+        "src": "assets/sounds/assistant/investigating-v3.mp3"
+      }
+    },
+    {
+      "on": "case.report-filed",
+      "label": "Report updated",
+      "text": "The work-status entry for Jessica has been revised in the Consolidated Report. Its source references have been retained. The recorded work-related cause has not changed.",
+      "voice": {
+        "id": "filed-v3",
+        "src": "assets/sounds/assistant/filed-v3.mp3"
+      }
+    },
+    {
+      "on": "security.archive-restored",
+      "label": "Archive verified",
+      "text": "The independent local record supports availability. Restoring access does not authenticate the camera clock."
+    },
+    {
+      "on": "security.transport-reviewed",
+      "label": "Movement observed",
+      "text": "Cargo movement is visible in the recovered excerpt. Personnel identity, contents and historical timing still require independent corroboration."
+    },
+    {
+      "on": "recovery.purpose-filed",
+      "label": "Authorized purpose",
+      "text": "The third entry has an operational objective. An authorization is not proof that the recovery was completed. Please retain that distinction in the report."
+    },
+    {
+      "on": "classification.filed",
+      "label": "Approved account",
+      "text": "The report now contains a supported administrative classification. Consider which qualifications survive when that classification is repeated."
+    },
+    {
+      "on": "guy.comparison",
+      "label": "Unfinished work",
+      "text": "Guy’s revision was not approved for circulation. The official wording remains the institutional record. Do you require further clarification?"
+    },
+    {
+      "on": "occupancy.continued",
+      "label": "Occupancy notice",
+      "text": "The same workstation remains subject to limited occupancy. Your pending reconciliation tasks remain assigned. Clearing a warning does not extend the authorization."
+    },
+    {
+      "on": "disclosure.attempted",
+      "label": "Distribution control",
+      "text": "This material is not cleared for direct external distribution. I can help prepare an approved release. The local draft will be retained."
+    },
+    {
+      "on": "disclosure.sent",
+      "label": "Submission complete",
+      "text": "Message sent successfully. Your assignment is complete. The gateway release copy is available in Sent Mail."
+    },
+    {
+      "on": "disclosure.reviewed",
+      "label": "Personnel review",
+      "text": "Occupational Health requires an evaluation. Your temporary assignment access is suspended pending review. No diagnosis has been recorded."
+    },
+    {
+      "on": "disclosure.ended",
+      "label": "End of shift",
+      "text": "Thank you for completing Post-Incident Data Reconciliation. Your pending work has been retained for reassignment."
+    }
+  ]
+}

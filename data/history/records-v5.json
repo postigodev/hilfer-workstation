@@ -1,0 +1,330 @@
+[
+  {
+    "id": "HR-014",
+    "type": "personnel_status",
+    "title": "Jessica Personnel Status",
+    "department": "Human Resources",
+    "employeeId": "EMP-JESSICA",
+    "employee": "Jessica",
+    "date": "1998-10-12T09:00:00",
+    "workPeriod": "1998-10-12 / 1998-10-18",
+    "fields": {
+      "workEligibility": "AVAILABLE"
+    },
+    "caseIds": [
+      "CASE-001"
+    ],
+    "note": "Staffing extract for the current duty period. Availability carried forward from the personnel register."
+  },
+  {
+    "id": "OH-008",
+    "type": "occupational_health_record",
+    "title": "Jessica Occupational Health",
+    "department": "Occupational Health",
+    "employeeId": "EMP-JESSICA",
+    "employee": "Jessica",
+    "date": "1998-10-13T14:30:00",
+    "workPeriod": "1998-10-12 / 1998-10-18",
+    "fields": {
+      "workEligibility": "NOT_CLEARED",
+      "occupationalCausation": "NOT_ESTABLISHED"
+    },
+    "caseIds": [
+      "CASE-001"
+    ],
+    "note": "Work clearance withheld for the stated duty period."
+  },
+  {
+    "id": "MT-REPEAT",
+    "type": "maintenance_log",
+    "title": "Maintenance Ledger — Containment Line C",
+    "department": "Maintenance",
+    "date": "1998-10-26T09:00:00",
+    "fields": {},
+    "caseIds": [],
+    "body": "HILFER — PLANT MAINTENANCE\nExtract through 25 OCT 98\nEquipment group: SEC-TEST / containment line\nPrepared for: Engineering weekly review\nMaint. contact: Tito\n15 SEP — POS-REL-01\nRelay sticking at changeover. Contacts pitted. Replaced relay and checked travel with line isolated. Normal on three cycles.\nDisposition: Closed.\n30 SEP — POS-REL-01\nSame position is sticking again. See Tito's note in the September 30 mail chain. No spare assembly on the shelf. Ordered one; monitor at each changeover.\nDisposition: Open / parts.\n08 OCT — POS-REL-01\nReplacement fitted. No hang observed under load. Return to service.\nDisposition: Closed. Previous repair remains in history.\n09 OCT — SEN-03\nPeriodic comparison against SEN-01/02 outside tolerance. Cleaned connection and repeated check. Return reading within test band.\nDisposition: Closed after check.\n18 OCT — SEN-03\nDrift on morning comparison. Adjustment held for the afternoon run.\nDisposition: Closed.\n25 OCT — SEN-03\nThird call this month. Reading low against the other channels during the check. Adjusted again. Tito requested instrument bench time; no slot was available before Monday.\nDisposition: Closed after recalibration; bench review pending scheduling.\nOther open items\nSEN-04 — calibration interval shortened pending a permanent sensor replacement.\nSHD-TEMP-01 — temporary shielding fitted under approved exception; replacement not yet received.\nTito's note, 25 OCT:\nI can keep checking SEN-03, but if it moves again we ought to take it out and put it on the bench. The last two adjustments didn't last very long.\nLedger status reflects work orders, not a complete evaluation of instrument reliability.",
+    "sourceGroupId": "MAINT-RECUR",
+    "designId": "AM-01"
+  },
+  {
+    "id": "ENG-MITIGATION",
+    "type": "engineering_procedure",
+    "title": "Interim Operating Restrictions — Rev. C",
+    "department": "Engineering",
+    "date": "1998-10-23T14:00:00",
+    "fields": {},
+    "caseIds": [],
+    "body": "ENGINEERING / SYSTEMS RELIABILITY\n23 October 1998\nInterim operating note — test area and adjacent access\nPrepared by Tim\nDistribution: Operations, Instrumentation, Site Safety\nUse this revision for the remaining pre-demonstration runs. Rev. B may be retained for history but is not to be used for shift planning.\n1. Sensor comparison\nFor ordinary trend checks, use the paired SEN-01 and SEN-02 readings as the working reference. A disagreement from SEN-03 must still be logged. Do not average it away or record it as a failed sensor without an instrument check.\n2. Occupancy\nUse the shorter entry periods on the posted route sheet. Engineering has not approved an increase in time in SEC-TEST. If a task runs over, stop and reassign the remaining work to the next eligible person. Operations should not treat an unfilled shift as an automatic extension for the worker already inside.\n3. Rotations\nNo one is to be assigned on the assumption that the previous shift's estimated dose was zero. HR/Operations need the cumulative figures before they put names against a route.\n4. Temporary hardware\nSHD-TEMP-01 remains an exception. Check its fastening and position at the start of each run. Replacement is still the preferred disposition.\nThese measures have brought the last set of monitored runs within the revised operating limits. That is why I am recommending continued restricted work, not unrestricted access.\nIf the instrument comparison changes over the weekend, call Engineering before making a schedule out of this one.\nTim\nSystems Reliability",
+    "sourceGroupId": "ENG-MITIGATIONS",
+    "designId": "AM-02"
+  },
+  {
+    "id": "SNS-PRETEST",
+    "type": "instrument_exception",
+    "title": "Instrument Exception — 26 October",
+    "department": "Instrumentation",
+    "date": "1998-10-26T17:12:00",
+    "fields": {
+      "anomalyClassification": "UNVERIFIED"
+    },
+    "caseIds": [],
+    "body": "INSTRUMENTATION EXCEPTION REVIEW\nEntered: 26 OCT 98 / 17:12\nReference: SEC-TEST, pre-demonstration run\nLogged by: Instrumentation Desk\nObserved at 16:50:\nSEN-01 — elevated indication\nSEN-02 — elevated indication\nSEN-03 — no corresponding increase\nBoth elevated channels returned toward the earlier range within the next several minutes. The automatic event marker was retained.\nChecks completed:\n- Channel recording sequence reviewed for obvious time offset.\n- No confirmed loss of SEN-01 or SEN-02 power during the interval.\n- SEN-03 calibration history shows field adjustments on 09, 18 and 25 October (see maintenance ledger).\n- No bench comparison of SEN-03 was available at the time of this review.\nDisposition: UNVERIFIED ANOMALY\nThe signals do not agree. We have not established whether the elevated indication represents the actual area condition or an instrument problem. Do not delete the three traces.\nFor the demonstration go/no-go decision, Engineering has been asked to review the event with the current operating restrictions. An instrument exception does not, by itself, authorize or cancel the test.",
+    "sourceGroupId": "SENSOR-ANOMALY",
+    "designId": "AM-03"
+  },
+  {
+    "id": "OH-SIX-REVIEW",
+    "type": "medical_review",
+    "title": "Occupational Health — Cases for Follow-up",
+    "department": "Occupational Health",
+    "date": "1998-10-28T16:10:00",
+    "fields": {
+      "medicalReviewCount": "6"
+    },
+    "caseIds": [
+      "CASE-LINEAGE"
+    ],
+    "body": "OCCUPATIONAL HEALTH\n28 October 1998 / 16:10\nPrepared by José Carlos\nDistribution: Medical; restricted review for Legal and HR\nSix employees have been referred for follow-up where a possible connection to facility work cannot yet be excluded. This is a follow-up list. It is not a list of six confirmed occupational exposure injuries.\nCase notes for classification:\n• Jessica, EMP-JESSICA — reported nausea, headache, fatigue and skin irritation after leaving Sector C on 13 October. OH-008 did not clear her for the 12–18 October work period. A new restricted-duty authorization was issued 21 October for SEC-ADJ; this did not alter the earlier finding. Reassess after the 27 October event.\n• One worker reported symptoms beginning 16 October, eleven days before the Incident. Present complaint needs review, but onset is outside the official Incident interval.\n• Another nearby-area worker reported symptoms on 22 October; work history and other causes still being checked.\n• Three additional employee reviews were opened or updated after 27 October. The available information is not equally complete for all three.\nTwo cases currently meet the reporting criteria for serious exposure associated with the defined Incident window. The remaining cases should stay on the follow-up list pending additional history and results. Their exclusion from that reporting category is not a finding that the complaints have no occupational basis.\nPlease don't use the count of six as the number of confirmed cases. Conversely, the reportable count should not be used to close these follow-ups.\nJosé Carlos",
+    "sourceGroupId": "MED-SIX-REVIEW",
+    "designId": "AM-05"
+  },
+  {
+    "id": "INC-SUMMARY",
+    "type": "incident_summary",
+    "title": "Incident Reporting Summary — Working Classification",
+    "department": "Compliance",
+    "date": "1998-10-29T17:30:00",
+    "fields": {
+      "recoveryClassification": "CONSOLIDATED_RECOVERY",
+      "medicalCountScope": "CONFIRMED_SERIOUS_INCIDENT_WINDOW",
+      "approvedLanguageLevel": "REVIEWED_QUALIFIED",
+      "confirmedSeriousExposures": "2",
+      "medicalReviewCount": "6"
+    },
+    "caseIds": [
+      "CASE-LINEAGE"
+    ],
+    "body": "HILFER / COMPLIANCE\nIncident summary — distribution copy\n29 OCT 98, 17:30\nCase: INC-19981027\nStatus: Working classification for external and contractor review\nEvent date: 27 OCT 98, 14:20\nEvent designation: CONTAINMENT EVENT\nFacility response: CONTAINMENT STABILIZATION AND CONSOLIDATED RECOVERY\nrecoveryClassification: CONSOLIDATED_RECOVERY\nMEDICAL / PERSONNEL\nConfirmed serious Incident-related exposures (defined reporting window): 2\nMedical referrals under continued review: 6\nmedicalCountScope: CONFIRMED_SERIOUS_INCIDENT_WINDOW\nHR records remain the controlling source for administrative status at the time each roster was issued. A pre-event 'available' entry is not a post-event medical finding. Changes to employee availability should be logged by HR with the effective period.\nCOMMUNICATION\nApproved wording: 'The company has implemented additional precautions and is continuing the medical evaluation of employees who have reported symptoms.'\napprovedLanguageLevel: REVIEWED_QUALIFIED\nEarlier unqualified technical descriptions are not approved for general distribution pending Engineering's final reconstruction.\nRECOVERY\nRecovery activities have been grouped under the consolidated response category for reporting. Individual operations and staffing are maintained in Operations and Engineering records; this summary is not a mission-by-mission account.\nPrepared from the departmental submissions available at this cutoff. Categories and counts refer to the stated criteria.",
+    "sourceGroupId": "OFFICIAL-SUMMARY",
+    "designId": "AM-07"
+  },
+  {
+    "id": "LOS-AUDIT",
+    "type": "activity_log",
+    "title": "Desk Activity Extract — Prior Operator",
+    "department": "Reconciliation",
+    "date": "1998-11-05T17:48:00",
+    "fields": {},
+    "caseIds": [],
+    "body": "RECONCILIATION DESK / AUTOMATIC ACTIVITY EXTRACT\nWorkstation: WS-RECON-01\nAccount: ACC-LOSURDO\nPeriod: 02–05 NOV 98\nGenerated 05 NOV 98, 17:48\nSite Safety continuous occupancy recommendation: 90 minutes.\n02 NOV 15:00–16:15  Session duration 01:15\n  Opened HR-014, OH-008.\n  Search: 'revised status period'\n  Closed normally.\n03 NOV 13:30–16:15  Session duration 02:45\n  Search: 'SEN-03 repeat', '26 OCT unverified'\n  Opened maintenance history and instrument review.\n  15:00 occupancy notice: dismissed.\n  Session ended by user.\n04 NOV 12:00–17:45  Session duration 05:45\n  Search: 'medical review six', 'classification cutoff'\n  Opened INC-SUMMARY and Occupational Health follow-up.\n  13:30 occupancy notice: dismissed.\n  15:15 second occupancy notice: dismissed.\n05 NOV 10:10–17:35  Session duration 07:25\n  Search: 'CAM-04 interval 28 OCT', 'local segment'\n  Opened SEC-INDEX. Queried Systems Integrity location associated with SEG-R03-01.\n  11:40 occupancy notice: dismissed.\n  14:05 repeat warning: dismissed.\n  17:35 session terminated.\nPending working notes, not filed:\n  'Two time windows in the medical field?'\n  'Need to check whether central unavailable means unavailable everywhere.'\nThis extract lists user activity and accepted notifications. It does not certify the contents or correctness of any document opened.",
+    "sourceGroupId": "LOS-SESSION-AUDIT",
+    "designId": "AM-08"
+  },
+  {
+    "id": "OH-LOSURDO",
+    "type": "medical_restriction",
+    "title": "Occupational Health — Work Restriction",
+    "department": "Occupational Health",
+    "date": "1998-11-05T19:10:00",
+    "fields": {
+      "workEligibility": "NOT_CLEARED"
+    },
+    "caseIds": [],
+    "body": "OCCUPATIONAL HEALTH\nEmployee: L. Losurdo / EMP-LOSURDO\n5 November 1998 — 19:10\nDisposition: REMOVE FROM ACTIVE DUTY\nEffective: Immediately\nFollow-up: Medical review required before new assignment\nLosurdo was seen after an extended work session. He reports nausea and headache, and the initial examination includes abnormal findings requiring further evaluation. Repeat tests and follow-up have been ordered.\nThe employee is not cleared to continue the current Reconciliation assignment. This restriction applies whether the symptoms are ultimately attributed to workplace conditions or to another cause.\nWorkplace exposure history has been requested from Site Safety, including occupancy duration for WS-RECON-01. The causal assessment remains open.\nHR: Please update current availability and hold the assignment pending replacement. No return date is authorized on this record.\nOccupational Health",
+    "sourceGroupId": "LOS-MEDICAL-STATUS",
+    "designId": "AM-09"
+  },
+  {
+    "id": "AREA-OCCUPANCY",
+    "type": "occupancy_protocol",
+    "title": "Limited Occupancy — Reconciliation Room",
+    "department": "Site Safety",
+    "date": "1998-10-30T17:00:00",
+    "fields": {
+      "maxContinuousMinutes": "90"
+    },
+    "caseIds": [],
+    "body": "SITE SAFETY — INTERIM AREA RELEASE\n30 October 1998 / 17:00\nArea: SEC-RECON\nWorkstation: WS-RECON-01\nStatus: LIMITED OCCUPANCY\nDecontamination: NOT COMPLETE\nThe room may be used for the short-duration reconciliation work currently authorized. Surface and access checks were acceptable for restricted use at the time of this release; they do not constitute an unrestricted return-to-service finding.\nContinuous occupancy limit: 90 minutes.\nAt the end of that period the operator must leave the controlled area and report the session end. Work that remains open stays open.\nThe workstation will display an occupancy reminder based on the time recorded in the room. Clearing the reminder does not reset the occupancy clock or extend this authorization.\nFacilities should schedule the remaining cleaning when the document review work is not in progress. Do not remove the restriction sign until Site Safety issues a replacement notice.\nSite Safety\nCopy: Records Coordination, Occupational Health",
+    "sourceGroupId": "AREA-RESTRICTION",
+    "designId": "AM-10"
+  },
+  {
+    "id": "SEC-INDEX",
+    "type": "security_index",
+    "title": "Security Media Index — Central Review",
+    "department": "Security",
+    "date": "1998-10-29T08:15:00",
+    "fields": {
+      "cameraId": "CAM-04",
+      "sectorId": "SEC-R03-ACCESS",
+      "segmentId": "SEG-R03-01",
+      "centralArchiveStatus": "UNAVAILABLE"
+    },
+    "caseIds": [
+      "CASE-ARCHIVE"
+    ],
+    "body": "SECURITY / CENTRAL ARCHIVE\nIndex run: 29 OCT 98 08:15\nRequested recording:\nCamera: CAM-04\nArea: SEC-R03-ACCESS\nSegment reference: SEG-R03-01\nCapture window: 28 OCT 98, 06:43:00–06:43:27\nCentral frame record: NOT PRESENT\ncentralArchiveStatus: UNAVAILABLE\nThe index retains a segment reference and time window from recorder event notices. It does not contain the corresponding picture data in central storage.\nCentral archive playback: unavailable.\nLocal recorder inquiry: not completed in this index run.\nNo deletion or overwrite conclusion is recorded here. If another department holds a local or transferred segment under SEG-R03-01, that copy requires separate verification before its status can be changed for review.",
+    "sourceGroupId": "SEC-CENTRAL-INDEX",
+    "designId": "AM-11"
+  },
+  {
+    "id": "ENG-LOCAL-SEGMENT",
+    "type": "local_capture_verification",
+    "title": "Recorder Check — Local Segment",
+    "department": "Systems Integrity",
+    "date": "1998-10-29T11:40:00",
+    "fields": {
+      "cameraId": "CAM-04",
+      "sectorId": "SEC-R03-ACCESS",
+      "segmentId": "SEG-R03-01",
+      "archiveAvailability": "PARTIAL_LOCAL_VERIFIED"
+    },
+    "caseIds": [
+      "CASE-ARCHIVE"
+    ],
+    "body": "SYSTEMS INTEGRITY / LOCAL RECORDER CHECK\n29 OCT 98 11:40\nRecorder: DVR-04-L\nCamera input: CAM-04\nLocation: SEC-R03-ACCESS\nThe recorder was restarted for restricted corridor monitoring at 04:45 on 28 October. The central link did not resume normal synchronization.\nLocal segment found:\nSEG-R03-01\n28 OCT 98 06:43:00–06:43:27\nIndexed parent interval: approximately 27 seconds\nRecovered playable extract: 14.375 seconds\nRead test: PASS — the recovered extract is readable; this is not a finding that all 27 indexed seconds survived.\nThe recorder's event list and the parent segment header agree on camera and indexed time window. This check was made from the local unit; it is not based on the central media index.\nThe extraction and overlay-clock verification is filed separately under ENG-LOCAL-SEGMENT:association. Inspect that addendum before relating the displayed clock to an operational time.\nNo content description was prepared during the read test. The interrupted end of the segment must not be taken as proof that the recording continues elsewhere.\nRequested action: leave the original local media secured. A separate access decision is required before the segment is made available to general Reconciliation review.\nSystems Integrity",
+    "sourceGroupId": "ENG-LOCAL-CAPTURE",
+    "designId": "AM-12"
+  },
+  {
+    "id": "OPS-TRANSFER",
+    "type": "custody_receipt",
+    "title": "Operations Media Transfer Receipt",
+    "department": "Operations",
+    "date": "1998-10-30T13:20:00",
+    "fields": {
+      "cameraId": "CAM-04",
+      "sectorId": "SEC-R03-ACCESS",
+      "segmentId": "SEG-R03-01",
+      "archiveAvailability": "PARTIAL_LOCAL_VERIFIED"
+    },
+    "caseIds": [
+      "CASE-ARCHIVE"
+    ],
+    "body": "OPERATIONS / CUSTODY RECEIPT\n30 OCT 98 13:20\nTransfer desk: restricted records intake\nItem received: sealed local-media copy, SEC-R03-ACCESS\nSource custody: site operations after corridor recorder restart\nCamera reference on enclosure: CAM-04\nSegment tag on enclosure: SEG-R03-01\nTime window on original enclosure: 28 OCT 98, 06:43:00–06:43:27\nReceived one carrier. Packaging intact at intake. Intake clerk checked the parent segment header against the enclosure. The enclosure indexes 27 seconds; only a 14.375-second review extract is currently readable.\nHeld in restricted local-media cabinet pending archive reconciliation. No central archive accession number has been assigned.\nThe independent movement-log and extract-custody verification is filed separately under OPS-TRANSFER:association.\nThis receipt is based on the physical carrier and intake check. It is not a transcription of Systems Integrity's inspection report.\nDisposition requested: make the item discoverable for authorized review without changing the original central-storage result.\nOperations Custody",
+    "sourceGroupId": "OPS-TRANSFER-CUSTODY",
+    "designId": "AM-13"
+  },
+  {
+    "id": "REC-01-02-CLOSEOUT",
+    "type": "recovery_closeout",
+    "title": "Recovery Operations — Initial Closeout",
+    "department": "Operations",
+    "date": "1998-10-27T22:05:00",
+    "fields": {
+      "recovery01": "CONTAINMENT_STABILIZED",
+      "recovery02": "DIAGNOSTICS_RETRIEVED"
+    },
+    "caseIds": [
+      "CASE-REC03-PURPOSE",
+      "CASE-LINEAGE"
+    ],
+    "body": "OPERATIONS / ENGINEERING\nEmergency action closeout\n27 OCT 98 — 22:05\nIncident INC-19981027\nOP-R01 | 15:30–17:15\nPurpose: stabilize the affected containment subsystem before further deterioration.\nResult: immediate containment condition stabilized following manual intervention. Restricted access remains in effect.\nOP-R02 | 19:15–21:30\nPurpose: retrieve the isolated diagnostic modules needed to establish the failure sequence and confirm current containment behavior.\nResult: critical telemetry recovered and accepted for analysis.\nThese actions addressed the immediate stabilization and diagnostic requirements identified in the emergency meeting. They were not routine work and required controlled entries.\nOutstanding:\n- Equipment remains in the affected area.\n- Full cleanup and return-to-service have not been authorized.\n- Additional retrieval or entry is not covered by this closeout.\n- Staffing and exposure estimates must be reviewed before any proposed additional work.\nOperations sign-off: initial response tasks complete.\nEngineering sign-off: necessary diagnostic material received.\nSite Safety: access restrictions remain in force.",
+    "sourceGroupId": "REC-SAFETY-CLOSEOUT",
+    "designId": "AM-14"
+  },
+  {
+    "id": "REC-03-APPROVAL-ROSTER",
+    "type": "recovery_staffing",
+    "title": "Restricted Entry Routing — Third Recovery",
+    "department": "Operations",
+    "date": "1998-10-28T06:34:00",
+    "fields": {
+      "operationId": "OP-R03",
+      "replacementId": "EMP-TITO",
+      "replacementApprovedAt": "1998-10-28T06:21:00"
+    },
+    "caseIds": [
+      "CASE-REC03-PURPOSE"
+    ],
+    "body": "OPERATIONS / CONTROLLED ENTRY ROSTER\nOperation: OP-R03\nArea: SEC-R03-ACCESS and adjoining restricted route\nInitiated: 27 OCT 98, 23:40\nPurpose code: RESTRICTED RECOVERY / detail retained in restricted asset annex\n23:15 — Tim, Systems Reliability: conditional exposure/rotation plan filed. Plans assume individual cumulative figures from prior entries. Feasibility does not grant staff approval.\n23:40 — Operations/Program Management: additional controlled entry approved under revised emergency procedure. Legal policy check and HR eligibility review recorded separately. Route and occupancy requirements apply.\n28 OCT 98\n05:05 — Initial team entered. Access tags issued.\n05:48 — One assigned worker removed from duty on medical grounds. Entry paused pending replacement.\n06:03 — Replacement requested.\n06:11 — First proposed worker declined by Engineering: cumulative exposure too high under the revised allowance.\n06:17 — Second proposed worker declined for the same reason.\n06:21 — EMP-TITO approved by HR/Operations for replacement assignment ASSIGN-R03-TITO. Current recorded exposure below revised threshold; containment experience noted. Suit marking R-17.\n06:34 — Operations records resumption of controlled entry.\nConditions after 06:34 require separate incident and medical records. No completion of the assignment is entered here.",
+    "sourceGroupId": "REC03-ROUTING",
+    "designId": "AM-15"
+  },
+  {
+    "id": "ASSET-CUSTODY-03",
+    "type": "restricted_asset_custody",
+    "title": "Restricted Asset Movement — OP-R03",
+    "department": "Asset Control",
+    "date": "1998-10-28T08:15:00",
+    "fields": {
+      "operationalPurpose": "PROTOTYPE_RETRIEVAL"
+    },
+    "caseIds": [
+      "CASE-REC03-PURPOSE",
+      "CASE-LINEAGE"
+    ],
+    "body": "ASSET CONTROL — RESTRICTED ANNEX\n28 OCT 98 08:15\nOperation: OP-R03\nTransport: CTN-R03-01\nRoute: SEC-R03-ACCESS\nReference window: 06:34 onward, including CAM-04 corridor movement\nAuthorized purpose: RETRIEVAL OF EXPERIMENTAL PROTOTYPE\noperationalPurpose: PROTOTYPE_RETRIEVAL\nControlled asset: ASSET-PROTO-01\nThe transport container assigned to the third controlled entry was designated for moving the experimental core assembly out of the restricted area. This is the asset tied to the demonstration program.\nThe route paperwork associates the container with the entry recorded at the corridor camera. The camera image does not itself identify what was inside the sealed unit.\nReceiving condition: NOT CLOSED.\nNo final acceptance into the destination store has been recorded against this annex. This document verifies the object and purpose of the requested movement, not completion of the transfer.\nDo not circulate this annex with the general personnel or Incident summary. Its access is restricted to authorized asset review.",
+    "sourceGroupId": "ASSET-PROTOTYPE-CUSTODY",
+    "designId": "AM-16"
+  },
+  {
+    "id": "GUY-UNFINISHED-DRAFT",
+    "type": "draft_statement",
+    "title": "Incident Statement — working revision (not sent)",
+    "department": "Communications",
+    "date": "1998-11-02T02:14:00",
+    "fields": {},
+    "caseIds": [],
+    "body": "COMMUNICATIONS / DRAFT — NOT RELEASED\nLast saved: 02 NOV 98, 02:14\nEditor: Guy\nFor internal revision only\nThe 29 October version says 'containment event.' Engineering is now describing a failure of the containment assembly. We need to say what failed, or say we still don't know. 'Event' by itself doesn't tell anyone anything.\nMedical:\nSix people being followed. Two in the serious Incident category. Which names are we leaving out when we print only the second number? The dates and criteria need to be beside the count.\nJessica — symptoms on the 13th; different authorization on the 21st; exposed during the breach. Don't collapse those into a single 'medical leave' entry.\nTito — roster says eligible before the third entry. The camera shows an injury. 'Available for duty' was not checked afterward. Someone needs to call Medical before we use that field.\nRecovery:\nFirst entry contained the immediate problem.\nSecond entry brought out the missing readings.\nThird entry was for the prototype.\nThat third line is not in the approved summary. It should be.\n[Draft paragraph]\nOn 27 October the demonstration resulted in a failure of part of the containment system. Emergency personnel subsequently stabilized the affected area and retrieved diagnostic equipment. A later recovery entry was authorized for the program prototype. During that entry a technician was seriously injured. The final medical outcome—\n[No further text]",
+    "sourceGroupId": "GUY-DRAFT",
+    "designId": "AM-18"
+  },
+  {
+    "id": "COMM-GATEWAY-POLICY",
+    "type": "gateway_policy",
+    "title": "External Correspondence — Compliance Routing",
+    "department": "Communications Compliance",
+    "date": "1998-09-15T09:00:00",
+    "fields": {},
+    "caseIds": [],
+    "body": "HILFER / COMMUNICATIONS COMPLIANCE\nProcedure CC-4 — revision 15 SEP 98\nApplies to: classified program and Incident-related external correspondence\nMessages prepared on the internal workstation may be submitted to the external mail gateway. The workstation's acceptance notice confirms receipt for routing; it does not certify external delivery.\nBefore release, the gateway checks:\n- destination authorization\n- attachment classification and origin\n- current approved excerpt list for the program\n- whether an outgoing statement is still under departmental review\nRestricted documents are not to be forwarded as original attachments. Where an approved excerpt exists, the routing copy may use that excerpt instead. Unapproved material remains in the internal record. A release copy and its routing disposition are retained in the correspondence log.\nEmployees who need an unqualified technical or medical statement released must obtain the appropriate departmental clearance. The help desk cannot override that clearance.\nQuestions about a returned or held message should refer to the routing number, not the local draft filename.\nCommunications Compliance",
+    "sourceGroupId": "OUTBOUND-GATEWAY-RULES",
+    "designId": "AM-19"
+  },
+  {
+    "id": "ENG-LOCAL-SEGMENT:association",
+    "type": "extraction_verification",
+    "title": "Recorder Extraction — Clock and Segment Verification",
+    "department": "Systems Integrity",
+    "date": "1998-10-29T11:40:00",
+    "fields": {
+      "parentSegmentId": "SEG-R03-01",
+      "cameraId": "CAM-04",
+      "sectorId": "SEC-R03-ACCESS",
+      "extractRef": "SEG-R03-01:review",
+      "indexedSeconds": "27",
+      "playableSeconds": "14.375",
+      "pictureClock": "TCR 10-09 18:37:11",
+      "timingBasis": "RECORDER_EVENT_LOG"
+    },
+    "caseIds": [
+      "CASE-REC03-PURPOSE"
+    ],
+    "sourceGroupId": "ENG-LOCAL-CAPTURE",
+    "designId": "AM-12-ADDENDUM",
+    "body": "SYSTEMS INTEGRITY / EXTRACTION VERIFICATION\n29 OCT 98 11:40\nAddendum to ENG-LOCAL-SEGMENT\nRecorder: DVR-04-L\nCamera input: CAM-04\nSector: SEC-R03-ACCESS\nParent segment: SEG-R03-01\nReview extract reference: SEG-R03-01:review\nThe local acquisition event log and parent segment directory identify a recording interval of 28 OCT 98, 06:43:00–06:43:27. The extraction register associates the recovered picture blocks with this parent segment and camera input. The playable review extract contains 14.375 seconds, not the entire 27-second indexed interval. No missing pictures were reconstructed, repeated or stretched.\nPicture overlay observed during the read test: TCR 10-09 18:37:11. This text stays unchanged while the recovered pictures and recorder sequence positions advance. It cannot be used as an advancing event clock. The acquisition event log is separate from that picture overlay; the overlay does not establish the capture date. The cause of the stale text was not established by this check, and no corrected picture timestamp is asserted.\nThe extraction register preserves the association between this review extract and SEG-R03-01. It does not assign an absolute event time to each recovered frame or establish that every indexed second survived.\nThis is a local recorder and extraction check, not independent confirmation of which operation used the corridor. Operational movement and custody records must be compared separately before an operational association is filed.\nNo personal identity, medical outcome or cargo contents are certified here.\nSystems Integrity"
+  },
+  {
+    "id": "OPS-TRANSFER:association",
+    "type": "operational_custody_verification",
+    "title": "Operations — Movement and Extract Custody Verification",
+    "department": "Operations",
+    "date": "1998-10-30T13:20:00",
+    "fields": {
+      "parentSegmentId": "SEG-R03-01",
+      "cameraId": "CAM-04",
+      "sectorId": "SEC-R03-ACCESS",
+      "extractRef": "SEG-R03-01:review",
+      "operationId": "OP-R03",
+      "movementTime": "1998-10-28T06:43",
+      "verificationBasis": "OPERATIONS_MOVEMENT_LOG"
+    },
+    "caseIds": [
+      "CASE-REC03-PURPOSE"
+    ],
+    "sourceGroupId": "OPS-TRANSFER-CUSTODY",
+    "designId": "AM-13-ADDENDUM",
+    "body": "OPERATIONS / MOVEMENT AND EXTRACT CUSTODY CHECK\n30 OCT 98 13:20\nAddendum to OPS-TRANSFER\nOperation: OP-R03\nRoute: SEC-R03-ACCESS\nCamera reference: CAM-04\nParent segment on collected carrier: SEG-R03-01\nReview extract on received copy: SEG-R03-01:review\nOperations compared the received carrier and its review extract with the original collection entry. The extract reference, camera input and parent segment identifier agree through that custody chain. The readable extract is 14.375 seconds; the carrier indexes the larger 06:43:00–06:43:27 parent interval. This check does not claim a complete 27-second picture sequence.\nSeparately, Operations checked its own corridor movement log. That contemporaneous entry records equipment transport for OP-R03 through SEC-R03-ACCESS at 06:43 on 28 OCT 98, after the 06:34 resumption. The collection entry associates the corridor recorder's SEG-R03-01 carrier with that route and operation. This operational timing comes from the movement log, not the text burned into the picture and not a transcription of Systems Integrity's report.\nTogether these checks corroborate the recovered extract's custody and operational association. They do not repair the displayed TCR 10-09 18:37:11, date individual recovered frames, or explain why that text is stale.\nNo worker identity is established from the image or this custody check. The movement entry does not certify an injury, a final medical status, the cargo contents or completed delivery. Those are separate questions requiring their own sources.\nOperations Custody"
+  }
+]

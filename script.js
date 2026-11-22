@@ -299,6 +299,10 @@ function fitWindowsToWorkspace() {
 
 function updateClock() {
     const clockEl = document.getElementById('clock');
+    if (clockEl.dataset.fictionalTime) {
+        clockEl.textContent = clockEl.dataset.fictionalTime;
+        return;
+    }
     const now = new Date();
     const timeString = now.toLocaleTimeString([], {
         hour: 'numeric',

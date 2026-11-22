@@ -1,3 +1,4 @@
+import {readFileSync} from 'node:fs';
 import assert from 'node:assert/strict';
 import {pathToFileURL} from 'node:url';
 import {tmpdir} from 'node:os';
@@ -21,6 +22,7 @@ try {
     const p=await browser.newPage({viewport:index?{width:390,height:844}:{width:1440,height:1000}});
     p.setDefaultTimeout(15000);p.on('pageerror',e=>errors.push(e.message));
     const mediaRequests=[];p.on('request',r=>{if(r.url().includes('recovered-review.mp4'))mediaRequests.push(r.url());});
+  for(const n of ['progression','cases','records','emails'])await p.route('**/data/'+n+'.json',route=>route.fulfill({json:JSON.parse(readFileSync(new URL('../data/history/'+n+'-v5.json',import.meta.url),'utf8'))}));
     await p.goto(url);await p.waitForFunction(()=>window.hilfer);
     assert.equal((await snapshot(p)).contentVersion,5);
     assert.equal(await p.evaluate(()=>hilfer.canInspectEvidence('ASSET-CUSTODY-03')),false);

@@ -1,3 +1,4 @@
+import {readFileSync} from 'node:fs';
 import assert from 'node:assert/strict';
 import {pathToFileURL} from 'node:url';
 import {tmpdir} from 'node:os';
@@ -12,8 +13,9 @@ async function page({approved=false,fallback=false,missing=false,mobile=false}={
   const p=await browser.newPage({viewport:mobile?{width:390,height:844}:{width:1440,height:1000}});
   p.setDefaultTimeout(12000);
   p.on('pageerror',e=>errors.push(e.message));
+  for(const n of ['progression','cases','records','emails'])await p.route('**/data/'+n+'.json',route=>route.fulfill({json:JSON.parse(readFileSync(new URL('../data/history/'+n+'-v5.json',import.meta.url),'utf8'))}));
   if(approved)await p.route('**/data/progression.json',async route=>{
-    const response=await route.fetch(),d=await response.json();d.initialGrantIds.push('security.timeline.verified');
+    const d=JSON.parse(readFileSync(new URL('../data/history/progression-v5.json',import.meta.url),'utf8'));d.initialGrantIds.push('security.timeline.verified');
     await route.fulfill({json:d}); // Test-only editorial approval. Never shipped in production.
   });
   if(fallback)await p.addInitScript(()=>{HTMLVideoElement.prototype.requestVideoFrameCallback=undefined;});

@@ -1,4 +1,5 @@
 // Closed, data-only rule language. No DOM, storage, scripts or demo IDs.
+import {STORY_FLAGS,STORY_STAGES,validateStoryDefinition} from './story.js';
 const idValid = value => typeof value === 'string' && /^[\w][\w.:/-]{0,127}$/.test(value) && !['__proto__','prototype','constructor'].includes(value);
 const object = value => value !== null && typeof value === 'object' && !Array.isArray(value);
 const fail = message => { throw new Error(`Invalid progression: ${message}`); };
@@ -25,7 +26,7 @@ export const inspectionPolicy = id => id === 'document-open' ? 'document-present
 export function validateDefinitions(input, cases = []) {
   exact(input, ['schemaVersion','contentVersion','evidence','inferences','determinations','milestoneIds','grants',
     'initialGrantIds','initialCaseIds','caseCompletionPolicies','accessPolicies','availabilityPolicies','presentationPolicies','effects','rules',
-    ...(input.schemaVersion === 2 ? ['contentCatalog'] : [])]);
+    ...(input.schemaVersion === 2 ? ['contentCatalog'] : [])],['story']);
   if (![1,2].includes(input.schemaVersion) || !Number.isSafeInteger(input.contentVersion) || input.contentVersion < 1) fail('unsupported version');
   const d = structuredClone(input);
   registry(cases, 'case');
@@ -33,6 +34,7 @@ export function validateDefinitions(input, cases = []) {
   const determinations = registry(d.determinations, 'determination'), rules = registry(d.rules, 'rule'), effects = registry(d.effects, 'effect');
   ids(d.milestoneIds); ids(d.grants); ids(d.initialGrantIds, new Set(d.grants));
   const caseIds = new Set(cases.map(c => c.id)); ids(d.initialCaseIds, caseIds);
+  if(d.story)validateStoryDefinition(d.story,evidence,caseIds);
   const catalog = d.schemaVersion === 2 ? registry(d.contentCatalog,'content') : null;
   if (catalog) {
     const bindings = new Set();
@@ -67,6 +69,10 @@ export function validateDefinitions(input, cases = []) {
       for (const [key, values] of Object.entries(arg.filter)) {
         if (!Array.isArray(values) || !values.length || new Set(values).size !== values.length || values.some(v => !(key === 'departments' ? departments : tags).has(v))) fail('unknown evidence filter');
       }
+    } else if(op==='storyFlag' || op==='storyStage') {
+      if(!d.story)fail('story condition without story definition');
+      const field=op==='storyFlag'?'flag':'stage';exact(arg,[field]);
+      if(!(op==='storyFlag'?STORY_FLAGS:STORY_STAGES).includes(arg[field]))fail('unknown story fact');
     } else {
       const specs = {evidenceInspected:['evidenceId', evidence], inferenceEstablished:['inferenceId',inferences],
         determinationFiled:['determinationId',determinations], milestoneReached:['milestoneId',new Set(d.milestoneIds)], hasAccess:['grantId',new Set(d.grants)]};
@@ -175,6 +181,8 @@ export function evaluateCondition(c, state, d, grants = deriveAccess(state,d)) {
   if (c.any) return c.any.some(child => evaluateCondition(child,state,d,grants));
   if (c.not) return !evaluateCondition(c.not,state,d,grants);
   if (c.evidenceInspected) return f.inspectedEvidenceIds.includes(c.evidenceInspected.evidenceId);
+  if(c.storyFlag)return f.story?.[c.storyFlag.flag]===true;
+  if(c.storyStage)return f.story?.stage===c.storyStage.stage;
   if (c.inferenceEstablished) return Object.hasOwn(f.inferences,c.inferenceEstablished.inferenceId);
   if (c.determinationFiled) return Object.hasOwn(f.determinations,c.determinationFiled.determinationId);
   if (c.milestoneReached) return Object.hasOwn(f.milestones,c.milestoneReached.milestoneId);

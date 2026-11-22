@@ -14,6 +14,7 @@ export function createAssistantVoice(storage, caseId, {
   if (audio) audio.preload = 'none';
   let run = 0;
   let activeId = null;
+  let muted = false;
   function stop() {
     run++;
     activeId = null;
@@ -24,6 +25,7 @@ export function createAssistantVoice(storage, caseId, {
   }
 
   return {
+    setMuted(value) { muted=Boolean(value);if(audio)audio.muted=muted;if(muted)stop(); },
     stop,
     cancelCue(id) { if(activeId===id) stop(); },
     reset() {

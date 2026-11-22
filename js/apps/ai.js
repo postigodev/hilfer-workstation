@@ -75,6 +75,7 @@ export function mountAI(root, store, content, { storage } = {}) {
     });
   }
   const portrait = root.querySelector('.ai-avatar');
+  let presentationStage;
   let previousPhase;
   let wasUnread = false;
   function renderHistory() {
@@ -98,7 +99,8 @@ export function mountAI(root, store, content, { storage } = {}) {
     const state = store.getState();
     const model = deriveAssistant(state, store.getRecords(), content);
     const face = state.distortionLevel > 0 ? 'assistant-distorted' : 'assistant';
-    const portraitSrc = `assets/arwa/portraits/${face}.webp`;
+    const lateFace = {2:'uneasy',3:'uneasy',4:'obstructive',5:'obstructive',6:'hostile'}[presentationStage];
+    const portraitSrc = lateFace ? `assets/arwa/final/assistant-${lateFace}.webp` : `assets/arwa/portraits/${presentationStage===0?'assistant':face}.webp`;
     if (portrait.getAttribute('src') !== portraitSrc) portrait.src = portraitSrc;
     if (model.phase !== previousPhase && (model.phase !== 'welcome' || !previousPhase)) {
       if (!previousPhase) {
@@ -169,7 +171,7 @@ export function mountAI(root, store, content, { storage } = {}) {
   });
   update();
   root.hidden = false;
-  return {hasDelivered:signal=>delivered.has(signal),cancelSignal(signal) {
+  return {setMuted:value=>voice.setMuted(value),setPresentationStage(value){presentationStage=value;update();},hasDelivered:signal=>delivered.has(signal),cancelSignal(signal) {
     const cue=content.dialogue.find(entry=>entry.on===signal)?.voice;
     if(cue && voiceCue?.id===cue.id){voiceCue=null;needsGesture=false;voice.cancelCue(cue.id);}
   },deliverSignal(signal) {

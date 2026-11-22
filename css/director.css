@@ -1,0 +1,18 @@
+:root[data-narrative-stage] { --art-wallpaper: url('../assets/arwa/final/wallpaper-clean.webp'); }
+:root[data-narrative-stage="2"],:root[data-narrative-stage="3"] { --art-wallpaper: url('../assets/arwa/final/wallpaper-uneasy.webp'); }
+:root[data-narrative-stage="4"],:root[data-narrative-stage="5"] { --art-wallpaper: url('../assets/arwa/final/wallpaper-late.webp'); }
+:root[data-narrative-stage="6"] { --art-wallpaper: url('../assets/arwa/final/wallpaper-climax.webp'); }
+.presentation-controls { position:fixed;right:100px;bottom:35px;z-index:2500;display:flex;gap:4px; }
+.presentation-controls button { font-size:10px;min-width:0; }
+.clock-anomaly { color:#880016;font-weight:bold; }
+.index-recovery { margin:6px;max-width:420px; }
+.index-mask [data-file-id="MT-REPEAT"] { visibility:hidden; }
+.cursor-echo { position:fixed;pointer-events:none;z-index:9999;color:#71152b;font:32px serif;text-shadow:3px 0 #eee; }
+.transport-static #footage-window::after { content:'';position:absolute;inset:32px 0 0;pointer-events:none;background:repeating-linear-gradient(0deg,transparent 0 4px,#fff3 4px 5px); }
+:root[data-narrative-stage="6"] .story-warning { box-shadow:4px 4px #42061b; }
+:root[data-narrative-stage="0"] .desktop { filter:none; }
+:root[data-narrative-stage="0"][data-distortion="1"] #desktop::after { display:none; }
+:root[data-narrative-stage="0"][data-distortion="1"] { --desktop-bg:#f5dfda;--brand-ink:#743f43; }
+.story-portrait { width:72px;height:72px;object-fit:cover;float:right;margin:0 10px 8px; }
+@media(prefers-reduced-motion:reduce){.cursor-echo,.transport-static #footage-window::after{display:none;} .microglitch,.engine-microglitch{animation:none!important;}}
+@media(max-width:600px){.presentation-controls{left:4px;right:auto;bottom:32px;} .presentation-controls button{font-size:9px;}}
