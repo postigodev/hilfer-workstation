@@ -179,3 +179,12 @@ Read receipts, selection and optional deleted thread IDs persist under `hilfer:m
 Assistant dialogue is authored in `data/assistant.json`. Each entry names its delivery signal in `on` and has one `text` for the visible bubble and the rendered MP3. Its optional `voice` contains the file path and a versioned ID. The demo maps assignment, evidence inspection and filing to these signals. Future gameplay can dispatch `hilfer:assistant-dialogue` on window with `detail: {signal}` to deliver the matching entry independently of the demo mapping. `hilfer:assistant-delivery:v1` records delivered signals so duplicate events and reloads do not reopen the balloon. Only the current entry narrates when the balloon is open; earlier entries remain as readable history. The `hilfer:assistant-dialogue:v1` checkpoint stores completed voice IDs by case. Closing the balloon leaves playback running. A new cue waits for the current clip to finish. If the browser blocks autoplay, playback retries on the next trusted interaction. Demo reset clears the checkpoint. When the text changes, regenerate the MP3 from that text and advance its voice ID.
 
 Footage exposes the supplied CAM 4 clip as a read-only demo preview. It uses native video controls and pauses when its window is closed or minimized. The MP4 retains the source clip audio. No case or gameplay state depends on playback.
+
+
+## Presentation branch — original artifact corpus
+
+Production loads the original corpus into Records and Mail, with content v1→v6 migrations. Source bodies, dates and authorization come from the previously approved pre-loop corpus. No Work Review application or new navigation controls are mounted.
+
+After actual source inspection, double-clicking document/message text invokes `contrastArtifact(app, artifactId)` in existing Reconciliation. It validates an authored inference support alternative through `establishInference`. A supported administrative claim remains a separate explicit selection of the existing Update report action. Reading alone establishes nothing. The original Jessica claim control remains unchanged.
+
+Declarative once-rules emit presentation effects on accepted inferences. `mountContrastEffects` delivers bounded clock/index/signal/cursor effects and derived artwork, without changing evidence or permissions. Existing effect receipts prevent replay after reload; Reset clears progression and Escape cancels active cosmetics. Restricted recovered footage uses the original native player after archive authorization; decoded observation proof remains required.

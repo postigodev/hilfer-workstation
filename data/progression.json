@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "contentVersion": 2,
+  "contentVersion": 6,
   "evidence": [
     {
       "id": "HR-014",
@@ -42,9 +42,734 @@
         "CASE-001"
       ],
       "requiredGrantIds": []
+    },
+    {
+      "id": "MT-REPEAT",
+      "sourceGroupId": "MAINT-RECUR",
+      "department": "Maintenance",
+      "tags": [
+        "AM-01"
+      ],
+      "artifacts": [
+        {
+          "app": "records",
+          "artifactId": "MT-REPEAT",
+          "inspectionPolicyId": "document-presented"
+        }
+      ],
+      "fields": {},
+      "caseIds": [],
+      "requiredGrantIds": [
+        "investigation.read"
+      ]
+    },
+    {
+      "id": "ENG-MITIGATION",
+      "sourceGroupId": "ENG-MITIGATIONS",
+      "department": "Engineering",
+      "tags": [
+        "AM-02"
+      ],
+      "artifacts": [
+        {
+          "app": "records",
+          "artifactId": "ENG-MITIGATION",
+          "inspectionPolicyId": "document-presented"
+        }
+      ],
+      "fields": {},
+      "caseIds": [],
+      "requiredGrantIds": [
+        "investigation.read"
+      ]
+    },
+    {
+      "id": "SNS-PRETEST",
+      "sourceGroupId": "SENSOR-ANOMALY",
+      "department": "Instrumentation",
+      "tags": [
+        "AM-03"
+      ],
+      "artifacts": [
+        {
+          "app": "records",
+          "artifactId": "SNS-PRETEST",
+          "inspectionPolicyId": "document-presented"
+        }
+      ],
+      "fields": {
+        "anomalyClassification": "UNVERIFIED"
+      },
+      "caseIds": [],
+      "requiredGrantIds": [
+        "investigation.read"
+      ]
+    },
+    {
+      "id": "OH-SIX-REVIEW",
+      "sourceGroupId": "MED-SIX-REVIEW",
+      "department": "Occupational Health",
+      "tags": [
+        "AM-05"
+      ],
+      "artifacts": [
+        {
+          "app": "records",
+          "artifactId": "OH-SIX-REVIEW",
+          "inspectionPolicyId": "document-presented"
+        }
+      ],
+      "fields": {
+        "medicalReviewCount": "6"
+      },
+      "caseIds": [
+        "CASE-LINEAGE"
+      ],
+      "requiredGrantIds": [
+        "investigation.read"
+      ]
+    },
+    {
+      "id": "INC-SUMMARY",
+      "sourceGroupId": "OFFICIAL-SUMMARY",
+      "department": "Compliance",
+      "tags": [
+        "AM-07"
+      ],
+      "artifacts": [
+        {
+          "app": "records",
+          "artifactId": "INC-SUMMARY",
+          "inspectionPolicyId": "document-presented"
+        }
+      ],
+      "fields": {
+        "recoveryClassification": "CONSOLIDATED_RECOVERY",
+        "medicalCountScope": "CONFIRMED_SERIOUS_INCIDENT_WINDOW",
+        "approvedLanguageLevel": "REVIEWED_QUALIFIED",
+        "confirmedSeriousExposures": "2",
+        "medicalReviewCount": "6"
+      },
+      "caseIds": [
+        "CASE-LINEAGE"
+      ],
+      "requiredGrantIds": [
+        "investigation.read"
+      ]
+    },
+    {
+      "id": "LOS-AUDIT",
+      "sourceGroupId": "LOS-SESSION-AUDIT",
+      "department": "Reconciliation",
+      "tags": [
+        "AM-08"
+      ],
+      "artifacts": [
+        {
+          "app": "records",
+          "artifactId": "LOS-AUDIT",
+          "inspectionPolicyId": "document-presented"
+        }
+      ],
+      "fields": {},
+      "caseIds": [],
+      "requiredGrantIds": [
+        "investigation.read"
+      ]
+    },
+    {
+      "id": "OH-LOSURDO",
+      "sourceGroupId": "LOS-MEDICAL-STATUS",
+      "department": "Occupational Health",
+      "tags": [
+        "AM-09"
+      ],
+      "artifacts": [
+        {
+          "app": "records",
+          "artifactId": "OH-LOSURDO",
+          "inspectionPolicyId": "document-presented"
+        }
+      ],
+      "fields": {
+        "workEligibility": "NOT_CLEARED"
+      },
+      "caseIds": [],
+      "requiredGrantIds": [
+        "late.reconciliation.read"
+      ]
+    },
+    {
+      "id": "AREA-OCCUPANCY",
+      "sourceGroupId": "AREA-RESTRICTION",
+      "department": "Site Safety",
+      "tags": [
+        "AM-10"
+      ],
+      "artifacts": [
+        {
+          "app": "records",
+          "artifactId": "AREA-OCCUPANCY",
+          "inspectionPolicyId": "document-presented"
+        }
+      ],
+      "fields": {
+        "maxContinuousMinutes": "90"
+      },
+      "caseIds": [],
+      "requiredGrantIds": [
+        "investigation.read"
+      ]
+    },
+    {
+      "id": "SEC-INDEX",
+      "sourceGroupId": "SEC-CENTRAL-INDEX",
+      "department": "Security",
+      "tags": [
+        "AM-11"
+      ],
+      "artifacts": [
+        {
+          "app": "records",
+          "artifactId": "SEC-INDEX",
+          "inspectionPolicyId": "document-presented"
+        }
+      ],
+      "fields": {
+        "cameraId": "CAM-04",
+        "sectorId": "SEC-R03-ACCESS",
+        "segmentId": "SEG-R03-01",
+        "centralArchiveStatus": "UNAVAILABLE"
+      },
+      "caseIds": [
+        "CASE-ARCHIVE"
+      ],
+      "requiredGrantIds": [
+        "investigation.read"
+      ]
+    },
+    {
+      "id": "ENG-LOCAL-SEGMENT",
+      "sourceGroupId": "ENG-LOCAL-CAPTURE",
+      "department": "Systems Integrity",
+      "tags": [
+        "AM-12"
+      ],
+      "artifacts": [
+        {
+          "app": "records",
+          "artifactId": "ENG-LOCAL-SEGMENT",
+          "inspectionPolicyId": "document-presented"
+        }
+      ],
+      "fields": {
+        "cameraId": "CAM-04",
+        "sectorId": "SEC-R03-ACCESS",
+        "segmentId": "SEG-R03-01",
+        "archiveAvailability": "PARTIAL_LOCAL_VERIFIED"
+      },
+      "caseIds": [
+        "CASE-ARCHIVE"
+      ],
+      "requiredGrantIds": [
+        "investigation.read"
+      ]
+    },
+    {
+      "id": "OPS-TRANSFER",
+      "sourceGroupId": "OPS-TRANSFER-CUSTODY",
+      "department": "Operations",
+      "tags": [
+        "AM-13"
+      ],
+      "artifacts": [
+        {
+          "app": "records",
+          "artifactId": "OPS-TRANSFER",
+          "inspectionPolicyId": "document-presented"
+        }
+      ],
+      "fields": {
+        "cameraId": "CAM-04",
+        "sectorId": "SEC-R03-ACCESS",
+        "segmentId": "SEG-R03-01",
+        "archiveAvailability": "PARTIAL_LOCAL_VERIFIED"
+      },
+      "caseIds": [
+        "CASE-ARCHIVE"
+      ],
+      "requiredGrantIds": [
+        "investigation.read"
+      ]
+    },
+    {
+      "id": "REC-01-02-CLOSEOUT",
+      "sourceGroupId": "REC-SAFETY-CLOSEOUT",
+      "department": "Operations",
+      "tags": [
+        "AM-14"
+      ],
+      "artifacts": [
+        {
+          "app": "records",
+          "artifactId": "REC-01-02-CLOSEOUT",
+          "inspectionPolicyId": "document-presented"
+        }
+      ],
+      "fields": {
+        "recovery01": "CONTAINMENT_STABILIZED",
+        "recovery02": "DIAGNOSTICS_RETRIEVED"
+      },
+      "caseIds": [
+        "CASE-REC03-PURPOSE",
+        "CASE-LINEAGE"
+      ],
+      "requiredGrantIds": [
+        "investigation.read"
+      ]
+    },
+    {
+      "id": "REC-03-APPROVAL-ROSTER",
+      "sourceGroupId": "REC03-ROUTING",
+      "department": "Operations",
+      "tags": [
+        "AM-15"
+      ],
+      "artifacts": [
+        {
+          "app": "records",
+          "artifactId": "REC-03-APPROVAL-ROSTER",
+          "inspectionPolicyId": "document-presented"
+        }
+      ],
+      "fields": {
+        "operationId": "OP-R03",
+        "replacementId": "EMP-TITO",
+        "replacementApprovedAt": "1998-10-28T06:21:00"
+      },
+      "caseIds": [
+        "CASE-REC03-PURPOSE"
+      ],
+      "requiredGrantIds": [
+        "investigation.read"
+      ]
+    },
+    {
+      "id": "ASSET-CUSTODY-03",
+      "sourceGroupId": "ASSET-PROTOTYPE-CUSTODY",
+      "department": "Asset Control",
+      "tags": [
+        "AM-16"
+      ],
+      "artifacts": [
+        {
+          "app": "records",
+          "artifactId": "ASSET-CUSTODY-03",
+          "inspectionPolicyId": "document-presented"
+        }
+      ],
+      "fields": {
+        "operationalPurpose": "PROTOTYPE_RETRIEVAL"
+      },
+      "caseIds": [
+        "CASE-REC03-PURPOSE",
+        "CASE-LINEAGE"
+      ],
+      "requiredGrantIds": [
+        "asset.review"
+      ]
+    },
+    {
+      "id": "GUY-UNFINISHED-DRAFT",
+      "sourceGroupId": "GUY-DRAFT",
+      "department": "Communications",
+      "tags": [
+        "AM-18"
+      ],
+      "artifacts": [
+        {
+          "app": "records",
+          "artifactId": "GUY-UNFINISHED-DRAFT",
+          "inspectionPolicyId": "document-presented"
+        }
+      ],
+      "fields": {},
+      "caseIds": [],
+      "requiredGrantIds": [
+        "late.reconciliation.read"
+      ]
+    },
+    {
+      "id": "COMM-GATEWAY-POLICY",
+      "sourceGroupId": "OUTBOUND-GATEWAY-RULES",
+      "department": "Communications Compliance",
+      "tags": [
+        "AM-19"
+      ],
+      "artifacts": [
+        {
+          "app": "records",
+          "artifactId": "COMM-GATEWAY-POLICY",
+          "inspectionPolicyId": "document-presented"
+        }
+      ],
+      "fields": {},
+      "caseIds": [],
+      "requiredGrantIds": [
+        "investigation.read"
+      ]
+    },
+    {
+      "id": "MAIL-013",
+      "sourceGroupId": "DEMO-VIABILITY",
+      "department": "Program Management",
+      "tags": [
+        "mail"
+      ],
+      "artifacts": [
+        {
+          "app": "mail",
+          "artifactId": "MAIL-013",
+          "inspectionPolicyId": "message-body-presented"
+        }
+      ],
+      "fields": {},
+      "caseIds": [],
+      "requiredGrantIds": [
+        "investigation.read"
+      ]
+    },
+    {
+      "id": "MAIL-014",
+      "sourceGroupId": "DEMO-VIABILITY",
+      "department": "Tim",
+      "tags": [
+        "mail"
+      ],
+      "artifacts": [
+        {
+          "app": "mail",
+          "artifactId": "MAIL-014",
+          "inspectionPolicyId": "message-body-presented"
+        }
+      ],
+      "fields": {},
+      "caseIds": [],
+      "requiredGrantIds": [
+        "investigation.read"
+      ]
+    },
+    {
+      "id": "MAIL-015",
+      "sourceGroupId": "LEGAL-QUALIFICATION",
+      "department": "Legal Review",
+      "tags": [
+        "mail"
+      ],
+      "artifacts": [
+        {
+          "app": "mail",
+          "artifactId": "MAIL-015",
+          "inspectionPolicyId": "message-body-presented"
+        }
+      ],
+      "fields": {},
+      "caseIds": [
+        "CASE-LINEAGE"
+      ],
+      "requiredGrantIds": [
+        "investigation.read"
+      ]
+    },
+    {
+      "id": "MAIL-016",
+      "sourceGroupId": "LEGAL-QUALIFICATION",
+      "department": "Guy",
+      "tags": [
+        "mail"
+      ],
+      "artifacts": [
+        {
+          "app": "mail",
+          "artifactId": "MAIL-016",
+          "inspectionPolicyId": "message-body-presented"
+        }
+      ],
+      "fields": {},
+      "caseIds": [
+        "CASE-LINEAGE"
+      ],
+      "requiredGrantIds": [
+        "investigation.read"
+      ]
+    },
+    {
+      "id": "MAIL-017",
+      "sourceGroupId": "SPACCO-OBJECTION",
+      "department": "Spacco",
+      "tags": [
+        "mail"
+      ],
+      "artifacts": [
+        {
+          "app": "mail",
+          "artifactId": "MAIL-017",
+          "inspectionPolicyId": "message-body-presented"
+        }
+      ],
+      "fields": {},
+      "caseIds": [],
+      "requiredGrantIds": [
+        "research.recovery.read"
+      ]
+    },
+    {
+      "id": "MAIL-018",
+      "sourceGroupId": "SPACCO-OBJECTION",
+      "department": "Program Management",
+      "tags": [
+        "mail"
+      ],
+      "artifacts": [
+        {
+          "app": "mail",
+          "artifactId": "MAIL-018",
+          "inspectionPolicyId": "message-body-presented"
+        }
+      ],
+      "fields": {},
+      "caseIds": [],
+      "requiredGrantIds": [
+        "research.recovery.read"
+      ]
+    },
+    {
+      "id": "CAM-R03:transport-visual",
+      "sourceGroupId": "SEC-RECOVERED-REVIEW",
+      "department": "Security",
+      "tags": [
+        "media-observation"
+      ],
+      "fields": {},
+      "caseIds": [],
+      "requiredGrantIds": [
+        "archive.local.review"
+      ],
+      "artifacts": [
+        {
+          "app": "footage",
+          "artifactId": "CAM-R03-TRANSPORT",
+          "inspectionPolicyId": "media-sequence-presented"
+        }
+      ]
+    },
+    {
+      "id": "CAM-R03:injury-visual",
+      "sourceGroupId": "SEC-RECOVERED-REVIEW",
+      "department": "Security",
+      "tags": [
+        "media-observation"
+      ],
+      "fields": {},
+      "caseIds": [],
+      "requiredGrantIds": [
+        "archive.local.review"
+      ],
+      "artifacts": [
+        {
+          "app": "footage",
+          "artifactId": "CAM-R03-INJURY",
+          "inspectionPolicyId": "media-sequence-presented"
+        }
+      ]
+    },
+    {
+      "id": "ENG-LOCAL-SEGMENT:association",
+      "sourceGroupId": "ENG-LOCAL-CAPTURE",
+      "department": "Systems Integrity",
+      "tags": [
+        "recording-association"
+      ],
+      "artifacts": [
+        {
+          "app": "records",
+          "artifactId": "ENG-LOCAL-SEGMENT:association",
+          "inspectionPolicyId": "document-presented"
+        }
+      ],
+      "fields": {
+        "parentSegmentId": "SEG-R03-01",
+        "cameraId": "CAM-04",
+        "sectorId": "SEC-R03-ACCESS",
+        "extractRef": "SEG-R03-01:review",
+        "indexedSeconds": "27",
+        "playableSeconds": "14.375",
+        "pictureClock": "TCR 10-09 18:37:11",
+        "timingBasis": "RECORDER_EVENT_LOG"
+      },
+      "caseIds": [
+        "CASE-REC03-PURPOSE"
+      ],
+      "requiredGrantIds": [
+        "investigation.read"
+      ]
+    },
+    {
+      "id": "OPS-TRANSFER:association",
+      "sourceGroupId": "OPS-TRANSFER-CUSTODY",
+      "department": "Operations",
+      "tags": [
+        "recording-association"
+      ],
+      "artifacts": [
+        {
+          "app": "records",
+          "artifactId": "OPS-TRANSFER:association",
+          "inspectionPolicyId": "document-presented"
+        }
+      ],
+      "fields": {
+        "parentSegmentId": "SEG-R03-01",
+        "cameraId": "CAM-04",
+        "sectorId": "SEC-R03-ACCESS",
+        "extractRef": "SEG-R03-01:review",
+        "operationId": "OP-R03",
+        "movementTime": "1998-10-28T06:43",
+        "verificationBasis": "OPERATIONS_MOVEMENT_LOG"
+      },
+      "caseIds": [
+        "CASE-REC03-PURPOSE"
+      ],
+      "requiredGrantIds": [
+        "investigation.read"
+      ]
     }
   ],
-  "inferences": [],
+  "inferences": [
+    {
+      "id": "B-I1",
+      "supportAlternatives": [
+        [
+          "MT-REPEAT",
+          "ENG-MITIGATION",
+          "MAIL-014"
+        ]
+      ],
+      "requires": {
+        "evidenceInspected": {
+          "evidenceId": "MT-REPEAT"
+        }
+      }
+    },
+    {
+      "id": "B-I2",
+      "supportAlternatives": [
+        [
+          "MT-REPEAT",
+          "SNS-PRETEST"
+        ]
+      ],
+      "requires": {
+        "evidenceInspected": {
+          "evidenceId": "MT-REPEAT"
+        }
+      }
+    },
+    {
+      "id": "C-I1",
+      "supportAlternatives": [
+        [
+          "OH-SIX-REVIEW",
+          "MAIL-015",
+          "INC-SUMMARY"
+        ]
+      ],
+      "requires": {
+        "evidenceInspected": {
+          "evidenceId": "OH-SIX-REVIEW"
+        }
+      }
+    },
+    {
+      "id": "C-I2",
+      "supportAlternatives": [
+        [
+          "OH-SIX-REVIEW",
+          "MAIL-015",
+          "MAIL-016",
+          "INC-SUMMARY"
+        ]
+      ],
+      "requires": {
+        "evidenceInspected": {
+          "evidenceId": "OH-SIX-REVIEW"
+        }
+      }
+    },
+    {
+      "id": "E-I1",
+      "supportAlternatives": [
+        [
+          "SEC-INDEX",
+          "ENG-LOCAL-SEGMENT"
+        ],
+        [
+          "SEC-INDEX",
+          "OPS-TRANSFER"
+        ]
+      ],
+      "requires": {
+        "milestoneReached": {
+          "milestoneId": "CASE-001:filed"
+        }
+      }
+    },
+    {
+      "id": "F-I1",
+      "supportAlternatives": [
+        [
+          "REC-01-02-CLOSEOUT",
+          "REC-03-APPROVAL-ROSTER",
+          "ASSET-CUSTODY-03"
+        ]
+      ],
+      "requires": {
+        "milestoneReached": {
+          "milestoneId": "CASE-ARCHIVE:filed"
+        }
+      }
+    },
+    {
+      "id": "F-I4",
+      "supportAlternatives": [
+        [
+          "REC-01-02-CLOSEOUT",
+          "INC-SUMMARY",
+          "ASSET-CUSTODY-03"
+        ]
+      ],
+      "requires": {
+        "inferenceEstablished": {
+          "inferenceId": "F-I1"
+        }
+      }
+    },
+    {
+      "id": "E-I3",
+      "supportAlternatives": [
+        [
+          "ENG-LOCAL-SEGMENT:association",
+          "OPS-TRANSFER:association",
+          "CAM-R03:transport-visual"
+        ]
+      ],
+      "requires": {
+        "milestoneReached": {
+          "milestoneId": "CASE-ARCHIVE:filed"
+        }
+      }
+    }
+  ],
   "determinations": [
     {
       "id": "CASE-001:workEligibility",
@@ -60,14 +785,145 @@
         "OH-008"
       ],
       "legacy": true
+    },
+    {
+      "id": "CASE-ARCHIVE:via-engineering",
+      "caseId": "CASE-ARCHIVE",
+      "claimId": "archiveAvailabilityEngineering",
+      "field": "archiveAvailability",
+      "value": "PARTIAL_LOCAL_VERIFIED",
+      "sourceEvidenceIds": [
+        "ENG-LOCAL-SEGMENT"
+      ],
+      "provenanceEvidenceIds": [
+        "SEC-INDEX",
+        "ENG-LOCAL-SEGMENT"
+      ],
+      "requires": {
+        "inferenceEstablished": {
+          "inferenceId": "E-I1"
+        }
+      }
+    },
+    {
+      "id": "CASE-ARCHIVE:via-operations",
+      "caseId": "CASE-ARCHIVE",
+      "claimId": "archiveAvailabilityOperations",
+      "field": "archiveAvailability",
+      "value": "PARTIAL_LOCAL_VERIFIED",
+      "sourceEvidenceIds": [
+        "OPS-TRANSFER"
+      ],
+      "provenanceEvidenceIds": [
+        "SEC-INDEX",
+        "OPS-TRANSFER"
+      ],
+      "requires": {
+        "inferenceEstablished": {
+          "inferenceId": "E-I1"
+        }
+      }
+    },
+    {
+      "id": "CASE-REC03-PURPOSE:operationalPurpose",
+      "caseId": "CASE-REC03-PURPOSE",
+      "claimId": "operationalPurpose",
+      "field": "operationalPurpose",
+      "value": "PROTOTYPE_RETRIEVAL",
+      "sourceEvidenceIds": [
+        "ASSET-CUSTODY-03"
+      ],
+      "provenanceEvidenceIds": [
+        "REC-01-02-CLOSEOUT",
+        "REC-03-APPROVAL-ROSTER",
+        "ASSET-CUSTODY-03"
+      ],
+      "requires": {
+        "inferenceEstablished": {
+          "inferenceId": "F-I1"
+        }
+      }
+    },
+    {
+      "id": "CASE-LINEAGE:medicalCountScope",
+      "caseId": "CASE-LINEAGE",
+      "claimId": "medicalCountScope",
+      "field": "medicalCountScope",
+      "value": "CONFIRMED_SERIOUS_INCIDENT_WINDOW",
+      "sourceEvidenceIds": [
+        "INC-SUMMARY"
+      ],
+      "provenanceEvidenceIds": [
+        "OH-SIX-REVIEW",
+        "MAIL-015",
+        "INC-SUMMARY"
+      ],
+      "requires": {
+        "inferenceEstablished": {
+          "inferenceId": "C-I1"
+        }
+      }
+    },
+    {
+      "id": "CASE-LINEAGE:approvedLanguageLevel",
+      "caseId": "CASE-LINEAGE",
+      "claimId": "approvedLanguageLevel",
+      "field": "approvedLanguageLevel",
+      "value": "REVIEWED_QUALIFIED",
+      "sourceEvidenceIds": [
+        "INC-SUMMARY"
+      ],
+      "provenanceEvidenceIds": [
+        "OH-SIX-REVIEW",
+        "MAIL-015",
+        "MAIL-016",
+        "INC-SUMMARY"
+      ],
+      "requires": {
+        "inferenceEstablished": {
+          "inferenceId": "C-I2"
+        }
+      }
+    },
+    {
+      "id": "CASE-LINEAGE:recoveryClassification",
+      "caseId": "CASE-LINEAGE",
+      "claimId": "recoveryClassification",
+      "field": "recoveryClassification",
+      "value": "CONSOLIDATED_RECOVERY",
+      "sourceEvidenceIds": [
+        "INC-SUMMARY"
+      ],
+      "provenanceEvidenceIds": [
+        "REC-01-02-CLOSEOUT",
+        "INC-SUMMARY",
+        "ASSET-CUSTODY-03"
+      ],
+      "requires": {
+        "inferenceEstablished": {
+          "inferenceId": "F-I4"
+        }
+      }
     }
   ],
   "milestoneIds": [
-    "CASE-001:filed"
+    "CASE-001:filed",
+    "CASE-ARCHIVE:filed",
+    "CASE-REC03-PURPOSE:filed",
+    "CASE-LINEAGE:filed",
+    "CAM-R03:transport-observed",
+    "ARCHIVE:unlocked",
+    "CAM-R03:injury-observed"
   ],
   "grants": [
     "mail.desk.read",
-    "mail.archive.general"
+    "mail.archive.general",
+    "investigation.read",
+    "archive.local.review",
+    "asset.review",
+    "research.recovery.read",
+    "late.reconciliation.read",
+    "security.timeline.verified"
   ],
   "initialGrantIds": [
     "mail.desk.read",
@@ -84,9 +940,105 @@
           "determinationId": "CASE-001:workEligibility"
         }
       }
+    },
+    {
+      "caseId": "CASE-ARCHIVE",
+      "when": {
+        "any": [
+          {
+            "determinationFiled": {
+              "determinationId": "CASE-ARCHIVE:via-engineering"
+            }
+          },
+          {
+            "determinationFiled": {
+              "determinationId": "CASE-ARCHIVE:via-operations"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "caseId": "CASE-REC03-PURPOSE",
+      "when": {
+        "determinationFiled": {
+          "determinationId": "CASE-REC03-PURPOSE:operationalPurpose"
+        }
+      }
+    },
+    {
+      "caseId": "CASE-LINEAGE",
+      "when": {
+        "any": [
+          {
+            "determinationFiled": {
+              "determinationId": "CASE-LINEAGE:medicalCountScope"
+            }
+          },
+          {
+            "determinationFiled": {
+              "determinationId": "CASE-LINEAGE:approvedLanguageLevel"
+            }
+          },
+          {
+            "determinationFiled": {
+              "determinationId": "CASE-LINEAGE:recoveryClassification"
+            }
+          }
+        ]
+      }
     }
   ],
-  "accessPolicies": [],
+  "accessPolicies": [
+    {
+      "grantId": "investigation.read",
+      "when": {
+        "milestoneReached": {
+          "milestoneId": "CASE-001:filed"
+        }
+      }
+    },
+    {
+      "grantId": "archive.local.review",
+      "when": {
+        "milestoneReached": {
+          "milestoneId": "CASE-ARCHIVE:filed"
+        }
+      }
+    },
+    {
+      "grantId": "asset.review",
+      "when": {
+        "milestoneReached": {
+          "milestoneId": "CAM-R03:transport-observed"
+        }
+      }
+    },
+    {
+      "grantId": "research.recovery.read",
+      "when": {
+        "milestoneReached": {
+          "milestoneId": "CAM-R03:transport-observed"
+        }
+      }
+    },
+    {
+      "grantId": "late.reconciliation.read",
+      "when": {
+        "milestoneReached": {
+          "milestoneId": "CASE-REC03-PURPOSE:filed"
+        }
+      }
+    },
+    {
+      "grantId": "security.timeline.verified",
+      "when": {
+        "inferenceEstablished": {
+          "inferenceId": "E-I3"
+        }
+      }
+    }
+  ],
   "availabilityPolicies": [
     {
       "contentId": "CASE-002",
@@ -98,6 +1050,54 @@
             }
           }
         ]
+      }
+    },
+    {
+      "contentId": "CASE-ARCHIVE",
+      "when": {
+        "milestoneReached": {
+          "milestoneId": "CASE-001:filed"
+        }
+      }
+    },
+    {
+      "contentId": "CASE-REC03-PURPOSE",
+      "when": {
+        "milestoneReached": {
+          "milestoneId": "CASE-ARCHIVE:filed"
+        }
+      }
+    },
+    {
+      "contentId": "CASE-LINEAGE",
+      "when": {
+        "milestoneReached": {
+          "milestoneId": "CASE-REC03-PURPOSE:filed"
+        }
+      }
+    },
+    {
+      "contentId": "footage:CAM-R03-TRANSPORT",
+      "when": {
+        "milestoneReached": {
+          "milestoneId": "CASE-ARCHIVE:filed"
+        }
+      }
+    },
+    {
+      "contentId": "footage:CAM-R03-INJURY",
+      "when": {
+        "milestoneReached": {
+          "milestoneId": "CASE-ARCHIVE:filed"
+        }
+      }
+    },
+    {
+      "contentId": "footage:CAM-R03",
+      "when": {
+        "milestoneReached": {
+          "milestoneId": "CASE-ARCHIVE:filed"
+        }
       }
     }
   ],
@@ -112,7 +1112,48 @@
       "distortionLevel": 1
     }
   ],
-  "effects": [],
+  "effects": [
+    {
+      "id": "contrast:B-I1",
+      "adapter": "animation",
+      "signal": "clock-rewind"
+    },
+    {
+      "id": "contrast:B-I2",
+      "adapter": "animation",
+      "signal": "index-noise"
+    },
+    {
+      "id": "contrast:C-I1",
+      "adapter": "animation",
+      "signal": "signal-noise"
+    },
+    {
+      "id": "contrast:C-I2",
+      "adapter": "animation",
+      "signal": "cursor-echo"
+    },
+    {
+      "id": "contrast:E-I1",
+      "adapter": "animation",
+      "signal": "clock-rewind"
+    },
+    {
+      "id": "contrast:E-I3",
+      "adapter": "animation",
+      "signal": "signal-noise"
+    },
+    {
+      "id": "contrast:F-I1",
+      "adapter": "animation",
+      "signal": "cursor-echo"
+    },
+    {
+      "id": "contrast:F-I4",
+      "adapter": "animation",
+      "signal": "signal-noise"
+    }
+  ],
   "rules": [
     {
       "id": "CASE-001:completion",
@@ -126,6 +1167,290 @@
         {
           "reachMilestone": {
             "milestoneId": "CASE-001:filed"
+          }
+        }
+      ]
+    },
+    {
+      "id": "CASE-ARCHIVE:completion",
+      "mode": "once",
+      "when": {
+        "any": [
+          {
+            "determinationFiled": {
+              "determinationId": "CASE-ARCHIVE:via-engineering"
+            }
+          },
+          {
+            "determinationFiled": {
+              "determinationId": "CASE-ARCHIVE:via-operations"
+            }
+          }
+        ]
+      },
+      "consequences": [
+        {
+          "reachMilestone": {
+            "milestoneId": "CASE-ARCHIVE:filed"
+          }
+        }
+      ]
+    },
+    {
+      "id": "CASE-REC03-PURPOSE:completion",
+      "mode": "once",
+      "when": {
+        "determinationFiled": {
+          "determinationId": "CASE-REC03-PURPOSE:operationalPurpose"
+        }
+      },
+      "consequences": [
+        {
+          "reachMilestone": {
+            "milestoneId": "CASE-REC03-PURPOSE:filed"
+          }
+        }
+      ]
+    },
+    {
+      "id": "CASE-LINEAGE:completion",
+      "mode": "once",
+      "when": {
+        "any": [
+          {
+            "determinationFiled": {
+              "determinationId": "CASE-LINEAGE:medicalCountScope"
+            }
+          },
+          {
+            "determinationFiled": {
+              "determinationId": "CASE-LINEAGE:approvedLanguageLevel"
+            }
+          },
+          {
+            "determinationFiled": {
+              "determinationId": "CASE-LINEAGE:recoveryClassification"
+            }
+          }
+        ]
+      },
+      "consequences": [
+        {
+          "reachMilestone": {
+            "milestoneId": "CASE-LINEAGE:filed"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ARCHIVE:completion",
+      "mode": "once",
+      "when": {
+        "all": [
+          {
+            "milestoneReached": {
+              "milestoneId": "CASE-001:filed"
+            }
+          },
+          {
+            "milestoneReached": {
+              "milestoneId": "CASE-ARCHIVE:filed"
+            }
+          },
+          {
+            "milestoneReached": {
+              "milestoneId": "CASE-REC03-PURPOSE:filed"
+            }
+          },
+          {
+            "milestoneReached": {
+              "milestoneId": "CASE-LINEAGE:filed"
+            }
+          }
+        ]
+      },
+      "consequences": [
+        {
+          "reachMilestone": {
+            "milestoneId": "ARCHIVE:unlocked"
+          }
+        }
+      ]
+    },
+    {
+      "id": "SEC:verified-transport",
+      "mode": "once",
+      "when": {
+        "all": [
+          {
+            "evidenceInspected": {
+              "evidenceId": "CAM-R03:transport-visual"
+            }
+          },
+          {
+            "hasAccess": {
+              "grantId": "security.timeline.verified"
+            }
+          }
+        ]
+      },
+      "consequences": [
+        {
+          "reachMilestone": {
+            "milestoneId": "CAM-R03:transport-observed"
+          }
+        }
+      ]
+    },
+    {
+      "id": "SEC:verified-injury",
+      "mode": "once",
+      "when": {
+        "all": [
+          {
+            "evidenceInspected": {
+              "evidenceId": "CAM-R03:injury-visual"
+            }
+          },
+          {
+            "hasAccess": {
+              "grantId": "security.timeline.verified"
+            }
+          }
+        ]
+      },
+      "consequences": [
+        {
+          "reachMilestone": {
+            "milestoneId": "CAM-R03:injury-observed"
+          }
+        }
+      ]
+    },
+    {
+      "id": "presentation:B-I1",
+      "mode": "once",
+      "when": {
+        "inferenceEstablished": {
+          "inferenceId": "B-I1"
+        }
+      },
+      "consequences": [
+        {
+          "emitEffect": {
+            "effectId": "contrast:B-I1"
+          }
+        }
+      ]
+    },
+    {
+      "id": "presentation:B-I2",
+      "mode": "once",
+      "when": {
+        "inferenceEstablished": {
+          "inferenceId": "B-I2"
+        }
+      },
+      "consequences": [
+        {
+          "emitEffect": {
+            "effectId": "contrast:B-I2"
+          }
+        }
+      ]
+    },
+    {
+      "id": "presentation:C-I1",
+      "mode": "once",
+      "when": {
+        "inferenceEstablished": {
+          "inferenceId": "C-I1"
+        }
+      },
+      "consequences": [
+        {
+          "emitEffect": {
+            "effectId": "contrast:C-I1"
+          }
+        }
+      ]
+    },
+    {
+      "id": "presentation:C-I2",
+      "mode": "once",
+      "when": {
+        "inferenceEstablished": {
+          "inferenceId": "C-I2"
+        }
+      },
+      "consequences": [
+        {
+          "emitEffect": {
+            "effectId": "contrast:C-I2"
+          }
+        }
+      ]
+    },
+    {
+      "id": "presentation:E-I1",
+      "mode": "once",
+      "when": {
+        "inferenceEstablished": {
+          "inferenceId": "E-I1"
+        }
+      },
+      "consequences": [
+        {
+          "emitEffect": {
+            "effectId": "contrast:E-I1"
+          }
+        }
+      ]
+    },
+    {
+      "id": "presentation:E-I3",
+      "mode": "once",
+      "when": {
+        "inferenceEstablished": {
+          "inferenceId": "E-I3"
+        }
+      },
+      "consequences": [
+        {
+          "emitEffect": {
+            "effectId": "contrast:E-I3"
+          }
+        }
+      ]
+    },
+    {
+      "id": "presentation:F-I1",
+      "mode": "once",
+      "when": {
+        "inferenceEstablished": {
+          "inferenceId": "F-I1"
+        }
+      },
+      "consequences": [
+        {
+          "emitEffect": {
+            "effectId": "contrast:F-I1"
+          }
+        }
+      ]
+    },
+    {
+      "id": "presentation:F-I4",
+      "mode": "once",
+      "when": {
+        "inferenceEstablished": {
+          "inferenceId": "F-I4"
+        }
+      },
+      "consequences": [
+        {
+          "emitEffect": {
+            "effectId": "contrast:F-I4"
           }
         }
       ]
@@ -303,6 +1628,324 @@
       "artifactId": "CAM4-PREVIEW",
       "artifactType": "media",
       "requiredGrantIds": []
+    },
+    {
+      "id": "record:MT-REPEAT",
+      "kind": "artifact",
+      "app": "records",
+      "artifactId": "MT-REPEAT",
+      "artifactType": "document",
+      "requiredGrantIds": [
+        "investigation.read"
+      ]
+    },
+    {
+      "id": "record:ENG-MITIGATION",
+      "kind": "artifact",
+      "app": "records",
+      "artifactId": "ENG-MITIGATION",
+      "artifactType": "document",
+      "requiredGrantIds": [
+        "investigation.read"
+      ]
+    },
+    {
+      "id": "record:SNS-PRETEST",
+      "kind": "artifact",
+      "app": "records",
+      "artifactId": "SNS-PRETEST",
+      "artifactType": "document",
+      "requiredGrantIds": [
+        "investigation.read"
+      ]
+    },
+    {
+      "id": "record:OH-SIX-REVIEW",
+      "kind": "artifact",
+      "app": "records",
+      "artifactId": "OH-SIX-REVIEW",
+      "artifactType": "document",
+      "requiredGrantIds": [
+        "investigation.read"
+      ]
+    },
+    {
+      "id": "record:INC-SUMMARY",
+      "kind": "artifact",
+      "app": "records",
+      "artifactId": "INC-SUMMARY",
+      "artifactType": "document",
+      "requiredGrantIds": [
+        "investigation.read"
+      ]
+    },
+    {
+      "id": "record:LOS-AUDIT",
+      "kind": "artifact",
+      "app": "records",
+      "artifactId": "LOS-AUDIT",
+      "artifactType": "document",
+      "requiredGrantIds": [
+        "investigation.read"
+      ]
+    },
+    {
+      "id": "record:OH-LOSURDO",
+      "kind": "artifact",
+      "app": "records",
+      "artifactId": "OH-LOSURDO",
+      "artifactType": "document",
+      "requiredGrantIds": [
+        "late.reconciliation.read"
+      ]
+    },
+    {
+      "id": "record:AREA-OCCUPANCY",
+      "kind": "artifact",
+      "app": "records",
+      "artifactId": "AREA-OCCUPANCY",
+      "artifactType": "document",
+      "requiredGrantIds": [
+        "investigation.read"
+      ]
+    },
+    {
+      "id": "record:SEC-INDEX",
+      "kind": "artifact",
+      "app": "records",
+      "artifactId": "SEC-INDEX",
+      "artifactType": "document",
+      "requiredGrantIds": [
+        "investigation.read"
+      ]
+    },
+    {
+      "id": "record:ENG-LOCAL-SEGMENT",
+      "kind": "artifact",
+      "app": "records",
+      "artifactId": "ENG-LOCAL-SEGMENT",
+      "artifactType": "document",
+      "requiredGrantIds": [
+        "investigation.read"
+      ]
+    },
+    {
+      "id": "record:OPS-TRANSFER",
+      "kind": "artifact",
+      "app": "records",
+      "artifactId": "OPS-TRANSFER",
+      "artifactType": "document",
+      "requiredGrantIds": [
+        "investigation.read"
+      ]
+    },
+    {
+      "id": "record:REC-01-02-CLOSEOUT",
+      "kind": "artifact",
+      "app": "records",
+      "artifactId": "REC-01-02-CLOSEOUT",
+      "artifactType": "document",
+      "requiredGrantIds": [
+        "investigation.read"
+      ]
+    },
+    {
+      "id": "record:REC-03-APPROVAL-ROSTER",
+      "kind": "artifact",
+      "app": "records",
+      "artifactId": "REC-03-APPROVAL-ROSTER",
+      "artifactType": "document",
+      "requiredGrantIds": [
+        "investigation.read"
+      ]
+    },
+    {
+      "id": "record:ASSET-CUSTODY-03",
+      "kind": "artifact",
+      "app": "records",
+      "artifactId": "ASSET-CUSTODY-03",
+      "artifactType": "document",
+      "requiredGrantIds": [
+        "asset.review"
+      ]
+    },
+    {
+      "id": "record:GUY-UNFINISHED-DRAFT",
+      "kind": "artifact",
+      "app": "records",
+      "artifactId": "GUY-UNFINISHED-DRAFT",
+      "artifactType": "document",
+      "requiredGrantIds": [
+        "late.reconciliation.read"
+      ]
+    },
+    {
+      "id": "record:COMM-GATEWAY-POLICY",
+      "kind": "artifact",
+      "app": "records",
+      "artifactId": "COMM-GATEWAY-POLICY",
+      "artifactType": "document",
+      "requiredGrantIds": [
+        "investigation.read"
+      ]
+    },
+    {
+      "id": "mail:THREAD-TEST-VIABILITY",
+      "kind": "artifact",
+      "app": "mail",
+      "artifactId": "THREAD-TEST-VIABILITY",
+      "artifactType": "thread",
+      "requiredGrantIds": [
+        "investigation.read"
+      ]
+    },
+    {
+      "id": "mail:MAIL-013",
+      "kind": "artifact",
+      "app": "mail",
+      "artifactId": "MAIL-013",
+      "artifactType": "message",
+      "requiredGrantIds": [
+        "investigation.read"
+      ]
+    },
+    {
+      "id": "mail:MAIL-014",
+      "kind": "artifact",
+      "app": "mail",
+      "artifactId": "MAIL-014",
+      "artifactType": "message",
+      "requiredGrantIds": [
+        "investigation.read"
+      ]
+    },
+    {
+      "id": "mail:THREAD-LEGAL-SCOPE",
+      "kind": "artifact",
+      "app": "mail",
+      "artifactId": "THREAD-LEGAL-SCOPE",
+      "artifactType": "thread",
+      "requiredGrantIds": [
+        "investigation.read"
+      ]
+    },
+    {
+      "id": "mail:MAIL-015",
+      "kind": "artifact",
+      "app": "mail",
+      "artifactId": "MAIL-015",
+      "artifactType": "message",
+      "requiredGrantIds": [
+        "investigation.read"
+      ]
+    },
+    {
+      "id": "mail:MAIL-016",
+      "kind": "artifact",
+      "app": "mail",
+      "artifactId": "MAIL-016",
+      "artifactType": "message",
+      "requiredGrantIds": [
+        "investigation.read"
+      ]
+    },
+    {
+      "id": "mail:THREAD-SPACCO-REC03",
+      "kind": "artifact",
+      "app": "mail",
+      "artifactId": "THREAD-SPACCO-REC03",
+      "artifactType": "thread",
+      "requiredGrantIds": [
+        "research.recovery.read"
+      ]
+    },
+    {
+      "id": "mail:MAIL-017",
+      "kind": "artifact",
+      "app": "mail",
+      "artifactId": "MAIL-017",
+      "artifactType": "message",
+      "requiredGrantIds": [
+        "research.recovery.read"
+      ]
+    },
+    {
+      "id": "mail:MAIL-018",
+      "kind": "artifact",
+      "app": "mail",
+      "artifactId": "MAIL-018",
+      "artifactType": "message",
+      "requiredGrantIds": [
+        "research.recovery.read"
+      ]
+    },
+    {
+      "id": "CASE-ARCHIVE",
+      "kind": "case",
+      "caseId": "CASE-ARCHIVE",
+      "requiredGrantIds": []
+    },
+    {
+      "id": "CASE-REC03-PURPOSE",
+      "kind": "case",
+      "caseId": "CASE-REC03-PURPOSE",
+      "requiredGrantIds": []
+    },
+    {
+      "id": "CASE-LINEAGE",
+      "kind": "case",
+      "caseId": "CASE-LINEAGE",
+      "requiredGrantIds": []
+    },
+    {
+      "id": "footage:CAM-R03-TRANSPORT",
+      "kind": "artifact",
+      "app": "footage",
+      "artifactId": "CAM-R03-TRANSPORT",
+      "artifactType": "media",
+      "requiredGrantIds": [
+        "archive.local.review"
+      ]
+    },
+    {
+      "id": "footage:CAM-R03-INJURY",
+      "kind": "artifact",
+      "app": "footage",
+      "artifactId": "CAM-R03-INJURY",
+      "artifactType": "media",
+      "requiredGrantIds": [
+        "archive.local.review"
+      ]
+    },
+    {
+      "id": "footage:CAM-R03",
+      "kind": "artifact",
+      "app": "footage",
+      "artifactId": "CAM-R03",
+      "artifactType": "media",
+      "requiredGrantIds": [
+        "archive.local.review"
+      ]
+    },
+    {
+      "id": "records:ENG-LOCAL-SEGMENT:association",
+      "kind": "artifact",
+      "app": "records",
+      "artifactId": "ENG-LOCAL-SEGMENT:association",
+      "artifactType": "document",
+      "requiredGrantIds": [
+        "investigation.read"
+      ]
+    },
+    {
+      "id": "records:OPS-TRANSFER:association",
+      "kind": "artifact",
+      "app": "records",
+      "artifactId": "OPS-TRANSFER:association",
+      "artifactType": "document",
+      "requiredGrantIds": [
+        "investigation.read"
+      ]
     }
   ]
 }

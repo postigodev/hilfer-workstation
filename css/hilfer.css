@@ -379,3 +379,17 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 1px d
 /* Selection controls use system type; their record content retains reading type. */
 .case-list button, .claim-source small, .record-details summary { font-family: var(--font-ui); }
 .case-list button :is(b, span, small) { font-family: var(--font-reading); }
+
+/* Existing desktop deterioration, driven by accepted source contrasts. */
+:root[data-distortion][data-contrast-depth="1"] {--art-wallpaper:url('../assets/arwa/final/wallpaper-uneasy.webp');}
+:root[data-distortion][data-contrast-depth="2"] {--art-wallpaper:url('../assets/arwa/final/wallpaper-late.webp');}
+.clock-anomaly {color:#8a1830;font-weight:bold;}
+.index-noise [data-file-id="MT-REPEAT"] {visibility:hidden;}
+.contrast-static #desktop::after {content:'';position:absolute;inset:0;pointer-events:none;z-index:99990;background:repeating-linear-gradient(0deg,transparent 0 4px,#fff3 4px 5px);}
+.contrast-cursor {position:fixed;z-index:99999;pointer-events:none;color:#732b42;font:30px serif;text-shadow:3px 0 #eee;}
+@media(prefers-reduced-motion:reduce){.contrast-cursor,.contrast-static #desktop::after{display:none;}}
+
+.clock-anomaly {color:#9c1833;font-weight:bold;}
+.index-noise #record-files .record-file:nth-child(3n) {filter:blur(.8px);opacity:.35;transform:translateX(2px);}
+.contrast-static #desktop::after {content:'';position:absolute;inset:0;pointer-events:none;z-index:99999;background:repeating-linear-gradient(0deg,transparent 0 3px,#fff5 3px 4px);}
+.contrast-cursor {position:fixed;pointer-events:none;z-index:99999;color:#8c203b;font:30px serif;text-shadow:3px 0 #eee;}

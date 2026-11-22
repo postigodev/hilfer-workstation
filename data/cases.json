@@ -1,24 +1,130 @@
 [
   {
-    "id": "CASE-001", "title": "Personnel Availability Mismatch", "initiallyUnlocked": true,
+    "id": "CASE-001",
+    "title": "Personnel Availability Mismatch",
+    "initiallyUnlocked": true,
     "description": "Record mismatch detected.",
-    "subjectId": "EMP-JESSICA", "category": "Personnel / Work Eligibility",
+    "subjectId": "EMP-JESSICA",
+    "category": "Personnel / Work Eligibility",
     "scope": "Work eligibility only. A clearance decision does not establish occupational causation or incident-casualty status.",
-    "requiredEvidence": ["HR-014", "OH-008"],
-    "provisional": {"field":"workEligibility", "value":"AVAILABLE", "sourceId":"HR-014"},
-    "resolution": {"field": "workEligibility", "value": "NOT_CLEARED", "sourceId": "OH-008"},
-    "statusOptions": ["AVAILABLE", "NOT_CLEARED"],
-    "report": {
-      "heading": "Personnel / Work Eligibility", "subject": "Jessica / EMP-JESSICA",
-      "disposition": "Administrative discrepancy resolved.",
-      "contextFields": [{"field": "occupationalCausation", "label": "Occupational causation"}]
+    "requiredEvidence": [
+      "HR-014",
+      "OH-008"
+    ],
+    "provisional": {
+      "field": "workEligibility",
+      "value": "AVAILABLE",
+      "sourceId": "HR-014"
     },
-    "progression": {"unlockCaseIds": ["CASE-002"], "distortionLevel": 1}
+    "resolution": {
+      "field": "workEligibility",
+      "value": "NOT_CLEARED",
+      "sourceId": "OH-008"
+    },
+    "statusOptions": [
+      "AVAILABLE",
+      "NOT_CLEARED"
+    ],
+    "report": {
+      "heading": "Personnel / Work Eligibility",
+      "subject": "Jessica / EMP-JESSICA",
+      "disposition": "Administrative discrepancy resolved.",
+      "contextFields": [
+        {
+          "field": "occupationalCausation",
+          "label": "Occupational causation"
+        }
+      ]
+    },
+    "progression": {
+      "unlockCaseIds": [
+        "CASE-002"
+      ],
+      "distortionLevel": 1
+    }
   },
   {
-    "id": "CASE-002", "title": "Further Review", "initiallyUnlocked": false, "placeholder": true,
+    "id": "CASE-002",
+    "title": "Further Review",
+    "initiallyUnlocked": false,
+    "placeholder": true,
     "description": "Placeholder — awaiting departmental records. This assignment is not playable in the first prototype.",
-    "report": {"heading": "Pending Review", "pendingText": "Awaiting departmental records."},
+    "report": {
+      "heading": "Pending Review",
+      "pendingText": "Awaiting departmental records."
+    },
     "requiredEvidence": []
+  },
+  {
+    "id": "CASE-ARCHIVE",
+    "title": "Central Archive Review",
+    "initiallyUnlocked": false,
+    "description": "Verify whether a local segment survives the central archive gap.",
+    "subjectId": "SEG-R03-01",
+    "category": "Security / Archive Availability",
+    "investigation": {
+      "inferenceIds": [
+        "E-I1"
+      ],
+      "determinationIds": [
+        "CASE-ARCHIVE:via-engineering",
+        "CASE-ARCHIVE:via-operations"
+      ]
+    },
+    "report": {
+      "heading": "Security / Archive Availability",
+      "subject": "CAM-04 / segment review",
+      "pendingText": "Review central coverage and a matching local segment.",
+      "disposition": "Partial local recording verified."
+    }
+  },
+  {
+    "id": "CASE-REC03-PURPOSE",
+    "title": "Third Recovery — Purpose",
+    "initiallyUnlocked": false,
+    "description": "Verify the purpose of the third controlled entry.",
+    "subjectId": "OP-R03",
+    "category": "Operations / Purpose",
+    "investigation": {
+      "inferenceIds": [
+        "E-I3",
+        "F-I1"
+      ],
+      "determinationIds": [
+        "CASE-REC03-PURPOSE:operationalPurpose"
+      ]
+    },
+    "report": {
+      "heading": "Operations / Purpose",
+      "subject": "OP-R03",
+      "pendingText": "Await authorized review of the third entry.",
+      "disposition": "Operational purpose verified."
+    }
+  },
+  {
+    "id": "CASE-LINEAGE",
+    "title": "Classification Source Review",
+    "initiallyUnlocked": false,
+    "description": "File the provenance of one official reporting category.",
+    "subjectId": "INC-19981027",
+    "category": "Compliance / Source Lineage",
+    "investigation": {
+      "inferenceIds": [
+        "C-I1",
+        "C-I2",
+        "F-I4"
+      ],
+      "determinationIds": [
+        "CASE-LINEAGE:medicalCountScope",
+        "CASE-LINEAGE:approvedLanguageLevel",
+        "CASE-LINEAGE:recoveryClassification"
+      ]
+    },
+    "report": {
+      "heading": "Compliance / Source Lineage",
+      "subject": "Incident reporting",
+      "pendingText": "Verify one classification against its original source.",
+      "disposition": "Classification provenance documented."
+    }
   }
 ]

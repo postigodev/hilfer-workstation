@@ -18,7 +18,11 @@ export function createArtifacts({store,records = [],emails,mail,footage = [],pol
   const sources = new Map(), pending = new Map(), subscribers = new Set();
   const addSource=(app,id,value)=>{const k=key(app,id);if(sources.has(k))throw new Error('Duplicate artifact source: '+id);sources.set(k,value);};
   for (const record of records) addSource('records',record.id,record);
-  for (const media of footage) addSource('footage',media.id,media);
+  for (const media of footage) {
+    const source=structuredClone(media);
+    if(source.observation)Object.freeze(source.observation);
+    addSource('footage',source.id,Object.freeze(source));
+  }
   for (const thread of emails?.threads ?? []) {
     addSource('mail',thread.id,{type:'thread',threadId:thread.id});
     for (const message of thread.messages) {
@@ -60,8 +64,10 @@ export function createArtifacts({store,records = [],emails,mail,footage = [],pol
     if (!evidenceId) return {ok:true,inspected:false};
     const artifact=d.evidence.find(e=>e.id===evidenceId).artifacts.find(a=>a.app===token.app && a.artifactId===token.id);
     const policy=policies[inspectionPolicy(artifact.inspectionPolicyId)];
+    const source=sources.get(key(token.app,token.id));
+    const clipSource=source.clipId?sources.get(key('footage',source.clipId)):undefined;
     try {
-      if (typeof policy!=='function' || !await policy({...presentation,artifactId:token.id},token.controller.signal)) return unavailable();
+      if (typeof policy!=='function' || !await policy({...presentation,artifactId:token.id,source,clipSource},token.controller.signal)) return unavailable();
       if (token.controller.signal.aborted || pending.get(token.viewer)!==token || !canOpen(token.app,token.id)) return unavailable();
       const result=store.dispatch({type:'inspectEvidence',evidenceId});
       return {...result,inspected:result.ok};

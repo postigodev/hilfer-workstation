@@ -1,7 +1,7 @@
 import {drainEffects} from '../core/effects.js';
 
 // Fixed adapters reuse existing authored presentation. No effect can supply an arbitrary URL or script.
-export function mountPresentation(store,{assistant}) {
+export function mountPresentation(store,{assistant,contrastEffects}) {
   const active=new Set(),cleanup=new Set(),dialogues=new Set();let scheduled=false,disposed=false,animationTimer;
   const stop=()=>{
     for(const c of active)c.abort();for(const fn of [...cleanup])fn();
@@ -22,6 +22,7 @@ export function mountPresentation(store,{assistant}) {
       catch {end();return false;}
     },
     animation:effect=>{
+      if(contrastEffects?.play(effect.signal))return true;
       if(effect.signal!=='microglitch') return false;
       document.documentElement.classList.add('engine-microglitch');clearTimeout(animationTimer);
       animationTimer=setTimeout(()=>document.documentElement.classList.remove('engine-microglitch'),650);return true;

@@ -179,10 +179,10 @@ export function createMailModel(input, { storage, grants = input.initialGrants, 
 const person = value => `${h(value.name)} &lt;${h(value.address)}&gt;`;
 const mailDate = value => `${displayDate(value)} ${value.slice(11,16)}`;
 export function renderMailMessage(message, subject = message.subject, compact = false) {
-  const fields = `<dl class="mail-message-fields"><dt>From:</dt><dd>${person(message.from)}</dd><dt>To:</dt><dd>${message.to.map(person).join('; ')}</dd><dt>Cc:</dt><dd>${message.cc.length ? message.cc.map(person).join('; ') : '—'}</dd><dt>Date:</dt><dd><time datetime="${h(message.sentAt)}" title="Provisional demo timestamp">${h(mailDate(message.sentAt))}</time></dd><dt>Subject:</dt><dd>${h(subject)}</dd></dl>`;
+  const fields = `<dl class="mail-message-fields"><dt>From:</dt><dd>${person(message.from)}</dd><dt>To:</dt><dd>${message.to.map(person).join('; ')}</dd><dt>Cc:</dt><dd>${message.cc.length ? message.cc.map(person).join('; ') : '—'}</dd><dt>Date:</dt><dd><time datetime="${h(message.sentAt)}" title="Facility-local timestamp">${h(mailDate(message.sentAt))}</time></dd><dt>Subject:</dt><dd>${h(subject)}</dd></dl>`;
   return `${compact ? `<details class="mail-envelope-details"><summary>To: ${h(message.to.map(recipient => recipient.name).join(', '))}</summary>${fields}</details>` : fields}
     <div class="mail-message-scroll" tabindex="-1"><div class="mail-body">${h(message.body)}</div>${message.references.map(reference => `<button type="button" class="source-reference" data-mail-reference="${h(reference.id)}" data-mail-message="${h(message.id)}">${h(reference.label)}</button>`).join('')}</div>
-    <footer class="mail-message-status"><span>${h(message.id)}</span><span>Dates provisional</span></footer>`;
+    <footer class="mail-message-status"><span>${h(message.id)}</span><span>Facility-local time</span></footer>`;
 }
 // Retained for consumers of the original conversation markup.
 export function renderMailThread(thread) {
@@ -221,7 +221,7 @@ function renderConversation(thread, expandedId) {
   }).join('');
 }
 
-export function mountMail(root, corpus, { storage, store, openRecord, artifacts, model:providedModel }) {
+export function mountMail(root, corpus, { storage, store, openRecord, artifacts, model:providedModel, onContrast=()=>{} }) {
   const model = providedModel ?? createMailModel(corpus, {storage,getRecord:store.getRecord});
   const mailbox = model.getMailbox(), threadWindows = new Map();
   const action = (name,label,extra='') => `<button type="button" data-mail-command="${name}" ${extra}>${label}</button>`;
@@ -244,7 +244,7 @@ export function mountMail(root, corpus, { storage, store, openRecord, artifacts,
     <form class="mail-search" role="search"><label for="mail-search">Find</label><input id="mail-search" type="search" placeholder="Search all authorized mail" autocomplete="off"><button type="button" id="mail-clear-search">Clear</button></form>
     <div class="mail-workspace"><nav class="mail-folders" aria-label="Mail folders"><div class="mail-pane-heading">Mail Folders</div><div class="mail-tree-root">${envelope(false)}<b>HILFER Mail</b></div>${model.getFolders().map(folder=>`<button type="button" data-mail-folder="${h(folder.id)}"><span class="mail-folder-symbol" aria-hidden="true"></span><span>${h(folder.label)}<span data-folder-unread="${h(folder.id)}"></span></span></button>`).join('')}</nav>
     <section class="mail-list-pane" aria-label="Messages"><div class="mail-pane-heading" id="mail-list-label"></div><div class="mail-table-scroll"><table class="mail-table" role="grid" aria-label="Mail conversations"><colgroup><col class="mail-state-column"><col class="mail-from-column"><col><col class="mail-date-column"></colgroup><thead><tr><th scope="col" aria-label="Read status"></th><th scope="col">Participants</th><th scope="col">Subject</th><th scope="col" aria-sort="descending">Latest</th></tr></thead><tbody></tbody></table><p class="mail-empty" hidden></p></div></section></div>
-    <footer class="mail-status status-bar" role="status"><span class="status-bar-field" id="mail-count"></span><span class="status-bar-field" id="mail-warning">Dates provisional</span></footer>`;
+    <footer class="mail-status status-bar" role="status"><span class="status-bar-field" id="mail-count"></span><span class="status-bar-field" id="mail-warning">Facility-local time</span></footer>`;
   let rowSignature;
   const currentRows = () => model.listThreads();
   function selectRow(id, focus = true) {
@@ -278,6 +278,7 @@ export function mountMail(root, corpus, { storage, store, openRecord, artifacts,
         const reference=event.target.closest('[data-mail-reference]');
         if (reference) { event.stopPropagation(); if (model.getReference(reference.dataset.mailMessage,reference.dataset.mailReference)) openRecord(reference.dataset.mailReference); }
       });
+      node.addEventListener('dblclick',event=>{const message=event.target.closest('[data-message-id]');if(message&&event.target.closest('.mail-body')){event.stopPropagation();onContrast('mail',message.dataset.messageId);}});
       node.addEventListener('keydown',event=>{ if (event.key==='Escape') { event.preventDefault(); window.closeWindow(node.id.slice(0,-7)); } });
       node.addEventListener('toggle',event=>{
         const message=event.target;
@@ -348,7 +349,7 @@ export function mountMail(root, corpus, { storage, store, openRecord, artifacts,
           <td aria-label="${row.unread ? 'Unread' : 'Read'}">${envelope(row.unread)}</td>
           <td title="${h(row.participants)}">${h(row.participants)} <span class="mail-snippet">(${row.messages.length})</span></td>
           <td title="${h(row.subject + ' — ' + preview)}">${h(row.subject)} <span class="mail-snippet">— ${h(preview)}</span></td>
-          <td><time datetime="${h(row.preview.sentAt)}" title="Provisional demo timestamp">${h(mailDate(row.preview.sentAt))}</time></td></tr>`;
+          <td><time datetime="${h(row.preview.sentAt)}" title="Facility-local timestamp">${h(mailDate(row.preview.sentAt))}</time></td></tr>`;
       }).join('');
       rowSignature=signature;
     }
@@ -362,7 +363,7 @@ export function mountMail(root, corpus, { storage, store, openRecord, artifacts,
     root.querySelector('[data-mail-command="next"]').disabled=!rows.length || selectedIndex===rows.length-1;
     root.querySelector('[data-mail-command="close-messages"]').disabled=![...threadWindows.values()].some(node=>node.classList.contains('visible'));
     root.querySelector('#mail-count').textContent=`${rows.length} conversation${rows.length===1?'':'s'} (${unreadCount} unread)`;
-    root.querySelector('#mail-warning').textContent=model.getWarning() || 'Dates provisional';
+    root.querySelector('#mail-warning').textContent=model.getWarning() || 'Facility-local time';
   }
   root.querySelector('.mail-search').addEventListener('submit',event=>event.preventDefault());
   root.querySelector('#mail-search').addEventListener('input',event=>model.setQuery(event.target.value));

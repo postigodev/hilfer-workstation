@@ -13,8 +13,19 @@ export function mountReconciliation(root, store, { openRecord = () => {}, artifa
   const canOpenRecord = id => !artifacts || artifacts.canOpen('records',id);
   const getVisibleRecord = id => canOpenRecord(id) ? store.getRecord(id) : null;
   const sourceLink = (id, text = id) => canOpenRecord(id) ? '<button type="button" class="source-reference" data-open-record="' + h(id) + '">' + h(text) + '</button>' : '<span>Source unavailable</span>';
+  function showContrast() {
+    const d=store.getDefinitions(),p=pendingClaim;
+    const rows=p.evidenceIds.map(id=>{
+      const e=d.evidence.find(e=>e.id===id),a=e.artifacts.find(a=>a.app==='records');
+      const r=a?getVisibleRecord(a.artifactId):null;
+      return '<tr><th>'+h(r?.title??e.id)+'<small>'+h(e.department)+'</small></th><td>'+h(r?displayDate(r.date,true):'Mail')+'</td><td>'+h(Object.entries(e.fields).map(([k,v])=>displayField(k)+': '+displayValue(v)).join('; ')||'Inspected source text')+'</td></tr>';
+    }).join('');
+    return '<div class="claim-case-view"><section class="claim-compare" tabindex="-1" aria-label="Compare source claims"><table class="claim-table"><caption>Source comparison</caption><thead><tr><th>Inspected source</th><th>Issued</th><th>Recorded claim</th></tr></thead><tbody>'+rows+'</tbody></table><p class="claim-hint">Relationship established from these inspected sources. '+(p.determinationId?'The administrative determination remains unfiled.':'No administrative determination has been filed.')+'</p><div class="claim-choice"><button type="button" data-dismiss-claim>Continue reviewing</button>'+(p.determinationId?'<button type="button" class="claim-apply" data-use-claim="'+h(p.sourceEvidenceId)+'">Update report</button>':'')+'</div></section></div>';
+  }
   function showCase(definition, state) {
     if (!definition) return '<p>No assigned cases.</p>';
+    if(pendingClaim?.kind==='contrast')return showContrast();
+    if(definition.investigation)return '<div class="claim-case-view"><h1>'+h(definition.title)+'</h1><p>'+h(definition.description??'')+'</p><p class="claim-hint">Inspect the original departmental documents or correspondence. Double-click source text to compare inspected claims here.</p></div>';
     const done = state.completedCaseIds.includes(definition.id);
     const unlocked = state.unlockedCaseIds.includes(definition.id);
     const current = done ? state.resolutions[definition.id] : definition.provisional;
@@ -54,7 +65,13 @@ export function mountReconciliation(root, store, { openRecord = () => {}, artifa
     const openDetails = [...root.querySelectorAll('[data-audit-id][open]')].map(el => el.dataset.auditId);
     const state = store.getState();
     const visibleCases = cases.filter(c=>!artifacts || artifacts.caseVisible(c.id));
-    const report = deriveReport(visibleCases, state, getVisibleRecord,{getSourceForValidation:store.getRecord});
+    const formalFindings={};
+    for(const fact of Object.values(store.getSnapshot().facts.determinations)) {
+      if(fact.caseId==='CASE-001')continue;
+      const a=store.getDefinitions().evidence.find(e=>e.id===fact.sourceEvidenceId)?.artifacts.find(a=>a.app==='records');
+      if(a)formalFindings[fact.caseId]={field:fact.field,value:fact.value,sourceId:a.artifactId};
+    }
+    const report = deriveReport(visibleCases, state, getVisibleRecord,{getSourceForValidation:store.getRecord,formalFindings});
     const selected = visibleCases.find(c => c.id === selectedCaseId);
     root.innerHTML =
       '<div class="app-toolbar"><span>Reconciliation</span><div class="application-actions"><button data-open="records">Records</button><button data-arrange>Arrange</button></div></div>' +
@@ -95,6 +112,23 @@ export function mountReconciliation(root, store, { openRecord = () => {}, artifa
     return { ok: true };
   }
 
+  function contrastArtifact(app,artifactId) {
+    const d=store.getDefinitions(),id=store.evidenceForArtifact(app,artifactId),f=store.getSnapshot().facts;
+    const ready=route=>route.every(key=>f.inspectedEvidenceIds.includes(key)&&store.canInspectEvidence(key));
+    if(!id||!f.inspectedEvidenceIds.includes(id))return {ok:false,message:'Inspect the source before comparing it.'};
+    const candidates=d.inferences.flatMap(i=>i.supportAlternatives.filter(route=>route.includes(id)&&ready(route)).map(route=>({i,route})));
+    const choice=candidates.find(x=>!f.inferences[x.i.id])??candidates[0];
+    if(!choice)return {ok:false,message:'Read the related departmental sources before contrasting this claim.'};
+    const result=store.dispatch({type:'establishInference',inferenceId:choice.i.id,evidenceIds:choice.route});
+    if(!result.ok)return result;
+    const options=d.determinations.filter(t=>!t.legacy&&t.requires?.inferenceEstablished?.inferenceId===choice.i.id&&store.getState().unlockedCaseIds.includes(t.caseId)&&!store.getCompletedCaseIds().includes(t.caseId)&&t.sourceEvidenceIds.some(key=>choice.route.includes(key)));
+    const determination=options.find(t=>t.sourceEvidenceIds.includes(id))??options[0];
+    selectedCaseId=determination?.caseId??selectedCaseId;
+    pendingClaim={kind:'contrast',caseId:selectedCaseId,evidenceIds:choice.route,determinationId:determination?.id,sourceEvidenceId:determination?.sourceEvidenceIds.find(key=>choice.route.includes(key))};
+    view='register';feedback='Inspected sources contrasted. Official filing remains a separate action.';render();
+    return {ok:true};
+  }
+
   root.addEventListener('keydown', event => {
     if (!event.target.matches('[role="tab"]') || !['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
     event.preventDefault();
@@ -118,7 +152,9 @@ export function mountReconciliation(root, store, { openRecord = () => {}, artifa
     }
     const use = event.target.closest('[data-use-claim]');
     if (use && pendingClaim) {
-      const result = store.reconcileClaim(pendingClaim.caseId, pendingClaim.recordId, pendingClaim.field);
+      const result = pendingClaim.kind==='contrast'
+        ? store.dispatch({type:'fileDetermination',determinationId:pendingClaim.determinationId,sourceEvidenceId:pendingClaim.sourceEvidenceId})
+        : store.reconcileClaim(pendingClaim.caseId, pendingClaim.recordId, pendingClaim.field);
       feedbackTone = result.ok ? 'success' : 'error';
       feedback = result.message;
       if (result.ok) { pendingClaim = null; view = 'report'; }
@@ -148,6 +184,7 @@ export function mountReconciliation(root, store, { openRecord = () => {}, artifa
   return {
     getActiveCaseId: () => selectedCaseId,
     presentClaim,
+    contrastArtifact,
     focusComparison() { root.querySelector('.claim-compare')?.focus({ preventScroll: true }); },
     showReport() { view = 'report'; render(); }
   };

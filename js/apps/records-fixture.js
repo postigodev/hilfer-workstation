@@ -31,13 +31,17 @@ export function renderRecord(record) {
       ${fields([['Work-related cause', displayValue(record.fields.occupationalCausation)]])}<p class="document-note">${h(record.note)}</p>${auditDetails}
       <footer class="document-authorization"><span>ISSUING OFFICE</span><b>${h(record.department)}</b></footer>`;
   } else {
-    content = `<header class="document-heading"><b>${h(record.department)}</b><span>${h(record.title)}</span></header>${identity}${reference}${fields(Object.entries(record.fields).map(([key, value]) => [label(key), value]))}`;
+    const metadata = fields([['Record reference', record.id], ['Issued', displayDate(record.date)]]);
+    const structured = Object.keys(record.fields ?? {}).length
+      ? '<details class="record-details"><summary>Indexed values</summary>' + fields(Object.entries(record.fields).map(([key,value]) => [label(key),value])) + '</details>' : '';
+    const body = record.body ? '<div class="document-note" style="white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.4">' + h(record.body) + '</div>' : '';
+    content = `<header class="document-heading"><b>${h(record.department)}</b><span>${h(record.title)}</span></header>${metadata}${body}${structured}`;
   }
   return `<article data-artifact-id="${h(record.id)}" class="record-document ${record.type === 'occupational_health_record' ? 'medical-document' : ''}" tabindex="0" aria-label="Inspect ${h(record.id)}">${content}</article>`;
 }
 
 // Replaceable Records UI. No case rules or duplicated game state live here.
-export function mountRecords(root, store, { onClaim = () => {}, artifacts } = {}) {
+export function mountRecords(root, store, { onClaim = () => {}, onContrast = () => {}, artifacts } = {}) {
   artifacts ??= createArtifacts({store,records:store.getRecords(),policies:presentationPolicies});
   let selectedId = null;
   let department = '';
@@ -58,14 +62,14 @@ export function mountRecords(root, store, { onClaim = () => {}, artifacts } = {}
     root.querySelector('.folder-tree').innerHTML='<div class="pane-label">Departments</div><button data-folder="" aria-pressed="true"><span class="folder-symbol" aria-hidden="true"></span>All departments</button>'+[...new Set(allowed.map(r=>r.department))].map(name=>`<button data-folder="${h(name)}" aria-pressed="false">${departmentIcons[name] ? `<span class="department-icon" data-department-icon="${departmentIcons[name]}" aria-hidden="true"></span>` : '<span class="folder-symbol" aria-hidden="true"></span>'}${h(name)}</button>`).join('');
     if(department && !allowed.some(r=>r.department===department)) department='';
     const records = allowed.filter(record => (!department || record.department === department) &&
-      [record.id, record.title, record.employee, record.employeeId, record.department].join(' ').toLowerCase().includes(query.toLowerCase()));
+      [record.id, record.title, record.employee ?? '', record.employeeId ?? '', record.department, record.body ?? ''].join(' ').toLowerCase().includes(query.toLowerCase()));
     if (!records.some(r => r.id === selectedId)) selectedId = null;
     root.querySelector('#record-files').innerHTML = records.length ? records.map(record => `<button class="record-file" data-file-id="${h(record.id)}" data-record-id="${h(record.id)}" aria-pressed="${selectedId === record.id}"><b><span class="file-symbol" aria-hidden="true"></span>${h(recordTitle(record))}</b><span>${h(record.department)} <time datetime="${h(record.date.slice(0, 10))}">· ${h(displayDate(record.date, true))}</time></span><small>${h(record.id)}</small></button>`).join('') : '<p class="files-empty">No matching records.</p>';
     root.querySelector('#record-count').textContent = `${records.length} document${records.length === 1 ? '' : 's'}`;
     root.querySelectorAll('[data-folder]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.folder === department)));
     const record = artifacts.get('records',selectedId);
     root.querySelector('#preview-reference').textContent = record ? recordTitle(record) : 'Preview / no file selected';
-    root.querySelector('#record-drag-hint').textContent = record ? `Selected / ${record.id}` : 'Read-only';
+    root.querySelector('#record-drag-hint').textContent = record ? (record.body?'Double-click document text to contrast inspected sources.':`Selected / ${record.id}`) : 'Read-only';
     root.querySelector('#record-preview').innerHTML = record ? renderRecord(record) : '<div class="preview-empty"><span class="preview-empty-sheet" aria-hidden="true"></span><b>No document selected</b><span>Select a document to inspect its fields.</span></div>';
     root.querySelector('#record-preview').scrollTop = 0;
     const dragBar = root.querySelector('#preview-drag-bar');
@@ -95,6 +99,7 @@ export function mountRecords(root, store, { onClaim = () => {}, artifacts } = {}
     const file = event.target.closest('[data-record-id]');
     if (file) beginRecordDrag(event, file.dataset.recordId);
   });
+  root.addEventListener('dblclick',event=>{const doc=event.target.closest('.record-document');if(doc&&!event.target.closest('button,summary')){event.stopPropagation();const result=onContrast('records',doc.dataset.artifactId);if(result?.ok===false)root.querySelector('#record-drag-hint').textContent=result.message;}});
   root.addEventListener('keydown', event => {
     const current = event.target.closest('[data-file-id]');
     if (!current || !['ArrowUp', 'ArrowDown', 'Home', 'End'].includes(event.key)) return;
