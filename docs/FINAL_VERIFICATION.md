@@ -27,3 +27,14 @@ Final sequential browser results, final screenshots and preview URL are recorded
 - New late Assistant dialogue is captioned; it does not have fabricated voice recordings.
 - Demo pacing in FINAL_DEMO.md is a proposed 8–10-minute human presentation schedule, not an independently timed human rehearsal.
 - All disclosure remains a local fiction. No real mail is sent.
+
+
+## Issue 16 rescue — original application orchestration
+
+Removed the added top-of-window assignment panel after owner review. Navigation is inline in the existing Consolidated Report and Case Register; Records, Mail and Footage remain the actual viewers. No source JSON, case gates, evidence requirement or story command was changed.
+
+Verified: 113/113 Node tests; fresh 1366×768 visible-label gameplay from Jessica through real E/F/G, Guy/Losurdo, actual Sent body, Medical END, reload/reset. This guided test performs no source-ID searches, engine dispatches, injected saves or direct application API calls. It is an automated usability proxy, not a novice human test.
+
+The original browser/applications/theme checks passed after preserving mobile desktop shortcut access. An Assistant regression exposed premature pre-gesture voice attempts and the previous build’s 144px assets against its retained 174px contract. Trusted gesture gating and original-source 174px derivatives restore those contracts; no assertions were weakened. Remaining sequential results are collected below at delivery.
+
+Screenshots: `docs/screenshots/rescue/`. Player-facing route: `FINAL_DEMO.md`. Prior original report and evidence mechanics remain intact. Optional departmental links use original thread authorization, and late Work Review tabs are absent until their actual state permits them. Work Review no longer copies source prose into a second document viewer.

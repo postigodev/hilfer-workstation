@@ -63,9 +63,13 @@ export function mountAI(root, store, content, { storage } = {}) {
   const history = new Set();
   let voiceCue = null;
   let needsGesture = false;
+  let userInteracted = false;
+  const markGesture=event=>{if(event.isTrusted)userInteracted=true;};
+  document.addEventListener('pointerdown',markGesture,true);
+  document.addEventListener('keydown',markGesture,true);
   function speakPending() {
     if (!voiceCue || document.hidden) return;
-    if (navigator.userActivation?.hasBeenActive === false) { needsGesture = true; return; }
+    if (!userInteracted || navigator.userActivation?.hasBeenActive === false) { needsGesture = true; return; }
     voice.play(voiceCue, {
       onEnded: speakPending,
       onError(error) {
@@ -77,7 +81,7 @@ export function mountAI(root, store, content, { storage } = {}) {
   const portrait = root.querySelector('.ai-avatar');
   // Preserve the full transcript on demand, collapse unsolicited correspondence
   // as soon as the player works in an application. Voice receipts remain separate.
-  document.addEventListener('pointerdown',event=>{if(!root.contains(event.target)&&!balloon.hidden&&balloon.hasAttribute('data-passive'))setOpen(false,false);},true);
+  document.addEventListener('pointerdown',event=>{if(event.target.closest('.window')&&!root.contains(event.target)&&!balloon.hidden&&balloon.hasAttribute('data-passive'))setOpen(false,false);},true);
   let presentationStage;
   let previousPhase;
   let wasUnread = false;
