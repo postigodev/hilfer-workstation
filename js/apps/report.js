@@ -45,7 +45,7 @@ export function deriveReport(cases, state, getRecord, {getSourceForValidation = 
   };
 }
 
-export function renderReport(report, {canOpenRecord = () => true} = {}) {
+export function renderReport(report, {canOpenRecord = () => true,navigation=''} = {}) {
   const reference = (id,text=id) => canOpenRecord(id)
     ? `<button type="button" class="source-reference" data-open-record="${h(id)}" aria-label="Open record ${h(id)}">${h(text)}</button>`
     : '<span class="source-unavailable">Source unavailable</span>';
@@ -54,6 +54,7 @@ export function renderReport(report, {canOpenRecord = () => true} = {}) {
     <header class="report-letterhead"><b>HILFER</b><span>IR / CONSOLIDATED RECORD / 01</span></header>
     <h1>Incident Report</h1><div class="report-control"><b>${h(report.status)}</b></div>
     <p class="report-progress">${report.completed} ${report.completed === 1 ? 'entry' : 'entries'} filed${report.pending ? ` · ${report.pending} under review` : ''}</p>
+    ${navigation}
     ${sections.map(section => {
       const finding = section.determination ?? section.provisional;
       return `<section class="report-section ${section.determination ? 'report-filed' : 'report-pending'}" id="report-${h(section.id)}" data-report-section="${h(section.id)}" tabindex="-1">

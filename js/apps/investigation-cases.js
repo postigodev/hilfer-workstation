@@ -19,7 +19,7 @@ export function renderInvestigationCase(definition, store, artifacts, sourceLink
     const artifact=item.artifacts[0];
     const label=artifact?.artifactId ?? id;
     const link=artifact?.app==='records'
-      ? sourceLink(label)
+      ? sourceLink(label,store.getRecord(label)?.title??label)
       : artifact?.app==='mail'
         ? '<button type="button" data-open="emails">Open Mail</button> · '+h(label)
         : artifact?.app==='footage'
@@ -48,7 +48,8 @@ export function renderInvestigationCase(definition, store, artifacts, sourceLink
         '<button type="button" data-inference-id="'+h(id)+'" data-inference-alt="'+index+'" '+(ready?'':'disabled')+
         '>Establish relationship</button></div>';
     }).join('');
-    return '<section class="claim-existing"><div class="pane-label">INFERENCE / '+h(id)+'</div>'+choices+'</section>';
+    const descriptions={'E-I1':'Compare central and local archive availability','F-I1':'Compare the three recovery authorizations','F-I4':'Compare the approved recovery classification','C-I1':'Compare medical and incident criteria','C-I2':'Trace the qualified Communications wording','E-I3':'Optional: reconcile the historical segment association'};
+    return '<section class="claim-existing"><div class="pane-label">'+h(descriptions[id]??'Compare inspected sources')+'</div>'+choices+'</section>';
   }).join('');
 
   const filings=(config.determinationIds||[]).map(id=>{

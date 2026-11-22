@@ -67,16 +67,16 @@ export function mountReconciliation(root, store, { openRecord = () => {}, artifa
     }
     const report = deriveReport(visibleCases, state, getVisibleRecord,{getSourceForValidation:store.getRecord,formalFindings});
     const selected = visibleCases.find(c => c.id === selectedCaseId);
-    root.innerHTML = renderLeads(store,artifacts)+
+    root.innerHTML =
       '<div class="app-toolbar"><span>Reconciliation</span><div class="application-actions"><button data-open="records">Records</button><button data-arrange>Arrange</button></div></div>' +
       '<div class="reconciliation-tabs" role="tablist" aria-label="Reconciliation views">' +
       '<button id="report-tab" role="tab" aria-controls="reconciliation-panel" data-view="report" aria-selected="' + (view === 'report') + '" tabindex="' + (view === 'report' ? '0' : '-1') + '">Consolidated Report</button>' +
       '<button id="register-tab" role="tab" aria-controls="reconciliation-panel" data-view="register" aria-selected="' + (view === 'register') + '" tabindex="' + (view === 'register' ? '0' : '-1') + '">Case Register</button></div>' +
       '<div id="reconciliation-panel" role="tabpanel" aria-labelledby="' + (view === 'report' ? 'report-tab' : 'register-tab') + '">' +
-      (view === 'report' ? renderReport(report,{canOpenRecord}) :
+      (view === 'report' ? renderReport(report,{canOpenRecord,navigation:renderLeads(store,artifacts)}) :
         '<div class="reconciliation-layout"><nav class="case-list" aria-label="Cases"><div class="pane-label">CASE REGISTER</div>' +
           visibleCases.map(c => '<button type="button" data-case="' + h(c.id) + '" aria-pressed="' + (selectedCaseId === c.id) + '"><b>' + h(c.id) + '</b><span>' + h(c.title) + '</span><small>' + (state.completedCaseIds.includes(c.id) ? 'FILED' : !state.unlockedCaseIds.includes(c.id) ? 'LOCKED' : c.placeholder ? 'RESERVED' : 'OPEN') + '</small></button>').join('') +
-        '</nav><div class="case-detail">' + showCase(selected, state) + '</div></div>') +
+        '</nav><div class="case-detail">' + showCase(selected, state) + renderLeads(store,artifacts) + '</div></div>') +
       '</div><div class="feedback status-bar" data-tone="' + h(feedbackTone) + '" role="status" aria-live="polite"><span class="status-bar-field">' +
       h(feedback || (view === 'report' ? 'Report / work in progress' : 'Select a source in Records to amend an entry.')) + '</span></div>';
     root.querySelectorAll('[data-audit-id]').forEach(el => { el.open = openDetails.includes(el.dataset.auditId); });
