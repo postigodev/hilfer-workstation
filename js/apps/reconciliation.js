@@ -1,6 +1,7 @@
 import { escapeHTML as h, displayField, displayValue, displayDate } from './shared.js';
 import { deriveReport, renderReport } from './report.js';
 import { renderInvestigationCase } from './investigation-cases.js';
+import { renderLeads } from './leads.js';
 
 // Reconciliation is a document you revise with source claims, not a form or a file tray.
 export function mountReconciliation(root, store, { openRecord = () => {}, artifacts } = {}) {
@@ -66,7 +67,7 @@ export function mountReconciliation(root, store, { openRecord = () => {}, artifa
     }
     const report = deriveReport(visibleCases, state, getVisibleRecord,{getSourceForValidation:store.getRecord,formalFindings});
     const selected = visibleCases.find(c => c.id === selectedCaseId);
-    root.innerHTML =
+    root.innerHTML = renderLeads(store,artifacts)+
       '<div class="app-toolbar"><span>Reconciliation</span><div class="application-actions"><button data-open="records">Records</button><button data-arrange>Arrange</button></div></div>' +
       '<div class="reconciliation-tabs" role="tablist" aria-label="Reconciliation views">' +
       '<button id="report-tab" role="tab" aria-controls="reconciliation-panel" data-view="report" aria-selected="' + (view === 'report') + '" tabindex="' + (view === 'report' ? '0' : '-1') + '">Consolidated Report</button>' +
@@ -112,6 +113,8 @@ export function mountReconciliation(root, store, { openRecord = () => {}, artifa
     render(); root.querySelector('#' + view + '-tab')?.focus();
   });
   root.addEventListener('click', event => {
+    const lead=event.target.closest('[data-lead-case]');
+    if(lead){selectedCaseId=lead.dataset.leadCase;pendingClaim=null;view='register';feedback='';render();return;}
     const inferButton=event.target.closest('[data-inference-id]');
     if(inferButton){
       const inference=store.getDefinitions().inferences.find(i=>i.id===inferButton.dataset.inferenceId);

@@ -71,6 +71,7 @@ export function mountRecords(root, store, { onClaim = () => {}, artifacts } = {}
     root.querySelector('#preview-reference').textContent = record ? recordTitle(record) : 'Preview / no file selected';
     root.querySelector('#record-drag-hint').textContent = record ? `Selected / ${record.id}` : 'Read-only';
     root.querySelector('#record-preview').innerHTML = record ? renderRecord(record) : '<div class="preview-empty"><span class="preview-empty-sheet" aria-hidden="true"></span><b>No document selected</b><span>Select a document to inspect its fields.</span></div>';
+    if(record?.id==='HR-014' && artifacts.canOpen('records','OH-008'))root.querySelector('#record-preview').insertAdjacentHTML('beforeend','<button type="button" data-next-clearance>Review Occupational Health clearance</button>');
     root.querySelector('#record-preview').scrollTop = 0;
     const dragBar = root.querySelector('#preview-drag-bar');
     dragBar.hidden = true;
@@ -81,6 +82,7 @@ export function mountRecords(root, store, { onClaim = () => {}, artifacts } = {}
   root.querySelector('#records-search').addEventListener('input', event => { query = event.target.value; renderFiles(); });
   root.querySelector('#clear-search').addEventListener('click', () => { query = ''; root.querySelector('#records-search').value = ''; renderFiles(); root.querySelector('#records-search').focus(); });
   root.addEventListener('click', event => {
+    if(event.target.closest('[data-next-clearance]')){openRecord('OH-008');return;}
     const claim = event.target.closest('[data-claim-record]');
     if (claim) {
       // The shell also focuses clicked windows at document level. Prevent it

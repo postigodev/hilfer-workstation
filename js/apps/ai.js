@@ -75,6 +75,9 @@ export function mountAI(root, store, content, { storage } = {}) {
     });
   }
   const portrait = root.querySelector('.ai-avatar');
+  // Preserve the full transcript on demand, collapse unsolicited correspondence
+  // as soon as the player works in an application. Voice receipts remain separate.
+  document.addEventListener('pointerdown',event=>{if(!root.contains(event.target)&&!balloon.hidden&&balloon.hasAttribute('data-passive'))setOpen(false,false);},true);
   let presentationStage;
   let previousPhase;
   let wasUnread = false;

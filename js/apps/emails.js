@@ -403,5 +403,6 @@ export function mountMail(root, corpus, { storage, store, openRecord, artifacts,
   model.subscribe(render);
   artifacts?.subscribe(render);
   store.onEvent(({type})=>{if(type==='hilfer:progress-reset'){closeThreads();model.reset();}});
+  window.addEventListener('hilfer:mail-navigate',({detail})=>{const thread=model.getThread(detail?.threadId);if(thread){model.setFolder(thread.folderId);openThread(thread.id);}});
   render();return model;
 }

@@ -42,7 +42,7 @@ export function mountSecurity(root,artifacts,media,{store}={}) {
     video.setAttribute('aria-label',title(clip()));status.textContent=note();
     toolbar.replaceChildren();
     for(const item of media.filter(x=>!x.observation && artifacts.canOpen('footage',x.id))) {
-      const button=document.createElement('button');button.type='button';button.textContent=title(item);
+      const button=document.createElement('button');button.type='button';button.textContent=item.id==='CAM4-PREVIEW'?'Preview / not evidence':item.id==='CAM-R03'?'Recovered CAM-R03 — partial corridor footage':title(item);
       button.dataset.securityClip=item.id;button.setAttribute('aria-pressed',String(item.id===selected));
       button.addEventListener('click',()=>{select(item.id);refresh();});toolbar.append(button);
     }
@@ -60,7 +60,8 @@ export function mountSecurity(root,artifacts,media,{store}={}) {
   new MutationObserver(()=>{if(!root.classList.contains('active'))stop();}).observe(root,{attributes:true,attributeFilter:['class']});
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible')stop();});
   window.addEventListener('pagehide',stop);
-  artifacts.subscribe(()=>{stop();refresh();});
+  let recoveredAvailable=artifacts.canOpen('footage','CAM-R03');
+  artifacts.subscribe(()=>{stop();const available=artifacts.canOpen('footage','CAM-R03');if(available&&!recoveredAvailable)select('CAM-R03');recoveredAvailable=available;refresh();});
   refresh();
   return {stop,reset(){stop();select('CAM4-PREVIEW');refresh();}};
 }

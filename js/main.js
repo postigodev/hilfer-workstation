@@ -74,6 +74,13 @@ async function boot() {
   document.querySelector('#reset-progress').addEventListener('click', () => { store.resetProgress(); });
   // Stable integration surface for Records and browser tests; all writes go through validation.
   window.hilfer = Object.freeze({ ...store, ...reconciliation, openRecord });
+  document.addEventListener('click',event=>{
+    const mailLead=event.target.closest('[data-lead-mail]');
+    if(mailLead){event.stopPropagation();if(!artifacts.canOpen('mail',mailLead.dataset.leadMail))return;window.openWindow('emails');window.dispatchEvent(new CustomEvent('hilfer:mail-navigate',{detail:{threadId:mailLead.dataset.leadMail}}));}
+    const scene=event.target.closest('[data-lead-scene]');
+    if(scene){event.stopPropagation();window.openWindow('communications');window.dispatchEvent(new CustomEvent('hilfer:story-navigate',{detail:{tab:scene.dataset.leadScene}}));}
+  });
+  if(store.getDefinitions().story)window.openWindow('reconciliation');
 }
 boot().catch(error => {
   console.error(error);
