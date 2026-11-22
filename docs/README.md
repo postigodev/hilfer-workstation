@@ -5,8 +5,8 @@
 [PR #8](https://github.com/postigodev/hilfer-workstation/pull/8). The latter was squash-merged as
 `f8e7e8a74624f89d5c93aa7cd135fa683e26639c` on November 21, 2026.
 
-On this development branch, Jessica and the independent E archive routes are playable;
-the recovered clip is available for review, while F/G remain editorially blocked.
+On this development branch, J/E/F/G are playable through explicit documentary association
+and actual transport observation. Injury playback and personal identity are not required.
 Completion of the engine does not mean completion of the game.
 
 ## Current guides
@@ -18,6 +18,7 @@ Completion of the engine does not mean completion of the game.
 | [Engine reference](ENGINE.md) | Authoritative facts, commands, rules, projections, delivery receipts and version migrations. |
 | [Application integration](APP_INTEGRATION.md) | Content catalog, Mail granularity, readiness policies, access and cancellation. |
 | [Security integration audit](SECURITY_INTEGRATION.md) | Stacked issue #11 work: actual media measurements, observation contracts and unresolved editorial joins. |
+| [Security metadata reconciliation](SECURITY_METADATA_RECONCILIATION.md) | Approved documentary association, new addendum inspections, content-v5 migration and J/E/F/G verification. |
 | [Project context](PROJECT_CONTEXT.md) | Working narrative background, demo scope and team ownership. |
 | [Design decisions](DESIGN_DECISIONS.md) | Approved direction versus proposals and unresolved gameplay. |
 

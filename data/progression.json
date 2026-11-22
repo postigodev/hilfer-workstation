@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "contentVersion": 4,
+  "contentVersion": 5,
   "evidence": [
     {
       "id": "HR-014",
@@ -582,6 +582,67 @@
           "inspectionPolicyId": "media-sequence-presented"
         }
       ]
+    },
+    {
+      "id": "ENG-LOCAL-SEGMENT:association",
+      "sourceGroupId": "ENG-LOCAL-CAPTURE",
+      "department": "Systems Integrity",
+      "tags": [
+        "recording-association"
+      ],
+      "artifacts": [
+        {
+          "app": "records",
+          "artifactId": "ENG-LOCAL-SEGMENT:association",
+          "inspectionPolicyId": "document-presented"
+        }
+      ],
+      "fields": {
+        "parentSegmentId": "SEG-R03-01",
+        "cameraId": "CAM-04",
+        "sectorId": "SEC-R03-ACCESS",
+        "extractRef": "SEG-R03-01:review",
+        "indexedSeconds": "27",
+        "playableSeconds": "14.375",
+        "pictureClock": "TCR 10-09 18:37:11",
+        "timingBasis": "RECORDER_EVENT_LOG"
+      },
+      "caseIds": [
+        "CASE-REC03-PURPOSE"
+      ],
+      "requiredGrantIds": [
+        "investigation.read"
+      ]
+    },
+    {
+      "id": "OPS-TRANSFER:association",
+      "sourceGroupId": "OPS-TRANSFER-CUSTODY",
+      "department": "Operations",
+      "tags": [
+        "recording-association"
+      ],
+      "artifacts": [
+        {
+          "app": "records",
+          "artifactId": "OPS-TRANSFER:association",
+          "inspectionPolicyId": "document-presented"
+        }
+      ],
+      "fields": {
+        "parentSegmentId": "SEG-R03-01",
+        "cameraId": "CAM-04",
+        "sectorId": "SEC-R03-ACCESS",
+        "extractRef": "SEG-R03-01:review",
+        "operationId": "OP-R03",
+        "movementTime": "1998-10-28T06:43",
+        "verificationBasis": "OPERATIONS_MOVEMENT_LOG"
+      },
+      "caseIds": [
+        "CASE-REC03-PURPOSE"
+      ],
+      "requiredGrantIds": [
+        "investigation.read"
+      ]
     }
   ],
   "inferences": [
@@ -690,6 +751,21 @@
       "requires": {
         "inferenceEstablished": {
           "inferenceId": "F-I1"
+        }
+      }
+    },
+    {
+      "id": "E-I3",
+      "supportAlternatives": [
+        [
+          "ENG-LOCAL-SEGMENT:association",
+          "OPS-TRANSFER:association",
+          "CAM-R03:transport-visual"
+        ]
+      ],
+      "requires": {
+        "milestoneReached": {
+          "milestoneId": "CASE-ARCHIVE:filed"
         }
       }
     }
@@ -951,6 +1027,14 @@
       "when": {
         "milestoneReached": {
           "milestoneId": "CASE-REC03-PURPOSE:filed"
+        }
+      }
+    },
+    {
+      "grantId": "security.timeline.verified",
+      "when": {
+        "inferenceEstablished": {
+          "inferenceId": "E-I3"
         }
       }
     }
@@ -1672,6 +1756,26 @@
       "artifactType": "media",
       "requiredGrantIds": [
         "archive.local.review"
+      ]
+    },
+    {
+      "id": "records:ENG-LOCAL-SEGMENT:association",
+      "kind": "artifact",
+      "app": "records",
+      "artifactId": "ENG-LOCAL-SEGMENT:association",
+      "artifactType": "document",
+      "requiredGrantIds": [
+        "investigation.read"
+      ]
+    },
+    {
+      "id": "records:OPS-TRANSFER:association",
+      "kind": "artifact",
+      "app": "records",
+      "artifactId": "OPS-TRANSFER:association",
+      "artifactType": "document",
+      "requiredGrantIds": [
+        "investigation.read"
       ]
     }
   ]

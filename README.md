@@ -11,10 +11,11 @@ HILFER is a browser-based institutional-horror investigation set inside a fictio
 The investigation engine and application integrations are implemented and merged into `main`: [Engine Foundation #7](https://github.com/postigodev/hilfer-workstation/pull/7) and [Application Integration #8](https://github.com/postigodev/hilfer-workstation/pull/8).
 
 This development branch stacks the corpus from PR #10 with the Security work in issue #11.
-Jessica and both independent Security archive routes are playable. Recovery 03 and lineage
-definitions remain blocked in production pending reconciliation of the delivered video's
-clock with the canonical interval. CASE-002 remains a placeholder; ending mechanics are
-not implemented. See the [Security audit](docs/SECURITY_INTEGRATION.md).
+Jessica and both independent Security archive routes are playable. Content v5 adds the
+approved documentary association of the recovered extract, allowing F and G to be filed
+with source provenance. Tito's visual identity remains unverified. CASE-002 remains a
+placeholder; ending mechanics are not implemented. See the
+[metadata reconciliation](docs/SECURITY_METADATA_RECONCILIATION.md).
 
 ## Run the demo
 
@@ -37,7 +38,7 @@ Open [http://127.0.0.1:8080](http://127.0.0.1:8080). The demo runs on local HTML
 | **Records** | Browse HR and Occupational Health files, inspect the source fields, and open the comparison from the record itself. |
 | **Mail** | Double-click a conversation or press Enter to open its reader. Browse Inbox and Archive, search correspondence, and move threads to Deleted Items or restore them. One message links to Records. Sent has no outgoing mail in this demo. |
 | **HILFER Assistant** | The portrait sits above the taskbar. New dialogue opens a balloon without moving keyboard focus. The portrait also opens it manually. If the browser blocks automatic narration, it waits for the first interaction. |
-| **Footage** | Preview remains non-evidence. On this development branch, completing Security opens a recovered clip for review; unresolved date/identity joins keep later narrative access blocked. |
+| **Footage** | Preview remains non-evidence. Security opens the recovered extract; verified transport plus explicit documentary association enables later custody review. Personal identity remains unverified. |
 | **Display Properties** | Switch between Standard and Archive / Graphite or toggle the desktop logo treatment. |
 
 Start with **Reconciliation → Consolidated Report**, then inspect relevant source fields in Records. Choosing the initial source leaves the discrepancy unresolved. Filing a supported correction updates the report, unlocks CASE-002 and triggers one audiovisual anomaly. Reload preserves progress; the clearance decision does not establish occupational causation. Footage's CAM 4 preview creates no narrative evidence.
@@ -59,7 +60,7 @@ Progress uses `hilfer:save:v2`. Explicit migration preserves valid v1 progress w
 | --- | --- |
 | `js/core/` | Authoritative store, commands, rules, saves, artifact authorization and effect receipts. |
 | `js/apps/` | Application UI, inspection policies and presentation adapters. |
-| `data/` | Authored corpus, media catalog and schema-2/content-4 progression definitions. |
+| `data/` | Authored corpus, media catalog and schema-2/content-5 progression definitions. |
 | `data/history/` | Original definitions retained for migration validation. |
 | `tests/` | Unit checks and browser regressions; additional relationships exist only in synthetic fixtures. |
 
@@ -73,9 +74,13 @@ npm test
 
 The final engine verification recorded **78 unit tests and five browser suites passing locally**, not a GitHub CI run. Browser checks require Playwright and Microsoft Edge plus the running local server. Run them sequentially; setup, all five commands and the recorded Assistant concurrency failure are covered in the [integration guide](docs/INTEGRATION.md#run-and-checks) and [verification report](docs/APPLICATION_INTEGRATION_REVIEW.md).
 
-The issue #11 branch additionally verifies 98 Node tests, Python range responses, and
-`node tests/security.browser.check.js`. Current results and known editorial blockers
+The original PR #12 verification recorded 98 Node tests, Python range responses, and
+`node tests/security.browser.check.js`. Historical results and editorial blockers
 are recorded in the [Security verification](docs/SECURITY_INTEGRATION.md#verification).
+
+The content-v5 follow-up passes 105 Node tests and adds `node tests/security-reconciliation.browser.check.js`,
+which plays J→E→association→F→G-OPS through both E routes without injected grants or
+injury playback. See the [current verification](docs/SECURITY_METADATA_RECONCILIATION.md#verification).
 
 ## Documentation
 

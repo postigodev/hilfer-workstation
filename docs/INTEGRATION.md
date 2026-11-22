@@ -28,6 +28,12 @@ it was local verification, not a CI run. An initial concurrent Assistant run fai
 assertion; the unchanged check then passed alone and in the final sequential run. See the
 [verification report](APPLICATION_INTEGRATION_REVIEW.md#2026-11-21--final-review-follow-up) for the record.
 
+For content v5, also run `node tests/security.browser.check.js` and
+`node tests/security-reconciliation.browser.check.js`. The latter uses production
+definitions, actual video playback and explicit E-I3/F/G actions, with no granted test
+shortcut. Current content and migration contracts are in
+[metadata reconciliation](SECURITY_METADATA_RECONCILIATION.md).
+
 In PowerShell, a separately installed Playwright module and a different server port can be selected with:
 
 ```powershell

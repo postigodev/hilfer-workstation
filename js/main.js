@@ -11,7 +11,7 @@ import { validateSecurityCatalog } from './apps/security-catalog.js';
 import { mountPresentation } from './apps/presentation.js';
 
 async function boot() {
-  const [records, cases, assistant, emails, progression, previousProgression, previousCases, previousProgressionV2, previousCasesV2, previousProgressionV3, previousCasesV3, footageCatalog] = await Promise.all(['records', 'cases', 'assistant', 'emails', 'progression','history/progression-v1','history/cases-v1','history/progression-v2','history/cases-v2','history/progression-v3','history/cases-v3','footage'].map(async name => {
+  const [records, cases, assistant, emails, progression, previousProgression, previousCases, previousProgressionV2, previousCasesV2, previousProgressionV3, previousCasesV3, previousProgressionV4, previousCasesV4, footageCatalog] = await Promise.all(['records', 'cases', 'assistant', 'emails', 'progression','history/progression-v1','history/cases-v1','history/progression-v2','history/cases-v2','history/progression-v3','history/cases-v3','history/progression-v4','history/cases-v4','footage'].map(async name => {
     const response = await fetch(`./data/${name}.json`);
     if (!response.ok) throw new Error(`Could not load ${name}`);
     return response.json();
@@ -22,7 +22,8 @@ async function boot() {
   const contentMigrations=[
     {from:1,to:2,sourceDefinition:previousProgression,sourceCases:previousCases,migrate:s=>({...s,contentVersion:2})},
     {from:2,to:3,sourceDefinition:previousProgressionV2,sourceCases:previousCasesV2,migrate:s=>({...s,contentVersion:3})},
-    {from:3,to:4,sourceDefinition:previousProgressionV3,sourceCases:previousCasesV3,migrate:s=>({...s,contentVersion:4})}
+    {from:3,to:4,sourceDefinition:previousProgressionV3,sourceCases:previousCasesV3,migrate:s=>({...s,contentVersion:4})},
+    {from:4,to:5,sourceDefinition:previousProgressionV4,sourceCases:previousCasesV4,migrate:s=>({...s,contentVersion:5})}
   ];
   const store = createStore({ records, cases, storage, progression, contentMigrations });
   const mail = createMailModel(emails,{storage,getRecord:store.getRecord,grants:store.getAccess(),
@@ -51,7 +52,7 @@ async function boot() {
   const assistantApp=mountAI(document.querySelector('#ai-app'), store, assistant, { storage });
   mountMail(document.querySelector('#emails-app'), emails, {storage,store,openRecord,artifacts,model:mail});
   const footage = document.querySelector('#footage-window');
-  const footageApp=mountSecurity(footage,artifacts,footageCatalog);
+  const footageApp=mountSecurity(footage,artifacts,footageCatalog,{store});
   store.onEvent(({type}) => {
     if (type === 'hilfer:progress-reset') footageApp.reset();
   });

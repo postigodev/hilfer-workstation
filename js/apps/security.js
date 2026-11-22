@@ -2,12 +2,16 @@ import {watchViewer} from './inspection.js';
 import {mediaVisible} from './media-observation.js';
 
 // One physical player; logical observations remain separate catalogued artifacts.
-export function mountSecurity(root,artifacts,media) {
+export function mountSecurity(root,artifacts,media,{store}={}) {
   const video=root.querySelector('video'),toolbar=root.querySelector('.app-toolbar');
   const status=root.querySelector('.status-bar-field');
   const source=video.querySelector('source');
   let selected='CAM4-PREVIEW',generation=0;
   const clip=()=>media.find(x=>x.id===selected);
+  const associated=()=>Boolean(store?.getAccess().includes('security.timeline.verified'));
+  const title=item=>item.id==='CAM-R03' && associated()?'Recovered extract / Documented association':item.title;
+  const note=()=>selected==='CAM-R03' && associated()
+    ? '14.375 s extract linked by recorder and Operations records. Picture clock retained; personal identity unverified.' : clip().note;
   const cancel=()=>{generation++;artifacts.cancel('security-preview');artifacts.cancel('security-transport');artifacts.cancel('security-injury');};
   const stop=()=>{cancel();video.pause();};
   function arm() {
@@ -21,23 +25,24 @@ export function mountSecurity(root,artifacts,media) {
       void artifacts.present('security-'+observation.kind,'footage',observation.id,{node:video}).then(result=>{
         if(current!==generation)return;
         if(!result.ok) {stop();status.textContent='Sequence not recorded. Resume a fully visible recording at normal speed.';return;}
-        status.textContent='Visible sequence recorded. Catalog association remains unverified.';
+        status.textContent=associated()?'Visible sequence recorded. Documentary association verified; personal identity unverified.':'Visible sequence recorded. Catalog association remains unverified.';
       });
     }
   }
   function select(id) {
     if(!artifacts.canOpen('footage',id) || !media.some(x=>x.id===id && !x.observation))return;
-    if(id===selected) {stop();if(video.readyState)video.currentTime=0;status.textContent=clip().note;return;}
+    if(id===selected) {stop();if(video.readyState)video.currentTime=0;status.textContent=note();return;}
     stop();selected=id;const item=clip();video.dataset.artifactId=id;
-    video.setAttribute('aria-label',item.title);video.removeAttribute('src');
+    video.setAttribute('aria-label',title(item));video.removeAttribute('src');
     video.removeAttribute('poster');if(item.poster)video.poster=item.poster;
-    source.src=item.src;video.load();status.textContent=item.note;
+    source.src=item.src;video.load();status.textContent=note();
   }
   function refresh() {
     if(!artifacts.canOpen('footage',selected))select('CAM4-PREVIEW');
+    video.setAttribute('aria-label',title(clip()));status.textContent=note();
     toolbar.replaceChildren();
     for(const item of media.filter(x=>!x.observation && artifacts.canOpen('footage',x.id))) {
-      const button=document.createElement('button');button.type='button';button.textContent=item.title;
+      const button=document.createElement('button');button.type='button';button.textContent=title(item);
       button.dataset.securityClip=item.id;button.setAttribute('aria-pressed',String(item.id===selected));
       button.addEventListener('click',()=>{select(item.id);refresh();});toolbar.append(button);
     }

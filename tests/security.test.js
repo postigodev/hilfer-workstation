@@ -8,7 +8,8 @@ import {createArtifacts} from '../js/core/artifacts.js';
 import {createMailModel} from '../js/apps/emails.js';
 import {presentationPolicies} from '../js/apps/inspection.js';
 const read=n=>JSON.parse(readFileSync(new URL('../data/'+n+'.json',import.meta.url),'utf8'));
-const records=read('records'),cases=read('cases'),progression=read('progression'),media=read('footage');
+// Preserve PR #12's v4 contracts, including its deliberately unissued timeline grant.
+const records=read('history/records-v4'),cases=read('history/cases-v4'),progression=read('history/progression-v4'),media=read('footage');
 const memory=()=>{const map=new Map();return {getItem:k=>map.get(k)??null,setItem:(k,v)=>map.set(k,v)};};
 const inspect=(s,evidenceId)=>assert.equal(s.dispatch({type:'inspectEvidence',evidenceId}).ok,true);
 function archive(s,source='ENG-LOCAL-SEGMENT') {
