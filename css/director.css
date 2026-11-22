@@ -1,4 +1,5 @@
-:root[data-narrative-stage] { --art-wallpaper: url('../assets/arwa/final/wallpaper-clean.webp'); }
+:root[data-narrative-stage] { --art-wallpaper: url('../assets/arwa/wallpaper.webp'); }
+:root[data-narrative-stage="1"] { --art-wallpaper: url('../assets/arwa/wallpaper-distorted.webp'); }
 :root[data-narrative-stage="2"],:root[data-narrative-stage="3"] { --art-wallpaper: url('../assets/arwa/final/wallpaper-uneasy.webp'); }
 :root[data-narrative-stage="4"],:root[data-narrative-stage="5"] { --art-wallpaper: url('../assets/arwa/final/wallpaper-late.webp'); }
 :root[data-narrative-stage="6"] { --art-wallpaper: url('../assets/arwa/final/wallpaper-climax.webp'); }

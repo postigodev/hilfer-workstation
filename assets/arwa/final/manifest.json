@@ -1,0 +1,162 @@
+{
+  "author": "Arwa",
+  "retrieved": "2026-11-21",
+  "entries": [
+    {
+      "file": "wallpaper-clean.webp",
+      "driveId": "1t-fEZGvibE9356oU4FFNWYjCG1qchl6o",
+      "source": "NEW SIMPLE BGS/1.png",
+      "transform": {
+        "format": "WebP",
+        "maxEdge": 1920,
+        "quality": 84
+      },
+      "bytes": 16780,
+      "sha256": "04642cb95f3b6e2fc18c313d265f7530b5886ccacb0bde26076ccaf2d5daeea6"
+    },
+    {
+      "file": "wallpaper-uneasy.webp",
+      "driveId": "1gb6CsPiS6zDPboBe11M5wq3KHGKAa_hy",
+      "source": "NEW SIMPLE BGS/4.png",
+      "transform": {
+        "format": "WebP",
+        "maxEdge": 1920,
+        "quality": 84
+      },
+      "bytes": 29598,
+      "sha256": "c111e1a848fbc175c21112e41ef26afad8453b0d27a1d8ecf5d058030c743a6f"
+    },
+    {
+      "file": "wallpaper-late.webp",
+      "driveId": "1F8y7jy7iGSFRbWiM6Y37dJTrhQA3vt5H",
+      "source": "NEW SIMPLE BGS/5.png",
+      "transform": {
+        "format": "WebP",
+        "maxEdge": 1920,
+        "quality": 84
+      },
+      "bytes": 24046,
+      "sha256": "217d231804cfe989eb72d16a7246a0f75b331f1124dfa8839310da27db4f2a5b"
+    },
+    {
+      "file": "wallpaper-climax.webp",
+      "driveId": "1B_49FnYqQ5-dS-GtSZNER9BOkoEVk3K_",
+      "source": "NEW SIMPLE BGS/6.png",
+      "transform": {
+        "format": "WebP",
+        "maxEdge": 1920,
+        "quality": 84
+      },
+      "bytes": 21252,
+      "sha256": "dd9fbb1fd42c5e274553ae01f6638a990f57aaf44e5267531c498c0c32ae13c9"
+    },
+    {
+      "file": "assistant-uneasy.webp",
+      "driveId": "1Ufj083D3qXA6T5H_FtOowtgIsz3FKO9g",
+      "source": "AI/3.png",
+      "transform": {
+        "format": "WebP",
+        "maxEdge": 192,
+        "quality": 88
+      },
+      "bytes": 3450,
+      "sha256": "fcd06aff52d9ccb18549f942cd514883abd9a3b438a42ce4fdaf013257000231"
+    },
+    {
+      "file": "assistant-obstructive.webp",
+      "driveId": "1_X43eakRzhHdXTuhulJRhyNvCUOAEqIP",
+      "source": "AI/4.png",
+      "transform": {
+        "format": "WebP",
+        "maxEdge": 192,
+        "quality": 88
+      },
+      "bytes": 4054,
+      "sha256": "a7fcbb9abfda8cafd928f25b42b21838283b1164350345a7fe936123348a0465"
+    },
+    {
+      "file": "assistant-hostile.webp",
+      "driveId": "1LAIraGiWiLzux_hR3F9I2XWrJusSR2cx",
+      "source": "AI/7.png",
+      "transform": {
+        "format": "WebP",
+        "maxEdge": 192,
+        "quality": 88
+      },
+      "bytes": 4728,
+      "sha256": "cdf2a4002b48906f83a26fa102b579fa455078a2615543ee64d0804689f0a4b3"
+    },
+    {
+      "file": "guy.webp",
+      "driveId": "1VwlZJs4j5u6FKN8oR9gcGH0SA_FLv1ed",
+      "source": "reports/Guy.png",
+      "transform": {
+        "format": "WebP",
+        "maxEdge": 280,
+        "quality": 86
+      },
+      "bytes": 17740,
+      "sha256": "f4efd333e0b19d44ea43d7fb5523e4057ce0c9670df51fc3ec67b95694863b5a"
+    },
+    {
+      "file": "jessica.webp",
+      "driveId": "19MMRLJutKcE6T49T8jtlo2cqlP6cAiEv",
+      "source": "reports/Jessica.png",
+      "transform": {
+        "format": "WebP",
+        "maxEdge": 280,
+        "quality": 86
+      },
+      "bytes": 16664,
+      "sha256": "e0824f88fc7e868cdf87daa518fb4dac37c4cb1488ad001986d51f96ef7ee751"
+    },
+    {
+      "file": "tito.webp",
+      "driveId": "1J3ksNEBjqJKyYn55kYCacbimAFH2H3ga",
+      "source": "reports/Tito.png",
+      "transform": {
+        "format": "WebP",
+        "maxEdge": 280,
+        "quality": 86
+      },
+      "bytes": 16558,
+      "sha256": "15ada2d5e10411c2b3cafbb03daf503d763d25521580f1c30985a1dc9c0cedb1"
+    },
+    {
+      "file": "tim.webp",
+      "driveId": "13bEK3e70Xn8pnpincn2MTgmGJK4EmAh8",
+      "source": "reports/Tim.png",
+      "transform": {
+        "format": "WebP",
+        "maxEdge": 280,
+        "quality": 86
+      },
+      "bytes": 18442,
+      "sha256": "4d70e6c4d46183ec46c33fc47cc86a3ecea1b047f948532a5add57eecf9f19a0"
+    },
+    {
+      "file": "josecarlos.webp",
+      "driveId": "1wJM4cWGJ6UMNxPSkOkg9tut-qhH84l7T",
+      "source": "reports/Jose Carlos.png",
+      "transform": {
+        "format": "WebP",
+        "maxEdge": 280,
+        "quality": 86
+      },
+      "bytes": 16494,
+      "sha256": "294ee76489fc6f3f63cddf37ce2be698381875fb880b6d7028157bf11b6c0c25"
+    },
+    {
+      "file": "spacco.webp",
+      "driveId": "1le8lWc4NeXrvr36iR0lqO9GfQhsSKaxv",
+      "source": "reports/Spacco.png",
+      "transform": {
+        "format": "WebP",
+        "maxEdge": 280,
+        "quality": 86
+      },
+      "bytes": 23930,
+      "sha256": "503c19fc48b9342d68a830a1863431c534556c420e7345c9fdd2104013507805"
+    }
+  ]
+}

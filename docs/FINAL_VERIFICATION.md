@@ -1,0 +1,29 @@
+# Issue 13 — verification record
+
+This report is updated with actual executions. It does not equate a script starting or a zero exit without its completion marker with a passed browser check.
+
+## Confirmed checkpoint
+
+- Baseline main: `a3b7715`; local tag `checkpoint/final-base`.
+- END-capable checkpoint: `fdc3b90`, tag `checkpoint/final-playable`.
+- Node: **113 tests, 113 pass, 0 fail**, Node 24.12.0, Windows.
+- Fresh 1366×768 actual-UI path: **passed** J → E → actual transport playback → F → G-OPS → Guy → Losurdo/current warning → saved disclosure → actual Mail Sent copy → Medical suspension → END → reload.
+- No store command injection or save seeding in that walkthrough. No external submission request. E-I2 and historical verified transport milestone remain absent.
+
+## Execution issues retained
+
+- Initial fresh walkthrough stopped on an ambiguous Mail folder selector. The selector was scoped to the folder tree; no permission or game requirement was removed.
+- Earlier Python servers stopped responding during page loads. Those timeout runs are not counted as game passes. A dedicated direct-output static server was started for regression reruns.
+- A runner initially omitted Windows Program Files variables; Playwright could not locate installed Edge. The runner environment was corrected; no browser check assertion was removed.
+- Legacy version-specific tests use the retained v5 corpus/catalog snapshots to preserve their original historical-association assertions. Current production is separately exercised by the new END walkthrough.
+
+## Final regression / deployment
+
+Final sequential browser results, final screenshots and preview URL are recorded here after execution. Until that update, this section is pending rather than a claim of completion.
+
+## Editorial limitations
+
+- No R-17 identification, historical clock certification, camera-based death finding or verified completed recovery is awarded by the new production path.
+- New late Assistant dialogue is captioned; it does not have fabricated voice recordings.
+- Demo pacing in FINAL_DEMO.md is a proposed 8–10-minute human presentation schedule, not an independently timed human rehearsal.
+- All disclosure remains a local fiction. No real mail is sent.
