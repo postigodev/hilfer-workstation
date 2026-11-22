@@ -87,6 +87,7 @@
     "category": "Operations / Purpose",
     "investigation": {
       "inferenceIds": [
+        "E-I3",
         "F-I1"
       ],
       "determinationIds": [

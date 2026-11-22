@@ -22,6 +22,12 @@ Google Docs drafts are editorial source material. Runtime reads only repository 
 
 ## Critical limitations
 
+**Content-v5 follow-up:** the approved AM-12/13 documentary addenda now supply an explicit
+E-I3 association, allowing transport observation to release AM-16 and F/G. The two new
+presentation documents retain their parent source groups and require fresh inspection;
+old saves receive no retrospective documentary knowledge. The v3/v4 limitations below
+are historical. See [metadata reconciliation](SECURITY_METADATA_RECONCILIATION.md).
+
 **Issue #11 branch update:** content v4 adds the actual 14.375-second review clip and
 two separately validated visual observations. The paragraph below records the v3
 baseline. The delivered picture clock differs from the canonical interval, so the

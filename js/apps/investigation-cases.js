@@ -22,6 +22,8 @@ export function renderInvestigationCase(definition, store, artifacts, sourceLink
       ? sourceLink(label)
       : artifact?.app==='mail'
         ? '<button type="button" data-open="emails">Open Mail</button> · '+h(label)
+        : artifact?.app==='footage'
+          ? '<button type="button" data-open="footage">Open Footage</button> · '+h(label)
         : h(label);
     return '<span>'+link+(inspected.has(id)?' · inspected':' · not inspected')+'</span>';
   };

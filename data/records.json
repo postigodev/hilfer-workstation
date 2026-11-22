@@ -182,7 +182,7 @@
     "caseIds": [
       "CASE-ARCHIVE"
     ],
-    "body": "SYSTEMS INTEGRITY / LOCAL RECORDER CHECK\n29 OCT 98 11:40\nRecorder: DVR-04-L\nCamera input: CAM-04\nLocation: SEC-R03-ACCESS\nThe recorder was restarted for restricted corridor monitoring at 04:45 on 28 October. The central link did not resume normal synchronization.\nLocal segment found:\nSEG-R03-01\n28 OCT 98 06:43:00–06:43:27\nRecorded length: approximately 27 seconds\nRead test: PASS — local media is present and the segment can be read in sequence.\nThe recorder's event list and the segment header agree on camera and time window. This check was made from the local unit; it is not based on the central media index.\nNo content description was prepared during the read test. The interrupted end of the segment must not be taken as proof that the recording continues elsewhere.\nRequested action: leave the original local media secured. A separate access decision is required before the segment is made available to general Reconciliation review.\nSystems Integrity",
+    "body": "SYSTEMS INTEGRITY / LOCAL RECORDER CHECK\n29 OCT 98 11:40\nRecorder: DVR-04-L\nCamera input: CAM-04\nLocation: SEC-R03-ACCESS\nThe recorder was restarted for restricted corridor monitoring at 04:45 on 28 October. The central link did not resume normal synchronization.\nLocal segment found:\nSEG-R03-01\n28 OCT 98 06:43:00–06:43:27\nIndexed parent interval: approximately 27 seconds\nRecovered playable extract: 14.375 seconds\nRead test: PASS — the recovered extract is readable; this is not a finding that all 27 indexed seconds survived.\nThe recorder's event list and the parent segment header agree on camera and indexed time window. This check was made from the local unit; it is not based on the central media index.\nThe extraction and overlay-clock verification is filed separately under ENG-LOCAL-SEGMENT:association. Inspect that addendum before relating the displayed clock to an operational time.\nNo content description was prepared during the read test. The interrupted end of the segment must not be taken as proof that the recording continues elsewhere.\nRequested action: leave the original local media secured. A separate access decision is required before the segment is made available to general Reconciliation review.\nSystems Integrity",
     "sourceGroupId": "ENG-LOCAL-CAPTURE",
     "designId": "AM-12"
   },
@@ -201,7 +201,7 @@
     "caseIds": [
       "CASE-ARCHIVE"
     ],
-    "body": "OPERATIONS / CUSTODY RECEIPT\n30 OCT 98 13:20\nTransfer desk: restricted records intake\nItem received: sealed local-media copy, SEC-R03-ACCESS\nSource custody: site operations after corridor recorder restart\nCamera reference on enclosure: CAM-04\nSegment tag on enclosure: SEG-R03-01\nTime window on original enclosure: 28 OCT 98, 06:43:00–06:43:27\nReceived one carrier. Packaging intact at intake. Intake clerk checked the recorded segment header against the enclosure and confirmed that a 27-second sequence was readable.\nHeld in restricted local-media cabinet pending archive reconciliation. No central archive accession number has been assigned.\nThis receipt is based on the physical carrier and intake check. It is not a transcription of Systems Integrity's inspection report.\nDisposition requested: make the item discoverable for authorized review without changing the original central-storage result.\nOperations Custody",
+    "body": "OPERATIONS / CUSTODY RECEIPT\n30 OCT 98 13:20\nTransfer desk: restricted records intake\nItem received: sealed local-media copy, SEC-R03-ACCESS\nSource custody: site operations after corridor recorder restart\nCamera reference on enclosure: CAM-04\nSegment tag on enclosure: SEG-R03-01\nTime window on original enclosure: 28 OCT 98, 06:43:00–06:43:27\nReceived one carrier. Packaging intact at intake. Intake clerk checked the parent segment header against the enclosure. The enclosure indexes 27 seconds; only a 14.375-second review extract is currently readable.\nHeld in restricted local-media cabinet pending archive reconciliation. No central archive accession number has been assigned.\nThe independent movement-log and extract-custody verification is filed separately under OPS-TRANSFER:association.\nThis receipt is based on the physical carrier and intake check. It is not a transcription of Systems Integrity's inspection report.\nDisposition requested: make the item discoverable for authorized review without changing the original central-storage result.\nOperations Custody",
     "sourceGroupId": "OPS-TRANSFER-CUSTODY",
     "designId": "AM-13"
   },
@@ -281,5 +281,50 @@
     "body": "HILFER / COMMUNICATIONS COMPLIANCE\nProcedure CC-4 — revision 15 SEP 98\nApplies to: classified program and Incident-related external correspondence\nMessages prepared on the internal workstation may be submitted to the external mail gateway. The workstation's acceptance notice confirms receipt for routing; it does not certify external delivery.\nBefore release, the gateway checks:\n- destination authorization\n- attachment classification and origin\n- current approved excerpt list for the program\n- whether an outgoing statement is still under departmental review\nRestricted documents are not to be forwarded as original attachments. Where an approved excerpt exists, the routing copy may use that excerpt instead. Unapproved material remains in the internal record. A release copy and its routing disposition are retained in the correspondence log.\nEmployees who need an unqualified technical or medical statement released must obtain the appropriate departmental clearance. The help desk cannot override that clearance.\nQuestions about a returned or held message should refer to the routing number, not the local draft filename.\nCommunications Compliance",
     "sourceGroupId": "OUTBOUND-GATEWAY-RULES",
     "designId": "AM-19"
+  },
+  {
+    "id": "ENG-LOCAL-SEGMENT:association",
+    "type": "extraction_verification",
+    "title": "Recorder Extraction — Clock and Segment Verification",
+    "department": "Systems Integrity",
+    "date": "1998-10-29T11:40:00",
+    "fields": {
+      "parentSegmentId": "SEG-R03-01",
+      "cameraId": "CAM-04",
+      "sectorId": "SEC-R03-ACCESS",
+      "extractRef": "SEG-R03-01:review",
+      "indexedSeconds": "27",
+      "playableSeconds": "14.375",
+      "pictureClock": "TCR 10-09 18:37:11",
+      "timingBasis": "RECORDER_EVENT_LOG"
+    },
+    "caseIds": [
+      "CASE-REC03-PURPOSE"
+    ],
+    "sourceGroupId": "ENG-LOCAL-CAPTURE",
+    "designId": "AM-12-ADDENDUM",
+    "body": "SYSTEMS INTEGRITY / EXTRACTION VERIFICATION\n29 OCT 98 11:40\nAddendum to ENG-LOCAL-SEGMENT\nRecorder: DVR-04-L\nCamera input: CAM-04\nSector: SEC-R03-ACCESS\nParent segment: SEG-R03-01\nReview extract reference: SEG-R03-01:review\nThe local acquisition event log and parent segment directory identify a recording interval of 28 OCT 98, 06:43:00–06:43:27. The extraction register associates the recovered picture blocks with this parent segment and camera input. The playable review extract contains 14.375 seconds, not the entire 27-second indexed interval. No missing pictures were reconstructed, repeated or stretched.\nPicture overlay observed during the read test: TCR 10-09 18:37:11. This text stays unchanged while the recovered pictures and recorder sequence positions advance. It cannot be used as an advancing event clock. The acquisition event log is separate from that picture overlay; the overlay does not establish the capture date. The cause of the stale text was not established by this check, and no corrected picture timestamp is asserted.\nThe extraction register preserves the association between this review extract and SEG-R03-01. It does not assign an absolute event time to each recovered frame or establish that every indexed second survived.\nThis is a local recorder and extraction check, not independent confirmation of which operation used the corridor. Operational movement and custody records must be compared separately before an operational association is filed.\nNo personal identity, medical outcome or cargo contents are certified here.\nSystems Integrity"
+  },
+  {
+    "id": "OPS-TRANSFER:association",
+    "type": "operational_custody_verification",
+    "title": "Operations — Movement and Extract Custody Verification",
+    "department": "Operations",
+    "date": "1998-10-30T13:20:00",
+    "fields": {
+      "parentSegmentId": "SEG-R03-01",
+      "cameraId": "CAM-04",
+      "sectorId": "SEC-R03-ACCESS",
+      "extractRef": "SEG-R03-01:review",
+      "operationId": "OP-R03",
+      "movementTime": "1998-10-28T06:43",
+      "verificationBasis": "OPERATIONS_MOVEMENT_LOG"
+    },
+    "caseIds": [
+      "CASE-REC03-PURPOSE"
+    ],
+    "sourceGroupId": "OPS-TRANSFER-CUSTODY",
+    "designId": "AM-13-ADDENDUM",
+    "body": "OPERATIONS / MOVEMENT AND EXTRACT CUSTODY CHECK\n30 OCT 98 13:20\nAddendum to OPS-TRANSFER\nOperation: OP-R03\nRoute: SEC-R03-ACCESS\nCamera reference: CAM-04\nParent segment on collected carrier: SEG-R03-01\nReview extract on received copy: SEG-R03-01:review\nOperations compared the received carrier and its review extract with the original collection entry. The extract reference, camera input and parent segment identifier agree through that custody chain. The readable extract is 14.375 seconds; the carrier indexes the larger 06:43:00–06:43:27 parent interval. This check does not claim a complete 27-second picture sequence.\nSeparately, Operations checked its own corridor movement log. That contemporaneous entry records equipment transport for OP-R03 through SEC-R03-ACCESS at 06:43 on 28 OCT 98, after the 06:34 resumption. The collection entry associates the corridor recorder's SEG-R03-01 carrier with that route and operation. This operational timing comes from the movement log, not the text burned into the picture and not a transcription of Systems Integrity's report.\nTogether these checks corroborate the recovered extract's custody and operational association. They do not repair the displayed TCR 10-09 18:37:11, date individual recovered frames, or explain why that text is stale.\nNo worker identity is established from the image or this custody check. The movement entry does not certify an injury, a final medical status, the cargo contents or completed delivery. Those are separate questions requiring their own sources.\nOperations Custody"
   }
 ]

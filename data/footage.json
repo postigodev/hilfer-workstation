@@ -8,14 +8,13 @@
   },
   {
     "id": "CAM-R03",
-    "title": "Recovered clip / Catalog review pending",
+    "title": "Recovered extract / Association pending",
     "src": "assets/footage/recovered-review.mp4",
     "cameraId": "CAM-04",
     "segmentId": "SEG-R03-01",
     "sectorId": "SEC-R03-ACCESS",
-    "associationVerified": false,
     "duration": 14.375,
-    "note": "14.375 s recovered clip. Picture clock differs from the index; date and personnel identity unverified."
+    "note": "14.375 s recovered extract. Picture clock differs from acquisition records; review its documentary association. Personal identity unverified."
   },
   {
     "id": "CAM-R03-TRANSPORT",

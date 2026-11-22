@@ -1,5 +1,15 @@
 # HILFER — Decision Log
 
+## 2026-11-21 — User-approved recovered-extract documentary association
+
+The user approved preserving Arwa's 14.375-second animation and its displayed TCR,
+distinguishing it from the 27-second indexed parent, and adding independent AM-12/13
+verification. Two separately inspected addenda preserve old save knowledge boundaries;
+explicit E-I3 derives the timeline grant. F/G depend on observed transport, documentary
+association and custody, not a visual identification of Tito or injury playback.
+No corrected picture clock, missing frames, E-I2, death conclusion or ending is added.
+Implementation and verification: [metadata reconciliation](SECURITY_METADATA_RECONCILIATION.md).
+
 This document prevents a brainstorm, a technical placeholder, or an AI suggestion from silently turning into a requirement. Update it when the team explicitly decides something.
 
 Entries describe decisions at their stated date. Current technical contracts are indexed in [README.md](README.md);

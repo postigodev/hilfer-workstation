@@ -1,5 +1,9 @@
 # Security integration — issue #11
 
+**Historical PR #12 audit.** The user subsequently approved the documentary resolution;
+current content-v5 behavior is described in [metadata reconciliation](SECURITY_METADATA_RECONCILIATION.md).
+The blocked-state descriptions and test totals below record the original PR #12.
+
 Stacked on PR #10; no changes to canonical document prose or Drive.
 
 ## Implementation plan and editorial boundary

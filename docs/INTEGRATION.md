@@ -28,6 +28,12 @@ it was local verification, not a CI run. An initial concurrent Assistant run fai
 assertion; the unchanged check then passed alone and in the final sequential run. See the
 [verification report](APPLICATION_INTEGRATION_REVIEW.md#2026-11-21--final-review-follow-up) for the record.
 
+For content v5, also run `node tests/security.browser.check.js` and
+`node tests/security-reconciliation.browser.check.js`. The latter uses production
+definitions, actual video playback and explicit E-I3/F/G actions, with no granted test
+shortcut. Current content and migration contracts are in
+[metadata reconciliation](SECURITY_METADATA_RECONCILIATION.md).
+
 In PowerShell, a separately installed Playwright module and a different server port can be selected with:
 
 ```powershell
@@ -126,7 +132,7 @@ The distortion module listens for reconciliation milestones, not clicks or elaps
 
 ## Asset boundaries
 
-The issue #11 development branch adds `data/footage.json`, `mountSecurity`, and the
+The Security integration adds `data/footage.json`, `mountSecurity`, and the
 closed `media-sequence-presented` policy. `createArtifacts` supplies immutable source
 metadata to the policy, overriding presentation-provided metadata. Transport and
 injury observations have separate logical evidence/artifact IDs for the same file.
@@ -134,7 +140,8 @@ Only contiguous visible decoded playback at normal speed can satisfy them. Parti
 coverage is transient; reset, pause, seek, replacement and revoked access invalidate
 pending operations. `store.js` and the save envelope are unchanged; content v3→v4
 uses explicit historical definition snapshots. Editorial validation is separate from
-visual inspection; the production timeline grant is intentionally unissued.
+visual inspection. Content v5 derives the timeline grant only from explicit E-I3,
+which requires both freshly inspected documentary addenda and actual transport observation.
 
 Run `node tests/security.browser.check.js` after the five existing browser suites,
 and `python tests/serve_test.py` for local HTTP byte-range responses.

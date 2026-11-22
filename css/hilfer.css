@@ -379,3 +379,8 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 1px d
 /* Selection controls use system type; their record content retains reading type. */
 .case-list button, .claim-source small, .record-details summary { font-family: var(--font-ui); }
 .case-list button :is(b, span, small) { font-family: var(--font-reading); }
+
+/* Leave scroll room above the docked Assistant for the final mobile filing control. */
+@media (max-width: 520px) {
+  .claim-case-view { padding-bottom: 112px; }
+}
