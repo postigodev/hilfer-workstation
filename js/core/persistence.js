@@ -1,5 +1,6 @@
 import { initialState, validateResolution, applyCompletion } from './progression.js';
-import { validateDefinitions, exact, settleRules } from './rules.js';
+import { validateDefinitions, exact, settleRules, evaluateCondition } from './rules.js';
+import {initialStory,validateStorySnapshot} from './story.js';
 export const SAVE_KEY = 'hilfer:save:v1';
 export const V2_SAVE_KEY = 'hilfer:save:v2';
 
@@ -49,7 +50,7 @@ export function saveProgress(storage, state) {
 
 export function initialSnapshot(definition) {
   return {version:2,contentVersion:definition.contentVersion,
-    facts:{registeredEvidenceIds:[],inspectedEvidenceIds:[],attachedEvidence:{},inferences:{},determinations:{},milestones:{}},
+    facts:{registeredEvidenceIds:[],inspectedEvidenceIds:[],attachedEvidence:{},inferences:{},determinations:{},milestones:{},...(definition.story?{story:initialStory()}: {})},
     ruleReceipts:{},effectReceipts:{}};
 }
 
@@ -64,7 +65,8 @@ export function validateSnapshot(input,d,cases) {
   exact(input,['version','contentVersion','facts','ruleReceipts','effectReceipts']);
   check(input.version === 2 && input.contentVersion === d.contentVersion,'Incompatible save version');
   const s = structuredClone(input), f = s.facts;
-  exact(f,['registeredEvidenceIds','inspectedEvidenceIds','attachedEvidence','inferences','determinations','milestones']);
+  exact(f,['registeredEvidenceIds','inspectedEvidenceIds','attachedEvidence','inferences','determinations','milestones',...(d.story?['story']:[])]);
+  if(d.story)validateStorySnapshot(f.story,d.story,f,d.caseCompletionPolicies.filter(p=>evaluateCondition(p.when,s,d)).map(p=>p.caseId));
   const evidenceIds = d.evidence.map(e=>e.id);
   knownIds(f.registeredEvidenceIds,evidenceIds); knownIds(f.inspectedEvidenceIds,f.registeredEvidenceIds);
   for (const key of ['attachedEvidence','inferences','determinations','milestones']) check(mapObject(f[key]),'Malformed saved facts');
@@ -129,6 +131,7 @@ function validateMigrationHistory(before,after,step,source) {
   }
   const sameIds = (a,b) => Array.isArray(a) && Array.isArray(b) && a.length===b.length && a.every(id=>b.includes(id));
   const f = before.facts, target = after.facts;
+  if(f.story)check(JSON.stringify(f.story)===JSON.stringify(target?.story),'Migration lost story history');
   check(target && sameIds(f.inspectedEvidenceIds.map(id=>mapped('evidence',id)),target.inspectedEvidenceIds),'Migration lost or invented inspection history');
   check(f.registeredEvidenceIds.every(id=>target.registeredEvidenceIds?.includes(mapped('evidence',id))),'Migration lost registered history');
   for (const [caseId,values] of Object.entries(f.attachedEvidence)) check(values.every(id=>target.attachedEvidence?.[mapped('cases',caseId)]?.includes(mapped('evidence',id))),'Migration lost attachments');

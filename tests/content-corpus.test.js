@@ -9,7 +9,7 @@ import {renderInvestigationCase} from '../js/apps/investigation-cases.js';
 
 const read=name=>JSON.parse(readFileSync(new URL('../data/'+name+'.json',import.meta.url),'utf8'));
 // Preserve the PR #10 content-v3 contract verbatim; v4 is covered by security.test.js.
-const records=read('history/records-v4'),cases=read('history/cases-v3'),emails=read('emails'),progression=read('history/progression-v3');
+const records=read('history/records-v4'),cases=read('history/cases-v3'),emails=read('history/emails-v5'),progression=read('history/progression-v3');
 const memory=()=>{
   const data=new Map();
   return {getItem:k=>data.has(k)?data.get(k):null,setItem:(k,v)=>data.set(k,v),removeItem:k=>data.delete(k)};

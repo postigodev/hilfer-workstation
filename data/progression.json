@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "contentVersion": 5,
+  "contentVersion": 6,
   "evidence": [
     {
       "id": "HR-014",
@@ -643,6 +643,26 @@
       "requiredGrantIds": [
         "investigation.read"
       ]
+    },
+    {
+      "id": "GATEWAY-SENT-COPY",
+      "sourceGroupId": "COMMUNICATIONS-GATEWAY-OUTPUT",
+      "department": "Communications Compliance",
+      "tags": [
+        "gateway-output"
+      ],
+      "fields": {},
+      "caseIds": [],
+      "requiredGrantIds": [
+        "story.sent-copy"
+      ],
+      "artifacts": [
+        {
+          "app": "mail",
+          "artifactId": "MAIL-GATEWAY-COPY",
+          "inspectionPolicyId": "message-body-presented"
+        }
+      ]
     }
   ],
   "inferences": [
@@ -913,7 +933,8 @@
     "CASE-LINEAGE:filed",
     "CAM-R03:transport-observed",
     "ARCHIVE:unlocked",
-    "CAM-R03:injury-observed"
+    "CAM-R03:injury-observed",
+    "CAM-R03:transport-reviewed"
   ],
   "grants": [
     "mail.desk.read",
@@ -923,7 +944,8 @@
     "asset.review",
     "research.recovery.read",
     "late.reconciliation.read",
-    "security.timeline.verified"
+    "security.timeline.verified",
+    "story.sent-copy"
   ],
   "initialGrantIds": [
     "mail.desk.read",
@@ -993,49 +1015,191 @@
     {
       "grantId": "investigation.read",
       "when": {
-        "milestoneReached": {
-          "milestoneId": "CASE-001:filed"
-        }
+        "all": [
+          {
+            "milestoneReached": {
+              "milestoneId": "CASE-001:filed"
+            }
+          },
+          {
+            "not": {
+              "any": [
+                {
+                  "storyStage": {
+                    "stage": "reviewed"
+                  }
+                },
+                {
+                  "storyStage": {
+                    "stage": "ended"
+                  }
+                }
+              ]
+            }
+          }
+        ]
       }
     },
     {
       "grantId": "archive.local.review",
       "when": {
-        "milestoneReached": {
-          "milestoneId": "CASE-ARCHIVE:filed"
-        }
+        "all": [
+          {
+            "milestoneReached": {
+              "milestoneId": "CASE-ARCHIVE:filed"
+            }
+          },
+          {
+            "not": {
+              "any": [
+                {
+                  "storyStage": {
+                    "stage": "reviewed"
+                  }
+                },
+                {
+                  "storyStage": {
+                    "stage": "ended"
+                  }
+                }
+              ]
+            }
+          }
+        ]
       }
     },
     {
       "grantId": "asset.review",
       "when": {
-        "milestoneReached": {
-          "milestoneId": "CAM-R03:transport-observed"
-        }
+        "all": [
+          {
+            "milestoneReached": {
+              "milestoneId": "CAM-R03:transport-reviewed"
+            }
+          },
+          {
+            "not": {
+              "any": [
+                {
+                  "storyStage": {
+                    "stage": "reviewed"
+                  }
+                },
+                {
+                  "storyStage": {
+                    "stage": "ended"
+                  }
+                }
+              ]
+            }
+          }
+        ]
       }
     },
     {
       "grantId": "research.recovery.read",
       "when": {
-        "milestoneReached": {
-          "milestoneId": "CAM-R03:transport-observed"
-        }
+        "all": [
+          {
+            "milestoneReached": {
+              "milestoneId": "CAM-R03:transport-reviewed"
+            }
+          },
+          {
+            "not": {
+              "any": [
+                {
+                  "storyStage": {
+                    "stage": "reviewed"
+                  }
+                },
+                {
+                  "storyStage": {
+                    "stage": "ended"
+                  }
+                }
+              ]
+            }
+          }
+        ]
       }
     },
     {
       "grantId": "late.reconciliation.read",
       "when": {
-        "milestoneReached": {
-          "milestoneId": "CASE-REC03-PURPOSE:filed"
-        }
+        "all": [
+          {
+            "milestoneReached": {
+              "milestoneId": "CASE-REC03-PURPOSE:filed"
+            }
+          },
+          {
+            "not": {
+              "any": [
+                {
+                  "storyStage": {
+                    "stage": "reviewed"
+                  }
+                },
+                {
+                  "storyStage": {
+                    "stage": "ended"
+                  }
+                }
+              ]
+            }
+          }
+        ]
       }
     },
     {
       "grantId": "security.timeline.verified",
       "when": {
-        "inferenceEstablished": {
-          "inferenceId": "E-I3"
-        }
+        "all": [
+          {
+            "inferenceEstablished": {
+              "inferenceId": "E-I3"
+            }
+          },
+          {
+            "not": {
+              "any": [
+                {
+                  "storyStage": {
+                    "stage": "reviewed"
+                  }
+                },
+                {
+                  "storyStage": {
+                    "stage": "ended"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "grantId": "story.sent-copy",
+      "when": {
+        "any": [
+          {
+            "storyStage": {
+              "stage": "sent"
+            }
+          },
+          {
+            "storyStage": {
+              "stage": "reviewed"
+            }
+          },
+          {
+            "storyStage": {
+              "stage": "ended"
+            }
+          }
+        ]
       }
     }
   ],
@@ -1282,6 +1446,22 @@
         {
           "reachMilestone": {
             "milestoneId": "CAM-R03:injury-observed"
+          }
+        }
+      ]
+    },
+    {
+      "id": "SEC:transport-reviewed",
+      "mode": "once",
+      "when": {
+        "evidenceInspected": {
+          "evidenceId": "CAM-R03:transport-visual"
+        }
+      },
+      "consequences": [
+        {
+          "reachMilestone": {
+            "milestoneId": "CAM-R03:transport-reviewed"
           }
         }
       ]
@@ -1777,6 +1957,47 @@
       "requiredGrantIds": [
         "investigation.read"
       ]
+    },
+    {
+      "id": "mail:THREAD-DISCLOSURE-COPY",
+      "kind": "artifact",
+      "app": "mail",
+      "artifactId": "THREAD-DISCLOSURE-COPY",
+      "artifactType": "thread",
+      "requiredGrantIds": [
+        "story.sent-copy"
+      ]
+    },
+    {
+      "id": "mail:MAIL-GATEWAY-COPY",
+      "kind": "artifact",
+      "app": "mail",
+      "artifactId": "MAIL-GATEWAY-COPY",
+      "artifactType": "message",
+      "requiredGrantIds": [
+        "story.sent-copy"
+      ]
     }
-  ]
+  ],
+  "story": {
+    "requiredCaseIds": [
+      "CASE-001",
+      "CASE-ARCHIVE",
+      "CASE-REC03-PURPOSE",
+      "CASE-LINEAGE"
+    ],
+    "reviewCaseId": "CASE-REC03-PURPOSE",
+    "guyEvidenceIds": [
+      "INC-SUMMARY",
+      "GUY-UNFINISHED-DRAFT"
+    ],
+    "occupancyEvidenceIds": [
+      "LOS-AUDIT",
+      "AREA-OCCUPANCY",
+      "OH-LOSURDO"
+    ],
+    "gatewayEvidenceId": "COMM-GATEWAY-POLICY",
+    "sentEvidenceId": "GATEWAY-SENT-COPY",
+    "defaultDraft": "I request independent review of HILFER’s Incident records. Jessica’s work clearance and personnel classification differ. Tito is named in the recovery roster; the recovered film does not independently identify the injured worker. Guy’s unfinished draft restores names and distinguishes the recoveries. The Medical review population and the official Incident count use different criteria.\n\nRecovery 01 stabilized immediate containment. Recovery 02 retrieved diagnostic data. Asset Control identifies Recovery 03’s authorized purpose as retrieval of the experimental prototype. That is not confirmation that delivery was completed.\n\nPlease preserve the original departmental records and their limitations alongside the consolidated classifications."
+  }
 }

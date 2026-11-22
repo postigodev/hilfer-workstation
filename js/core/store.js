@@ -1,4 +1,5 @@
 import { validateResolution, createLegacyDefinition, projectLegacy } from './progression.js';
+import {isStoryCommand,transitionStory} from './story.js';
 import { initialSnapshot, loadSnapshot, saveSnapshot, validateSnapshot } from './persistence.js';
 import { validateDefinitions, evaluateCondition, settleRules, deriveAccess, deriveAvailability, derivePresentation, exact } from './rules.js';
 
@@ -67,6 +68,11 @@ export function createStore({records = [],cases = [],storage,progression = creat
   }
   function transition(draft,c,events) {
     const f = draft.facts;
+    if(isStoryCommand(c.type)) {
+      const result=transitionStory(draft,c,definition.story,{completed:completed(draft),canInspect:id=>canInspect(draft,id)});
+      if(result.ok)events.push(['hilfer:story-changed',{stage:draft.facts.story?.stage,command:c.type}]);
+      return result;
+    }
     if (c.type === 'inspectEvidence') {
       exact(c,['type','evidenceId']);
       if (!canInspect(draft,c.evidenceId)) return reject('Evidence is unavailable.');

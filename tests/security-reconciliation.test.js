@@ -5,7 +5,8 @@ import {createStore} from '../js/core/store.js';
 import {renderInvestigationCase} from '../js/apps/investigation-cases.js';
 import {evaluateCondition} from '../js/core/rules.js';
 const read=n=>JSON.parse(readFileSync(new URL('../data/'+n+'.json',import.meta.url),'utf8'));
-const records=read('records'),cases=read('cases'),progression=read('progression');
+// Historical content-v5 documentary contract. Final-story tests cover v6.
+const records=read('history/records-v5'),cases=read('history/cases-v5'),progression=read('history/progression-v5');
 const memory=()=>{const map=new Map();return {getItem:k=>map.get(k)??null,setItem:(k,v)=>map.set(k,v)};};
 const inspect=(s,evidenceId)=>assert.equal(s.dispatch({type:'inspectEvidence',evidenceId}).ok,true);
 const infer=(s,inferenceId,evidenceIds)=>s.dispatch({type:'establishInference',inferenceId,evidenceIds});

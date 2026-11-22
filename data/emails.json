@@ -568,6 +568,38 @@
           "subject": "Re: Another entry"
         }
       ]
+    },
+    {
+      "id": "THREAD-DISCLOSURE-COPY",
+      "subject": "Incident review package — processed release copy",
+      "folderId": "sent",
+      "access": {
+        "requiredGrants": [
+          "mail.desk.read",
+          "story.sent-copy"
+        ]
+      },
+      "messages": [
+        {
+          "id": "MAIL-GATEWAY-COPY",
+          "from": {
+            "id": "reconciliation-desk",
+            "name": "Reconciliation Desk",
+            "address": "reconciliation-desk@hilfer.internal"
+          },
+          "to": [
+            {
+              "id": "external-review",
+              "name": "External incident review (simulation)",
+              "address": "incident-review@external.invalid"
+            }
+          ],
+          "cc": [],
+          "sentAt": "1998-11-06T16:15:00",
+          "body": "INCIDENT REVIEW PACKAGE — RELEASE COPY\n\nA containment event was followed by consolidated recovery operations under the applicable emergency procedure. Two serious Incident-related exposures are included in the approved reporting window. Other personnel matters remain subject to individual review.\n\nPersonnel references: affected staff categories.\nRecovery description: consolidated recovery operation.\nAttachments: approved Incident summary. Original restricted records retained internally.\n\nProcessed by Communications Compliance Gateway CC-4. Approved excerpts substituted for material not cleared for external distribution. Local submission accepted for routing; external delivery is not certified by this workstation.",
+          "references": []
+        }
+      ]
     }
   ]
 }

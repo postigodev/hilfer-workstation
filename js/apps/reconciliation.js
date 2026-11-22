@@ -1,6 +1,7 @@
 import { escapeHTML as h, displayField, displayValue, displayDate } from './shared.js';
 import { deriveReport, renderReport } from './report.js';
 import { renderInvestigationCase } from './investigation-cases.js';
+import { renderLeads } from './leads.js';
 
 // Reconciliation is a document you revise with source claims, not a form or a file tray.
 export function mountReconciliation(root, store, { openRecord = () => {}, artifacts } = {}) {
@@ -72,10 +73,10 @@ export function mountReconciliation(root, store, { openRecord = () => {}, artifa
       '<button id="report-tab" role="tab" aria-controls="reconciliation-panel" data-view="report" aria-selected="' + (view === 'report') + '" tabindex="' + (view === 'report' ? '0' : '-1') + '">Consolidated Report</button>' +
       '<button id="register-tab" role="tab" aria-controls="reconciliation-panel" data-view="register" aria-selected="' + (view === 'register') + '" tabindex="' + (view === 'register' ? '0' : '-1') + '">Case Register</button></div>' +
       '<div id="reconciliation-panel" role="tabpanel" aria-labelledby="' + (view === 'report' ? 'report-tab' : 'register-tab') + '">' +
-      (view === 'report' ? renderReport(report,{canOpenRecord}) :
+      (view === 'report' ? renderReport(report,{canOpenRecord,navigation:renderLeads(store,artifacts)}) :
         '<div class="reconciliation-layout"><nav class="case-list" aria-label="Cases"><div class="pane-label">CASE REGISTER</div>' +
           visibleCases.map(c => '<button type="button" data-case="' + h(c.id) + '" aria-pressed="' + (selectedCaseId === c.id) + '"><b>' + h(c.id) + '</b><span>' + h(c.title) + '</span><small>' + (state.completedCaseIds.includes(c.id) ? 'FILED' : !state.unlockedCaseIds.includes(c.id) ? 'LOCKED' : c.placeholder ? 'RESERVED' : 'OPEN') + '</small></button>').join('') +
-        '</nav><div class="case-detail">' + showCase(selected, state) + '</div></div>') +
+        '</nav><div class="case-detail">' + showCase(selected, state) + renderLeads(store,artifacts) + '</div></div>') +
       '</div><div class="feedback status-bar" data-tone="' + h(feedbackTone) + '" role="status" aria-live="polite"><span class="status-bar-field">' +
       h(feedback || (view === 'report' ? 'Report / work in progress' : 'Select a source in Records to amend an entry.')) + '</span></div>';
     root.querySelectorAll('[data-audit-id]').forEach(el => { el.open = openDetails.includes(el.dataset.auditId); });
@@ -112,6 +113,8 @@ export function mountReconciliation(root, store, { openRecord = () => {}, artifa
     render(); root.querySelector('#' + view + '-tab')?.focus();
   });
   root.addEventListener('click', event => {
+    const lead=event.target.closest('[data-lead-case]');
+    if(lead){selectedCaseId=lead.dataset.leadCase;pendingClaim=null;view='register';feedback='';render();return;}
     const inferButton=event.target.closest('[data-inference-id]');
     if(inferButton){
       const inference=store.getDefinitions().inferences.find(i=>i.id===inferButton.dataset.inferenceId);

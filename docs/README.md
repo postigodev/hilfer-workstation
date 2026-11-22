@@ -51,3 +51,9 @@ attachment policy has been added. CAM 4 remains an unmapped preview and does not
 
 Narrative design and any future Investigation & Evidence Architecture document are separate work. Updating
 repository documentation does not create or modify Google Drive documents.
+
+## Interactive Design final
+
+- [Production/state/presentation contract](FINAL_PRODUCTION.md)
+- [Exact demo clicks and automated walkthrough](FINAL_DEMO.md)
+- [Actual verification, deployment and limitations](FINAL_VERIFICATION.md)

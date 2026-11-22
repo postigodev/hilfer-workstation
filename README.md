@@ -12,11 +12,9 @@ The investigation engine and application integrations are implemented and merged
 
 The workstation includes the corpus from PR #10, Security playback from PR #12 and
 documentary reconciliation from PR #14.
-Jessica and both independent Security archive routes are playable. Content v5 adds the
-approved documentary association of the recovered extract, allowing F and G to be filed
-with source provenance. Tito's visual identity remains unverified. CASE-002 remains a
-placeholder; ending mechanics are not implemented. See the
-[metadata reconciliation](docs/SECURITY_METADATA_RECONCILIATION.md).
+The final build extends that checkpoint through source-backed Guy/Losurdo reviews, controlled disclosure, an altered Sent copy, Occupational Health suspension and **END OF SHIFT**. Content v6 keeps historical camera association optional; actual transport observation opens the Recovery review without certifying identity or camera time. CASE-002 remains a demo placeholder.
+
+See the [production contract](docs/FINAL_PRODUCTION.md), [8–10-minute demo and short fallback](docs/FINAL_DEMO.md), and [verification report](docs/FINAL_VERIFICATION.md).
 
 ## Run the demo
 
@@ -37,9 +35,10 @@ Open [http://127.0.0.1:8080](http://127.0.0.1:8080). The demo runs on local HTML
 | --- | --- |
 | **Reconciliation** | Opens the Consolidated Report with a provisional claim. Inspect Jessica's clearance in Records and select **Compare status with report** to compare sources. **Update report** files an accepted correction. |
 | **Records** | Browse HR and Occupational Health files, inspect the source fields, and open the comparison from the record itself. |
-| **Mail** | Double-click a conversation or press Enter to open its reader. Browse Inbox and Archive, search correspondence, and move threads to Deleted Items or restore them. One message links to Records. Sent has no outgoing mail in this demo. |
+| **Mail** | Double-click a conversation or press Enter to open its reader. Browse Inbox and Archive, search correspondence, and move threads to Deleted Items or restore them. One message links to Records. The final disclosure produces a fictional, locally stored gateway release in Sent Mail. |
 | **HILFER Assistant** | The portrait sits above the taskbar. New dialogue opens a balloon without moving keyboard focus. The portrait also opens it manually. If the browser blocks automatic narration, it waits for the first interaction. |
-| **Footage** | Preview remains non-evidence. Security opens the recovered extract; verified transport plus explicit documentary association enables later custody review. Personal identity remains unverified. |
+| **Footage** | Preview remains non-evidence. Security opens the recovered extract; actual transport review enables later custody review; historical documentary association remains a separate optional inference. Personal identity remains unverified. |
+| **Work Review / Communications** | Compare Guy’s unfinished revision, acknowledge Losurdo/current occupancy restrictions, preserve a disclosure draft and inspect the altered Sent copy before END. |
 | **Display Properties** | Switch between Standard and Archive / Graphite or toggle the desktop logo treatment. |
 
 Start with **Reconciliation → Consolidated Report**, then inspect relevant source fields in Records. Choosing the initial source leaves the discrepancy unresolved. Filing a supported correction updates the report, unlocks CASE-002 and triggers one audiovisual anomaly. Reload preserves progress; the clearance decision does not establish occupational causation. Footage's CAM 4 preview creates no narrative evidence.

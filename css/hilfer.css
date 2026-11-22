@@ -384,3 +384,13 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 1px d
 @media (max-width: 520px) {
   .claim-case-view { padding-bottom: 112px; }
 }
+
+/* Inline source navigation in the original report/case surfaces. */
+.investigation-lead {font:12px/1.45 var(--font-reading);margin:8px 0 14px;}
+.investigation-lead p {margin:4px 0 7px;}
+.lead-actions,.optional-leads>div {display:flex;flex-wrap:wrap;gap:5px 12px;align-items:center;}
+.lead-actions .source-reference,.optional-leads .source-reference {background:none;border:0;box-shadow:none;font:inherit;padding:2px 0;min-height:0;text-decoration:underline;text-align:left;}
+.optional-leads {margin-top:6px;}.optional-leads b {flex-basis:100%;margin-top:6px;}
+.assistant-balloon[data-passive] {width:280px;max-height:145px;}
+.assistant-balloon[data-passive] .ai-message:not(:last-child),.assistant-balloon[data-passive] .ai-actions {display:none;}
+@media(min-width:900px){.assistant-balloon:not([data-passive]){max-height:270px;width:290px;}}

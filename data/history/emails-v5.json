@@ -1,0 +1,573 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "HILFER-MAIL-1998-CONTENT-V1",
+  "contentStatus": "Authored fictional production corpus; all mail timestamps are facility-local per Master Chronology v1.0.",
+  "timeZone": "facility-local; offset intentionally omitted to match existing 1998 records.json convention",
+  "timelineConstraints": {
+    "recordAnchors": {
+      "HR-014": "1998-10-12T09:00:00",
+      "OH-008": "1998-10-13T14:30:00"
+    },
+    "incident": "1998-10-27T14:20:00",
+    "recovery03": "1998-10-28T06:34:00",
+    "playerLogin": "1998-11-06T12:10:00",
+    "note": "MAIL-001–007 redated without changing their wording."
+  },
+  "mailbox": {
+    "id": "reconciliation-desk",
+    "displayName": "Reconciliation Desk",
+    "address": "reconciliation-desk@hilfer.internal",
+    "organization": "HILFER",
+    "purpose": "Shared institutional mailbox for authorized Post-Incident Data Reconciliation work; not a personal mailbox or hacking tool."
+  },
+  "initialGrants": [
+    "mail.desk.read",
+    "mail.archive.general"
+  ],
+  "folders": [
+    {
+      "id": "inbox",
+      "label": "Inbox",
+      "system": true
+    },
+    {
+      "id": "sent",
+      "label": "Sent Mail",
+      "system": true,
+      "emptyInDemo": true,
+      "reservedForFinale": true
+    },
+    {
+      "id": "archive",
+      "label": "Corporate Archive",
+      "system": true
+    }
+  ],
+  "futureAccessPolicy": {
+    "model": "requiredGrants on each thread; derive effective grants from progression later, do not introduce unlock logic in this demo",
+    "restrictedContentSearch": "Never expose restricted sender, subject, body, timing, reference IDs, or snippet in results, unread counts, direct-link route, or UI state.",
+    "authorizedArchiveBasis": "Administrative records preservation and Reconciliation authorization; not illicit account access."
+  },
+  "contentRules": [
+    "Preserve original 12 message IDs and text; date-only migration for MAIL-001–007.",
+    "Use required grants before listing, searching or opening newly restricted messages.",
+    "Mail inspection is distinct from explicit inference and administrative filing.",
+    "Footage never establishes Tito's death."
+  ],
+  "threads": [
+    {
+      "id": "THREAD-DESK-HANDOFF",
+      "folderId": "inbox",
+      "subject": "Desk handoff",
+      "archiveSeries": null,
+      "access": {
+        "requiredGrants": [
+          "mail.desk.read"
+        ]
+      },
+      "narrativePurpose": "Routine desk transfer; mentions Losurdo without suggesting a mystery.",
+      "messages": [
+        {
+          "id": "MAIL-001",
+          "sentAt": "1998-11-06T09:08:00",
+          "from": {
+            "id": "records-coordination",
+            "name": "Records Coordination",
+            "address": "records-coordination@hilfer.internal"
+          },
+          "to": [
+            {
+              "id": "reconciliation-desk",
+              "name": "Reconciliation Desk",
+              "address": "reconciliation-desk@hilfer.internal"
+            }
+          ],
+          "cc": [],
+          "body": "Losurdo's open assignments have been transferred to this workstation.\n\nPlease leave the original departmental records unchanged. Any corrections need to go through Reconciliation.\n\nIf a source reference is missing, send me the record number.\n\nThanks.",
+          "references": []
+        },
+        {
+          "id": "MAIL-002",
+          "sentAt": "1998-11-06T09:23:00",
+          "from": {
+            "id": "records-admin",
+            "name": "Records Administration",
+            "address": "records-admin@hilfer.internal"
+          },
+          "to": [
+            {
+              "id": "records-coordination",
+              "name": "Records Coordination",
+              "address": "records-coordination@hilfer.internal"
+            }
+          ],
+          "cc": [
+            {
+              "id": "reconciliation-desk",
+              "name": "Reconciliation Desk",
+              "address": "reconciliation-desk@hilfer.internal"
+            }
+          ],
+          "body": "Got it. Is the existing report the one we're supposed to work from?",
+          "references": [],
+          "subject": "Re: Desk handoff"
+        },
+        {
+          "id": "MAIL-003",
+          "sentAt": "1998-11-06T09:39:00",
+          "from": {
+            "id": "records-coordination",
+            "name": "Records Coordination",
+            "address": "records-coordination@hilfer.internal"
+          },
+          "to": [
+            {
+              "id": "records-admin",
+              "name": "Records Administration",
+              "address": "records-admin@hilfer.internal"
+            }
+          ],
+          "cc": [
+            {
+              "id": "reconciliation-desk",
+              "name": "Reconciliation Desk",
+              "address": "reconciliation-desk@hilfer.internal"
+            }
+          ],
+          "body": "Yes. It hasn't been finalized.",
+          "references": [],
+          "subject": "Re: Desk handoff"
+        }
+      ]
+    },
+    {
+      "id": "THREAD-ROSTER",
+      "folderId": "inbox",
+      "subject": "Duty-period roster",
+      "archiveSeries": null,
+      "access": {
+        "requiredGrants": [
+          "mail.desk.read"
+        ]
+      },
+      "narrativePurpose": "Optional discovery route to HR-014; no OH-008 outcome revealed.",
+      "messages": [
+        {
+          "id": "MAIL-004",
+          "sentAt": "1998-11-06T10:16:00",
+          "from": {
+            "id": "human-resources",
+            "name": "Human Resources",
+            "address": "human-resources@hilfer.internal"
+          },
+          "to": [
+            {
+              "id": "operations-scheduling",
+              "name": "Operations Scheduling",
+              "address": "operations-scheduling@hilfer.internal"
+            }
+          ],
+          "cc": [
+            {
+              "id": "reconciliation-desk",
+              "name": "Reconciliation Desk",
+              "address": "reconciliation-desk@hilfer.internal"
+            }
+          ],
+          "body": "I'm reviewing the staffing extract for the October 12–18 period.\n\nJessica is still listed under HR-014. If Medical issued an updated classification, it isn't reflected in this export.\n\nPlease send the reference rather than another copy of the spreadsheet.",
+          "references": [
+            {
+              "type": "record",
+              "id": "HR-014",
+              "label": "Open HR-014 in Records"
+            }
+          ]
+        },
+        {
+          "id": "MAIL-005",
+          "sentAt": "1998-11-06T10:42:00",
+          "from": {
+            "id": "operations-scheduling",
+            "name": "Operations Scheduling",
+            "address": "operations-scheduling@hilfer.internal"
+          },
+          "to": [
+            {
+              "id": "human-resources",
+              "name": "Human Resources",
+              "address": "human-resources@hilfer.internal"
+            }
+          ],
+          "cc": [
+            {
+              "id": "reconciliation-desk",
+              "name": "Reconciliation Desk",
+              "address": "reconciliation-desk@hilfer.internal"
+            }
+          ],
+          "body": "Was this pulled before or after the afternoon shift changes? We're trying to establish who actually covered that shift.",
+          "references": [],
+          "subject": "Re: Duty-period roster"
+        }
+      ]
+    },
+    {
+      "id": "THREAD-MEDICAL-ROUTING",
+      "folderId": "inbox",
+      "subject": "Clearance forms",
+      "archiveSeries": null,
+      "access": {
+        "requiredGrants": [
+          "mail.desk.read"
+        ]
+      },
+      "narrativePurpose": "Establishes administrative distinction between work eligibility and occupational causation without giving the correct answer.",
+      "messages": [
+        {
+          "id": "MAIL-006",
+          "sentAt": "1998-11-06T11:14:00",
+          "from": {
+            "id": "occupational-health",
+            "name": "Occupational Health Administration",
+            "address": "occupational-health@hilfer.internal"
+          },
+          "to": [
+            {
+              "id": "human-resources",
+              "name": "Human Resources",
+              "address": "human-resources@hilfer.internal"
+            }
+          ],
+          "cc": [
+            {
+              "id": "reconciliation-desk",
+              "name": "Reconciliation Desk",
+              "address": "reconciliation-desk@hilfer.internal"
+            }
+          ],
+          "body": "The updated work-clearance forms for the October 12–18 period are in the Occupational Health registry.\n\nPlease check the issued records before carrying forward the previous staffing entries.\n\nThe forms concern eligibility for work. They do not establish occupational causation.",
+          "references": []
+        },
+        {
+          "id": "MAIL-007",
+          "sentAt": "1998-11-06T11:37:00",
+          "from": {
+            "id": "human-resources",
+            "name": "Human Resources",
+            "address": "human-resources@hilfer.internal"
+          },
+          "to": [
+            {
+              "id": "occupational-health",
+              "name": "Occupational Health Administration",
+              "address": "occupational-health@hilfer.internal"
+            }
+          ],
+          "cc": [
+            {
+              "id": "reconciliation-desk",
+              "name": "Reconciliation Desk",
+              "address": "reconciliation-desk@hilfer.internal"
+            }
+          ],
+          "body": "Thanks. We'll check the affected entries against the current roster.",
+          "references": [],
+          "subject": "Re: Clearance forms"
+        }
+      ]
+    },
+    {
+      "id": "THREAD-JESSICA-SHIFT",
+      "folderId": "archive",
+      "subject": "Tomorrow",
+      "archiveSeries": "Operations / Shift Coverage",
+      "access": {
+        "requiredGrants": [
+          "mail.archive.general"
+        ]
+      },
+      "narrativePurpose": "Personal workplace relationship and incomplete schedule context; no automatic evidence or solution.",
+      "messages": [
+        {
+          "id": "MAIL-008",
+          "sentAt": "1998-10-13T17:09:00",
+          "from": {
+            "id": "jessica",
+            "name": "Jessica",
+            "address": "jessica@hilfer.internal"
+          },
+          "to": [
+            {
+              "id": "shift-coordination",
+              "name": "Shift Coordinator",
+              "address": "shift-coordination@hilfer.internal"
+            }
+          ],
+          "cc": [],
+          "body": "Hey,\n\nI had to leave early today and went down to Medical.\n\nI'm still on the schedule for tomorrow. Can you check if somebody's covering it? I don't want anyone ending up alone down there because I didn't say anything.\n\nSorry,\nJessica",
+          "references": []
+        },
+        {
+          "id": "MAIL-009",
+          "sentAt": "1998-10-13T17:41:00",
+          "from": {
+            "id": "shift-coordination",
+            "name": "Shift Coordinator",
+            "address": "shift-coordination@hilfer.internal"
+          },
+          "to": [
+            {
+              "id": "jessica",
+              "name": "Jessica",
+              "address": "jessica@hilfer.internal"
+            }
+          ],
+          "cc": [],
+          "body": "I'll deal with the schedule.\n\nDon't worry about finding someone tonight. Hope you're feeling better.",
+          "references": [],
+          "subject": "Re: Tomorrow"
+        }
+      ]
+    },
+    {
+      "id": "THREAD-TITO-RELAY",
+      "folderId": "archive",
+      "subject": "Same relay again",
+      "archiveSeries": "Engineering / Maintenance",
+      "access": {
+        "requiredGrants": [
+          "mail.archive.general"
+        ]
+      },
+      "narrativePurpose": "Introduces Tito and ordinary maintenance frustration; no invented maintenance record link.",
+      "messages": [
+        {
+          "id": "MAIL-010",
+          "sentAt": "1998-09-30T08:36:00",
+          "from": {
+            "id": "tito",
+            "name": "Tito",
+            "address": "tito@hilfer.internal"
+          },
+          "to": [
+            {
+              "id": "maintenance-scheduling",
+              "name": "Maintenance Scheduling",
+              "address": "maintenance-scheduling@hilfer.internal"
+            }
+          ],
+          "cc": [],
+          "body": "The relay on the containment assembly is sticking again.\n\nI got it moving, but we've already replaced it. Can we leave the ticket open until someone checks it under load?\n\nAre we actually getting the new one?\n\nTito",
+          "references": []
+        },
+        {
+          "id": "MAIL-011",
+          "sentAt": "1998-09-30T10:05:00",
+          "from": {
+            "id": "maintenance-scheduling",
+            "name": "Maintenance Scheduling",
+            "address": "maintenance-scheduling@hilfer.internal"
+          },
+          "to": [
+            {
+              "id": "tito",
+              "name": "Tito",
+              "address": "tito@hilfer.internal"
+            }
+          ],
+          "cc": [],
+          "body": "Thought we just replaced that one?",
+          "references": [],
+          "subject": "Re: Same relay again"
+        },
+        {
+          "id": "MAIL-012",
+          "sentAt": "1998-09-30T10:18:00",
+          "from": {
+            "id": "tito",
+            "name": "Tito",
+            "address": "tito@hilfer.internal"
+          },
+          "to": [
+            {
+              "id": "maintenance-scheduling",
+              "name": "Maintenance Scheduling",
+              "address": "maintenance-scheduling@hilfer.internal"
+            }
+          ],
+          "cc": [],
+          "body": "We did. That's why I'm asking.",
+          "references": [],
+          "subject": "Re: Same relay again"
+        }
+      ]
+    },
+    {
+      "id": "THREAD-TEST-VIABILITY",
+      "folderId": "archive",
+      "subject": "Tomorrow's run",
+      "archiveSeries": null,
+      "access": {
+        "requiredGrants": [
+          "investigation.read"
+        ]
+      },
+      "narrativePurpose": "Engineering viability request",
+      "messages": [
+        {
+          "id": "MAIL-013",
+          "sentAt": "1998-10-26T17:25:00",
+          "from": {
+            "id": "program-management",
+            "name": "Program Management",
+            "address": "program-management@hilfer.internal"
+          },
+          "to": [
+            {
+              "id": "engineering-tim",
+              "name": "Tim",
+              "address": "tim@hilfer.internal"
+            }
+          ],
+          "cc": [],
+          "body": "Tim,\nInstrumentation has entered another exception for the late run. I need to know tonight whether the demonstration can proceed under Rev. C, or whether you're asking us to move the slot.\nPlease answer for the configuration we'll actually have tomorrow, including the temporary shielding. We can't plan from the replacement configuration if the part isn't here.\nProgram Management",
+          "references": [],
+          "subject": "Tomorrow's run"
+        },
+        {
+          "id": "MAIL-014",
+          "sentAt": "1998-10-26T18:05:00",
+          "from": {
+            "id": "engineering-tim",
+            "name": "Tim",
+            "address": "tim@hilfer.internal"
+          },
+          "to": [
+            {
+              "id": "program-management",
+              "name": "Program Management",
+              "address": "program-management@hilfer.internal"
+            }
+          ],
+          "cc": [],
+          "body": "With the current restrictions, yes, the run is technically possible.\nThat assumes the shorter entries are kept, the instrumentation comparison is done again before startup, and SHD-TEMP-01 is inspected. SEN-03 still needs the bench check. The 16:50 event is unresolved; I am not calling that trace bad.\nIf any of those conditions change overnight, ask again. This isn't clearance to run the old schedule.\nTim",
+          "references": [],
+          "subject": "Re: Tomorrow's run"
+        }
+      ]
+    },
+    {
+      "id": "THREAD-LEGAL-SCOPE",
+      "folderId": "archive",
+      "subject": "Incident notice wording",
+      "archiveSeries": null,
+      "access": {
+        "requiredGrants": [
+          "investigation.read"
+        ]
+      },
+      "narrativePurpose": "Legal wording qualifications",
+      "messages": [
+        {
+          "id": "MAIL-015",
+          "sentAt": "1998-10-29T13:40:00",
+          "from": {
+            "id": "legal-review",
+            "name": "Legal Review",
+            "address": "legal-review@hilfer.internal"
+          },
+          "to": [
+            {
+              "id": "communications-guy",
+              "name": "Guy",
+              "address": "guy@hilfer.internal"
+            },
+            {
+              "id": "occupational-health",
+              "name": "Occupational Health",
+              "address": "occupational-health@hilfer.internal"
+            }
+          ],
+          "cc": [],
+          "body": "Guy,\nThe Medical list includes six people under review. That is not the same field as confirmed serious exposures within the Incident reporting period. Please keep the two numbers identified by their criteria if both appear.\nI also want 'containment failure' removed from the employee notice for now. Engineering is still reconstructing the failure sequence. 'Containment event' is acceptable pending that review.\nDo not say that symptoms were unrelated to work. Medical hasn't found that. It has said a relationship has not been established in several of the cases.\nLegal Review",
+          "references": [],
+          "subject": "Incident notice wording"
+        },
+        {
+          "id": "MAIL-016",
+          "sentAt": "1998-10-29T15:15:00",
+          "from": {
+            "id": "communications-guy",
+            "name": "Guy",
+            "address": "guy@hilfer.internal"
+          },
+          "to": [
+            {
+              "id": "legal-review",
+              "name": "Legal Review",
+              "address": "legal-review@hilfer.internal"
+            }
+          ],
+          "cc": [],
+          "body": "Understood. I'll use 'containment event' in the general notice and leave the engineering description out until they sign it.\nFor the medical paragraph I'm putting 'no confirmed occupational cause has been established for the remaining cases.' If you want the review count stated separately, send me the approved line. I'd rather not have people adding six and two together as if they were different sets of employees.\nGuy",
+          "references": [],
+          "subject": "Re: Incident notice wording"
+        }
+      ]
+    },
+    {
+      "id": "THREAD-SPACCO-REC03",
+      "folderId": "archive",
+      "subject": "Another entry",
+      "archiveSeries": null,
+      "access": {
+        "requiredGrants": [
+          "research.recovery.read"
+        ]
+      },
+      "narrativePurpose": "Research objection",
+      "messages": [
+        {
+          "id": "MAIL-017",
+          "sentAt": "1998-10-27T22:20:00",
+          "from": {
+            "id": "research-spacco",
+            "name": "Spacco",
+            "address": "spacco@hilfer.internal"
+          },
+          "to": [
+            {
+              "id": "program-management",
+              "name": "Program Management",
+              "address": "program-management@hilfer.internal"
+            }
+          ],
+          "cc": [],
+          "body": "We have containment stabilized, and the diagnostic modules are out. What is the safety reason for sending another crew in?\nI know what's still in there. I also know we can't replace it quickly. That's a problem for the project, but it isn't the same problem the first two teams went in to solve.\nI want that distinction in the authorization.\nSpacco",
+          "references": [],
+          "subject": "Another entry"
+        },
+        {
+          "id": "MAIL-018",
+          "sentAt": "1998-10-28T00:05:00",
+          "from": {
+            "id": "program-management",
+            "name": "Program Management",
+            "address": "program-management@hilfer.internal"
+          },
+          "to": [
+            {
+              "id": "research-spacco",
+              "name": "Spacco",
+              "address": "spacco@hilfer.internal"
+            }
+          ],
+          "cc": [],
+          "body": "The entry has been reviewed under the emergency procedure, with Engineering's rotation plan and the current staffing limits. Operations has authorization for the recovery window.\nYour objection is noted and will be attached to the routing record. We aren't asking Research to certify the personnel assignments.\nProgram Management",
+          "references": [],
+          "subject": "Re: Another entry"
+        }
+      ]
+    }
+  ]
+}

@@ -1,3 +1,5 @@
+import { initialStory } from './core/story.js';
+import { mountDirector } from './effects/director.js';
 import { createStore } from './core/store.js';
 import { mountRecords } from './apps/records-fixture.js';
 import { mountReconciliation } from './apps/reconciliation.js';
@@ -11,7 +13,7 @@ import { validateSecurityCatalog } from './apps/security-catalog.js';
 import { mountPresentation } from './apps/presentation.js';
 
 async function boot() {
-  const [records, cases, assistant, emails, progression, previousProgression, previousCases, previousProgressionV2, previousCasesV2, previousProgressionV3, previousCasesV3, previousProgressionV4, previousCasesV4, footageCatalog] = await Promise.all(['records', 'cases', 'assistant', 'emails', 'progression','history/progression-v1','history/cases-v1','history/progression-v2','history/cases-v2','history/progression-v3','history/cases-v3','history/progression-v4','history/cases-v4','footage'].map(async name => {
+  const [records, cases, assistant, emails, progression, previousProgression, previousCases, previousProgressionV2, previousCasesV2, previousProgressionV3, previousCasesV3, previousProgressionV4, previousCasesV4, previousProgressionV5, previousCasesV5, footageCatalog] = await Promise.all(['records', 'cases', 'assistant', 'emails', 'progression','history/progression-v1','history/cases-v1','history/progression-v2','history/cases-v2','history/progression-v3','history/cases-v3','history/progression-v4','history/cases-v4','history/progression-v5','history/cases-v5','footage'].map(async name => {
     const response = await fetch(`./data/${name}.json`);
     if (!response.ok) throw new Error(`Could not load ${name}`);
     return response.json();
@@ -23,7 +25,8 @@ async function boot() {
     {from:1,to:2,sourceDefinition:previousProgression,sourceCases:previousCases,migrate:s=>({...s,contentVersion:2})},
     {from:2,to:3,sourceDefinition:previousProgressionV2,sourceCases:previousCasesV2,migrate:s=>({...s,contentVersion:3})},
     {from:3,to:4,sourceDefinition:previousProgressionV3,sourceCases:previousCasesV3,migrate:s=>({...s,contentVersion:4})},
-    {from:4,to:5,sourceDefinition:previousProgressionV4,sourceCases:previousCasesV4,migrate:s=>({...s,contentVersion:5})}
+    {from:4,to:5,sourceDefinition:previousProgressionV4,sourceCases:previousCasesV4,migrate:s=>({...s,contentVersion:5})},
+    {from:5,to:6,sourceDefinition:previousProgressionV5,sourceCases:previousCasesV5,migrate:s=>({...s,contentVersion:6,facts:{...s.facts,story:initialStory()}})}
   ];
   const store = createStore({ records, cases, storage, progression, contentMigrations });
   const mail = createMailModel(emails,{storage,getRecord:store.getRecord,grants:store.getAccess(),
@@ -58,6 +61,10 @@ async function boot() {
   });
   mountDistortion(store);
   mountPresentation(store,{assistant:assistantApp});
+  if(store.getDefinitions().story) {
+    const response=await fetch('./data/glitches.json');
+    mountDirector(store,{assistant:assistantApp,storage,registry:await response.json()});
+  }
   function update() {
     document.querySelector('#save-status').textContent = store.getWarning();
   }
@@ -65,6 +72,11 @@ async function boot() {
   document.querySelector('#reset-progress').addEventListener('click', () => { store.resetProgress(); });
   // Stable integration surface for Records and browser tests; all writes go through validation.
   window.hilfer = Object.freeze({ ...store, ...reconciliation, openRecord });
+  document.addEventListener('click',event=>{
+    const mailLead=event.target.closest('[data-lead-mail]');
+    if(mailLead){event.stopPropagation();if(!artifacts.canOpen('mail',mailLead.dataset.leadMail))return;window.openWindow('emails');window.dispatchEvent(new CustomEvent('hilfer:mail-navigate',{detail:{threadId:mailLead.dataset.leadMail}}));}
+  });
+  if(store.getDefinitions().story && window.innerWidth>700)window.openWindow('reconciliation');
 }
 boot().catch(error => {
   console.error(error);

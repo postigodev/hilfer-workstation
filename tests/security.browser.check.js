@@ -1,3 +1,4 @@
+import {readFileSync} from 'node:fs';
 import assert from 'node:assert/strict';
 import {pathToFileURL} from 'node:url';
 import {tmpdir} from 'node:os';
@@ -12,8 +13,9 @@ async function page({approved=false,fallback=false,missing=false,mobile=false}={
   const p=await browser.newPage({viewport:mobile?{width:390,height:844}:{width:1440,height:1000}});
   p.setDefaultTimeout(12000);
   p.on('pageerror',e=>errors.push(e.message));
+  for(const n of ['progression','cases','records','emails'])await p.route('**/data/'+n+'.json',route=>route.fulfill({json:JSON.parse(readFileSync(new URL('../data/history/'+n+'-v5.json',import.meta.url),'utf8'))}));
   if(approved)await p.route('**/data/progression.json',async route=>{
-    const response=await route.fetch(),d=await response.json();d.initialGrantIds.push('security.timeline.verified');
+    const d=JSON.parse(readFileSync(new URL('../data/history/progression-v5.json',import.meta.url),'utf8'));d.initialGrantIds.push('security.timeline.verified');
     await route.fulfill({json:d}); // Test-only editorial approval. Never shipped in production.
   });
   if(fallback)await p.addInitScript(()=>{HTMLVideoElement.prototype.requestVideoFrameCallback=undefined;});
@@ -99,10 +101,14 @@ try {
 
   // Independent Operations route, fallback decoder path, and hypothetical editorial approval.
   const q=await page({approved:true,fallback:true,mobile:true});await archive(q,'OPS-TRANSFER');await recovered(q,{dismiss:false});
+  // Navigation now collapses unsolicited balloons. Deliberately position the
+  // real Assistant over the player to keep testing obstruction rejection.
+  await q.locator('#assistant-balloon').evaluate(el=>{el.hidden=false;el.style.cssText='position:fixed;left:0;top:0;width:100vw;height:100vh;max-height:none;z-index:2147483647';});
   await q.locator('#footage-window video').evaluate(v=>v.play().catch(()=>{}));
   await q.waitForFunction(()=>document.querySelector('#footage-window video').paused);
   assert.equal((await inspected(q)).some(x=>x.startsWith('CAM-R03:')),false,'An obscuring Assistant is not visible evidence');
   await q.getByRole('button',{name:'Dismiss Assistant'}).click();
+  await q.locator('#assistant-balloon').evaluate(el=>{el.style.cssText='';});
   console.log('PASS: Operations route; beginning fallback playback');
   await playFrom(q,1.7);
   await q.waitForFunction(()=>hilfer.getSnapshot().facts.milestones['CAM-R03:transport-observed'],{timeout:15000});

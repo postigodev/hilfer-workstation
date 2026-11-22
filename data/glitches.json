@@ -1,0 +1,6 @@
+[
+  {"id":"clock-rewind","durationMs":2600,"trigger":"Security determination accepted","cleanup":"Restore fictional shift clock; no system time changes"},
+  {"id":"index-recovery","durationMs":16000,"trigger":"Security determination accepted","cleanup":"Restore optional MT-REPEAT index row; Rebuild or Escape clears immediately"},
+  {"id":"transport-static","durationMs":750,"trigger":"Actual transport observation proof accepted","cleanup":"Remove static and stop single quiet audio cue"},
+  {"id":"cursor-echo","durationMs":4200,"trigger":"Recovery purpose filed","cleanup":"Remove cosmetic pointer echo and pointer listener"}
+]

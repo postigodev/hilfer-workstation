@@ -26,7 +26,7 @@ test('Security catalog has bounded source-specific observation windows',()=>{
 });
 test('presentation callers cannot replace trusted observation metadata or mutate it',async()=>{
   const s=createStore({records,cases,progression,storage:memory()});archive(s);
-  const footage=structuredClone(media),emails=read('emails'),mail=createMailModel(emails,{grants:s.getAccess()});
+  const footage=structuredClone(media),emails=read('history/emails-v5'),mail=createMailModel(emails,{grants:s.getAccess()});
   let received,receivedClip;
   const artifacts=createArtifacts({store:s,records,emails,mail,footage,
     policies:{...presentationPolicies,'media-sequence-presented':p=>{received=p.source;receivedClip=p.clipSource;return false;}}});
