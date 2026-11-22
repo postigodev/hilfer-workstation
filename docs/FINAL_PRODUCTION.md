@@ -1,3 +1,5 @@
+> Current owner-directed scope: Work Review has been removed. Its standalone disclosure/END interface is no longer mounted. The retained engine/story commands and source data remain compatible. The earlier Work Review steps below are historical, not an executable current route. Current playable investigation: original Reconciliation → Records → Security/Footage → Recovery purpose → classification; Guy/Losurdo and other authored artifacts remain original Records/Mail sources.
+
 # Final production contract — Issue 13
 
 Content version 6 extends the existing engine; it does not replace the four filed-case routes or the nineteen authored artifacts. Main's known-good baseline is tagged `checkpoint/final-base`; the first END-capable implementation is `checkpoint/final-playable`.

@@ -42,7 +42,7 @@ export function mountSecurity(root,artifacts,media,{store}={}) {
     video.setAttribute('aria-label',title(clip()));status.textContent=note();
     toolbar.replaceChildren();
     for(const item of media.filter(x=>!x.observation && artifacts.canOpen('footage',x.id))) {
-      const button=document.createElement('button');button.type='button';button.textContent=item.id==='CAM4-PREVIEW'?'Preview / not evidence':item.id==='CAM-R03'?'Recovered CAM-R03 — partial corridor footage':title(item);
+      const button=document.createElement('button');button.type='button';button.textContent=item.id==='CAM4-PREVIEW'?'Preview / not evidence':item.id==='CAM-R03'?(associated()?'Recovered CAM-R03 — Documented association':'Recovered CAM-R03 — partial corridor footage'):title(item);
       button.dataset.securityClip=item.id;button.setAttribute('aria-pressed',String(item.id===selected));
       button.addEventListener('click',()=>{select(item.id);refresh();});toolbar.append(button);
     }

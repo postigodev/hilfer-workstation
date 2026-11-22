@@ -43,7 +43,9 @@ function closeWindow(windowId) {
     openWindows.delete(windowId);
     removeFromTaskbar(windowId);
 
-    const nextWindow = [...openWindows].find(id => document.getElementById(id + '-window').classList.contains('visible'));
+    const nextWindow = [...openWindows]
+        .filter(id => document.getElementById(id + '-window').classList.contains('visible'))
+        .sort((a,b) => Number(document.getElementById(b + '-window').style.zIndex) - Number(document.getElementById(a + '-window').style.zIndex))[0];
     if (nextWindow) setActiveWindow(nextWindow);
     else activeWindow = null;
     window.dispatchEvent(new CustomEvent('hilfer:window-closed', { detail: { windowId } }));

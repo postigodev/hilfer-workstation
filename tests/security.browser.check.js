@@ -101,10 +101,14 @@ try {
 
   // Independent Operations route, fallback decoder path, and hypothetical editorial approval.
   const q=await page({approved:true,fallback:true,mobile:true});await archive(q,'OPS-TRANSFER');await recovered(q,{dismiss:false});
+  // Navigation now collapses unsolicited balloons. Deliberately position the
+  // real Assistant over the player to keep testing obstruction rejection.
+  await q.locator('#assistant-balloon').evaluate(el=>{el.hidden=false;el.style.cssText='position:fixed;left:0;top:0;width:100vw;height:100vh;max-height:none;z-index:2147483647';});
   await q.locator('#footage-window video').evaluate(v=>v.play().catch(()=>{}));
   await q.waitForFunction(()=>document.querySelector('#footage-window video').paused);
   assert.equal((await inspected(q)).some(x=>x.startsWith('CAM-R03:')),false,'An obscuring Assistant is not visible evidence');
   await q.getByRole('button',{name:'Dismiss Assistant'}).click();
+  await q.locator('#assistant-balloon').evaluate(el=>{el.style.cssText='';});
   console.log('PASS: Operations route; beginning fallback playback');
   await playFrom(q,1.7);
   await q.waitForFunction(()=>hilfer.getSnapshot().facts.milestones['CAM-R03:transport-observed'],{timeout:15000});

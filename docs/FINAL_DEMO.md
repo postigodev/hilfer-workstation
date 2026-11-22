@@ -1,3 +1,5 @@
+> Current owner-directed scope: Work Review has been removed. Its standalone disclosure/END interface is no longer mounted. The retained engine/story commands and source data remain compatible. The earlier Work Review steps below are historical, not an executable current route. Current playable investigation: original Reconciliation → Records → Security/Footage → Recovery purpose → classification; Guy/Losurdo and other authored artifacts remain original Records/Mail sources.
+
 # Classroom demonstration — visible navigation
 
 Use Start → Reset Demo Progress. The existing Consolidated Report opens. All instructions below are player-visible labels; no record codes or developer console are needed.

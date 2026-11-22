@@ -44,10 +44,10 @@ export function mountDirector(store,{assistant,storage,registry}) {
   const actions={
     'clock-rewind':()=>{clock.dataset.fictionalTime='1:56 PM';clock.textContent='1:56 PM';clock.classList.add('clock-anomaly');return()=>{clock.classList.remove('clock-anomaly');apply();};},
     'index-recovery':()=>{
-      const notice=document.createElement('section');notice.className='window index-recovery';notice.setAttribute('role','status');
-      notice.innerHTML='<div class="title-bar"><div class="title-bar-text">Records index checksum</div></div><div class="window-body"><p>One local index entry could not be displayed. Source files remain intact.</p><button type="button">Rebuild local index</button></div>';
-      document.querySelector('#records-app').prepend(notice);html.classList.add('index-mask');
-      notice.querySelector('button').onclick=()=>runner.stop('index-recovery');return()=>{notice.remove();html.classList.remove('index-mask');};
+      const notice=document.createElement('button');notice.type='button';notice.className='index-recovery';notice.textContent='Rebuild local index';
+      const count=document.querySelector('#record-count');count.textContent='Index checksum mismatch — source files intact';
+      document.querySelector('#records-app .application-actions').append(notice);html.classList.add('index-mask');
+      notice.onclick=()=>runner.stop('index-recovery');return()=>{notice.remove();html.classList.remove('index-mask');const n=document.querySelectorAll('#record-files .record-file').length;count.textContent=n+' documents';};
     },
     'cursor-echo':()=>{if(reduced.matches)return;const echo=document.createElement('span');echo.className='cursor-echo';echo.textContent='↖';echo.setAttribute('aria-hidden','true');document.body.append(echo);
       const move=e=>{echo.style.left=(e.clientX+16)+'px';echo.style.top=(e.clientY+12)+'px';};document.addEventListener('pointermove',move);
