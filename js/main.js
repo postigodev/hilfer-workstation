@@ -80,7 +80,7 @@ async function boot() {
     const scene=event.target.closest('[data-lead-scene]');
     if(scene){event.stopPropagation();window.openWindow('communications');window.dispatchEvent(new CustomEvent('hilfer:story-navigate',{detail:{tab:scene.dataset.leadScene}}));}
   });
-  if(store.getDefinitions().story)window.openWindow('reconciliation');
+  if(store.getDefinitions().story && window.innerWidth>700)window.openWindow('reconciliation');
 }
 boot().catch(error => {
   console.error(error);
