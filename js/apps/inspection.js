@@ -1,7 +1,9 @@
+import {mediaSequencePresented} from './media-observation.js';
 // Policies inspect actual rendered nodes; DOM announcements alone never credit evidence.
 const visible = node => Boolean(node?.isConnected && node.getClientRects().length &&
   (!node.closest('.window') || node.closest('.window').classList.contains('visible')));
 export const presentationPolicies = {
+  'media-sequence-presented':mediaSequencePresented,
   'document-presented': ({node,artifactId},signal) => !signal.aborted && visible(node) && node.dataset.artifactId===artifactId && node.matches('.record-document'),
   'message-body-presented': ({node,artifactId},signal) => !signal.aborted && visible(node?.querySelector('.mail-body')) && node.dataset.messageId===artifactId && node.open,
   'attachment-presented': ({node,artifactId},signal) => {

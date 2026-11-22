@@ -5,7 +5,9 @@
 [PR #8](https://github.com/postigodev/hilfer-workstation/pull/8). The latter was squash-merged as
 `f8e7e8a74624f89d5c93aa7cd135fa683e26639c` on November 21, 2026.
 
-The playable narrative is still the Jessica demo. Completion of the engine does not mean completion of the game.
+On this development branch, Jessica and the independent E archive routes are playable;
+the recovered clip is available for review, while F/G remain editorially blocked.
+Completion of the engine does not mean completion of the game.
 
 ## Current guides
 
@@ -15,6 +17,7 @@ The playable narrative is still the Jessica demo. Completion of the engine does 
 | [Integration contracts](INTEGRATION.md) | Bootstrap, app ownership, public interfaces, events, saves and test setup. |
 | [Engine reference](ENGINE.md) | Authoritative facts, commands, rules, projections, delivery receipts and version migrations. |
 | [Application integration](APP_INTEGRATION.md) | Content catalog, Mail granularity, readiness policies, access and cancellation. |
+| [Security integration audit](SECURITY_INTEGRATION.md) | Stacked issue #11 work: actual media measurements, observation contracts and unresolved editorial joins. |
 | [Project context](PROJECT_CONTEXT.md) | Working narrative background, demo scope and team ownership. |
 | [Design decisions](DESIGN_DECISIONS.md) | Approved direction versus proposals and unresolved gameplay. |
 

@@ -19,7 +19,7 @@ function registry(values, label) {
   return result;
 }
 const byId = (values, id) => values.find(value => value.id === id);
-export const INSPECTION_POLICIES = Object.freeze({records:['document-presented'],mail:['message-body-presented','attachment-presented'],footage:['media-frame-presented']});
+export const INSPECTION_POLICIES = Object.freeze({records:['document-presented'],mail:['message-body-presented','attachment-presented'],footage:['media-frame-presented','media-sequence-presented']});
 export const inspectionPolicy = id => id === 'document-open' ? 'document-presented' : id;
 
 export function validateDefinitions(input, cases = []) {

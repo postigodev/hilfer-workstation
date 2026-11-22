@@ -126,6 +126,19 @@ The distortion module listens for reconciliation milestones, not clicks or elaps
 
 ## Asset boundaries
 
+The issue #11 development branch adds `data/footage.json`, `mountSecurity`, and the
+closed `media-sequence-presented` policy. `createArtifacts` supplies immutable source
+metadata to the policy, overriding presentation-provided metadata. Transport and
+injury observations have separate logical evidence/artifact IDs for the same file.
+Only contiguous visible decoded playback at normal speed can satisfy them. Partial
+coverage is transient; reset, pause, seek, replacement and revoked access invalidate
+pending operations. `store.js` and the save envelope are unchanged; content v3→v4
+uses explicit historical definition snapshots. Editorial validation is separate from
+visual inspection; the production timeline grant is intentionally unissued.
+
+Run `node tests/security.browser.check.js` after the five existing browser suites,
+and `python tests/serve_test.py` for local HTTP byte-range responses.
+
 Original art is in `assets/arwa/`, with provenance and usage guidance in `assets/arwa/CREDITS.md`. `css/assets.css` centralizes shell asset paths; `css/arwa.css` styles the shell, and `css/hilfer.css` supplies game document layouts, claim comparisons and effects. Original upstream desktop snapshot in `references/WIN98-template/` remains unchanged.
 
 The initial medical/HR document graphics are placeholders pending Arwa's application-specific work. Prioritize legibility and believable paper/report composition, not more instructions or giant panels.

@@ -19,3 +19,5 @@ jobs:
           node-version: '24'
       - name: Run unit and content tests
         run: npm test
+      - name: Verify local media range responses
+        run: python tests/serve_test.py

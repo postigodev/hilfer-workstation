@@ -5,11 +5,13 @@ import { mountMail, createMailModel } from './apps/emails.js';
 import { mountAI } from './apps/ai.js';
 import { mountDistortion } from './effects/distortion.js';
 import { createArtifacts } from './core/artifacts.js';
-import { presentationPolicies, mountFootage } from './apps/inspection.js';
+import { presentationPolicies } from './apps/inspection.js';
+import { mountSecurity } from './apps/security.js';
+import { validateSecurityCatalog } from './apps/security-catalog.js';
 import { mountPresentation } from './apps/presentation.js';
 
 async function boot() {
-  const [records, cases, assistant, emails, progression, previousProgression, previousCases, previousProgressionV2, previousCasesV2] = await Promise.all(['records', 'cases', 'assistant', 'emails', 'progression','history/progression-v1','history/cases-v1','history/progression-v2','history/cases-v2'].map(async name => {
+  const [records, cases, assistant, emails, progression, previousProgression, previousCases, previousProgressionV2, previousCasesV2, previousProgressionV3, previousCasesV3, footageCatalog] = await Promise.all(['records', 'cases', 'assistant', 'emails', 'progression','history/progression-v1','history/cases-v1','history/progression-v2','history/cases-v2','history/progression-v3','history/cases-v3','footage'].map(async name => {
     const response = await fetch(`./data/${name}.json`);
     if (!response.ok) throw new Error(`Could not load ${name}`);
     return response.json();
@@ -19,12 +21,14 @@ async function boot() {
   try { storage = window.localStorage; } catch { storage = { getItem() { throw new Error('Storage disabled'); }, setItem() { throw new Error('Storage disabled'); } }; }
   const contentMigrations=[
     {from:1,to:2,sourceDefinition:previousProgression,sourceCases:previousCases,migrate:s=>({...s,contentVersion:2})},
-    {from:2,to:3,sourceDefinition:previousProgressionV2,sourceCases:previousCasesV2,migrate:s=>({...s,contentVersion:3})}
+    {from:2,to:3,sourceDefinition:previousProgressionV2,sourceCases:previousCasesV2,migrate:s=>({...s,contentVersion:3})},
+    {from:3,to:4,sourceDefinition:previousProgressionV3,sourceCases:previousCasesV3,migrate:s=>({...s,contentVersion:4})}
   ];
   const store = createStore({ records, cases, storage, progression, contentMigrations });
   const mail = createMailModel(emails,{storage,getRecord:store.getRecord,grants:store.getAccess(),
     isAvailable:id=>store.isArtifactAvailable('mail',id),canReference:id=>store.isArtifactAvailable('records',id)});
-  const artifacts=createArtifacts({store,records,emails,mail,footage:[{id:'CAM4-PREVIEW'}],policies:presentationPolicies});
+  validateSecurityCatalog(footageCatalog);
+  const artifacts=createArtifacts({store,records,emails,mail,footage:footageCatalog,policies:presentationPolicies});
   let reconciliation;
   const recordsApp = mountRecords(document.querySelector('#records-app'), store, {
     artifacts,
@@ -47,13 +51,9 @@ async function boot() {
   const assistantApp=mountAI(document.querySelector('#ai-app'), store, assistant, { storage });
   mountMail(document.querySelector('#emails-app'), emails, {storage,store,openRecord,artifacts,model:mail});
   const footage = document.querySelector('#footage-window');
-  const video = footage.querySelector('video');
-  const footageApp=mountFootage(footage,artifacts);
+  const footageApp=mountSecurity(footage,artifacts,footageCatalog);
   store.onEvent(({type}) => {
     if (type === 'hilfer:progress-reset') footageApp.reset();
-  });
-  video.querySelector('source').addEventListener('error', () => {
-    footage.querySelector('.status-bar-field').textContent = 'Preview could not be loaded.';
   });
   mountDistortion(store);
   mountPresentation(store,{assistant:assistantApp});
