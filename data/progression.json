@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "contentVersion": 3,
+  "contentVersion": 4,
   "evidence": [
     {
       "id": "HR-014",
@@ -542,6 +542,46 @@
       "requiredGrantIds": [
         "research.recovery.read"
       ]
+    },
+    {
+      "id": "CAM-R03:transport-visual",
+      "sourceGroupId": "SEC-RECOVERED-REVIEW",
+      "department": "Security",
+      "tags": [
+        "media-observation"
+      ],
+      "fields": {},
+      "caseIds": [],
+      "requiredGrantIds": [
+        "archive.local.review"
+      ],
+      "artifacts": [
+        {
+          "app": "footage",
+          "artifactId": "CAM-R03-TRANSPORT",
+          "inspectionPolicyId": "media-sequence-presented"
+        }
+      ]
+    },
+    {
+      "id": "CAM-R03:injury-visual",
+      "sourceGroupId": "SEC-RECOVERED-REVIEW",
+      "department": "Security",
+      "tags": [
+        "media-observation"
+      ],
+      "fields": {},
+      "caseIds": [],
+      "requiredGrantIds": [
+        "archive.local.review"
+      ],
+      "artifacts": [
+        {
+          "app": "footage",
+          "artifactId": "CAM-R03-INJURY",
+          "inspectionPolicyId": "media-sequence-presented"
+        }
+      ]
     }
   ],
   "inferences": [
@@ -796,7 +836,8 @@
     "CASE-REC03-PURPOSE:filed",
     "CASE-LINEAGE:filed",
     "CAM-R03:transport-observed",
-    "ARCHIVE:unlocked"
+    "ARCHIVE:unlocked",
+    "CAM-R03:injury-observed"
   ],
   "grants": [
     "mail.desk.read",
@@ -805,7 +846,8 @@
     "archive.local.review",
     "asset.review",
     "research.recovery.read",
-    "late.reconciliation.read"
+    "late.reconciliation.read",
+    "security.timeline.verified"
   ],
   "initialGrantIds": [
     "mail.desk.read",
@@ -949,6 +991,30 @@
           "milestoneId": "CASE-REC03-PURPOSE:filed"
         }
       }
+    },
+    {
+      "contentId": "footage:CAM-R03-TRANSPORT",
+      "when": {
+        "milestoneReached": {
+          "milestoneId": "CASE-ARCHIVE:filed"
+        }
+      }
+    },
+    {
+      "contentId": "footage:CAM-R03-INJURY",
+      "when": {
+        "milestoneReached": {
+          "milestoneId": "CASE-ARCHIVE:filed"
+        }
+      }
+    },
+    {
+      "contentId": "footage:CAM-R03",
+      "when": {
+        "milestoneReached": {
+          "milestoneId": "CASE-ARCHIVE:filed"
+        }
+      }
     }
   ],
   "presentationPolicies": [
@@ -1082,6 +1148,56 @@
         {
           "reachMilestone": {
             "milestoneId": "ARCHIVE:unlocked"
+          }
+        }
+      ]
+    },
+    {
+      "id": "SEC:verified-transport",
+      "mode": "once",
+      "when": {
+        "all": [
+          {
+            "evidenceInspected": {
+              "evidenceId": "CAM-R03:transport-visual"
+            }
+          },
+          {
+            "hasAccess": {
+              "grantId": "security.timeline.verified"
+            }
+          }
+        ]
+      },
+      "consequences": [
+        {
+          "reachMilestone": {
+            "milestoneId": "CAM-R03:transport-observed"
+          }
+        }
+      ]
+    },
+    {
+      "id": "SEC:verified-injury",
+      "mode": "once",
+      "when": {
+        "all": [
+          {
+            "evidenceInspected": {
+              "evidenceId": "CAM-R03:injury-visual"
+            }
+          },
+          {
+            "hasAccess": {
+              "grantId": "security.timeline.verified"
+            }
+          }
+        ]
+      },
+      "consequences": [
+        {
+          "reachMilestone": {
+            "milestoneId": "CAM-R03:injury-observed"
           }
         }
       ]
@@ -1527,6 +1643,36 @@
       "kind": "case",
       "caseId": "CASE-LINEAGE",
       "requiredGrantIds": []
+    },
+    {
+      "id": "footage:CAM-R03-TRANSPORT",
+      "kind": "artifact",
+      "app": "footage",
+      "artifactId": "CAM-R03-TRANSPORT",
+      "artifactType": "media",
+      "requiredGrantIds": [
+        "archive.local.review"
+      ]
+    },
+    {
+      "id": "footage:CAM-R03-INJURY",
+      "kind": "artifact",
+      "app": "footage",
+      "artifactId": "CAM-R03-INJURY",
+      "artifactType": "media",
+      "requiredGrantIds": [
+        "archive.local.review"
+      ]
+    },
+    {
+      "id": "footage:CAM-R03",
+      "kind": "artifact",
+      "app": "footage",
+      "artifactId": "CAM-R03",
+      "artifactType": "media",
+      "requiredGrantIds": [
+        "archive.local.review"
+      ]
     }
   ]
 }

@@ -1,0 +1,40 @@
+[
+  {
+    "id": "CAM4-PREVIEW",
+    "title": "CAM 4 / Preview clip",
+    "src": "assets/footage/preview.mp4",
+    "poster": "assets/footage/preview.webp",
+    "note": "Preview only. No narrative observations."
+  },
+  {
+    "id": "CAM-R03",
+    "title": "Recovered clip / Catalog review pending",
+    "src": "assets/footage/recovered-review.mp4",
+    "cameraId": "CAM-04",
+    "segmentId": "SEG-R03-01",
+    "sectorId": "SEC-R03-ACCESS",
+    "associationVerified": false,
+    "duration": 14.375,
+    "note": "14.375 s recovered clip. Picture clock differs from the index; date and personnel identity unverified."
+  },
+  {
+    "id": "CAM-R03-TRANSPORT",
+    "clipId": "CAM-R03",
+    "kind": "transport",
+    "observation": {
+      "start": 2,
+      "end": 5.5,
+      "minFrames": 60
+    }
+  },
+  {
+    "id": "CAM-R03-INJURY",
+    "clipId": "CAM-R03",
+    "kind": "injury",
+    "observation": {
+      "start": 7,
+      "end": 9.7,
+      "minFrames": 44
+    }
+  }
+]

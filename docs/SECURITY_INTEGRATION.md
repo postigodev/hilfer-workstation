@@ -58,3 +58,83 @@ Resolve the visible suit/personnel join separately before enabling E-I2. Until t
 J and both E routes work; the clip can be reviewed; F/G remain blocked in production.
 Synthetic tests may issue the timeline grant to exercise downstream architecture;
 production never issues it. There is no player-facing bypass.
+
+## Technical contract
+
+`data/footage.json` contains the preview, recovered source and two bounded observation
+definitions. `CAM-R03-TRANSPORT` and `CAM-R03-INJURY` are presentation artifacts;
+`CAM-R03:transport-visual` and `CAM-R03:injury-visual` are their logical evidence IDs.
+Both share one informational origin; they are not independent corroborating sources.
+`createArtifacts` clones/freezes their metadata and supplies it to the policy, rather
+than accepting proof windows from a DOM announcement or caller-supplied source object.
+
+`media-sequence-presented` consumes advancing rendered-frame metadata. Its fallback
+samples the decoded/non-dropped frame counter on animation frames; absent that counter
+it fails closed. Playback must be normal-speed, active, visible and uninterrupted.
+The transport window requires at least 60 advancing frames over 2.0–5.5 s; the second
+requires 44 over 7.0–9.7 s. Frame gaps above 450 ms, clock discontinuities, pause,
+seek, hidden state, replacement, errors and aborted presentation tokens discard partial
+proof. A replay must cover the window again. No partial watch position is saved.
+
+The existing validated inspection command persists the visual facts. Declarative rules
+require both those facts and `security.timeline.verified` to reach the canonical
+milestones. No production policy issues that grant. Inspections never file F or G.
+An approved future asset replacement must use new observation identities/windows and
+an explicit content migration, never reinterpret old inspections as seeing new frames.
+
+Content v3 snapshots are byte-for-byte retained under `data/history/`; the v4 migration
+preserves accepted facts and receipts. Original content tests remain on v3 snapshots;
+new Security tests validate the current v4 definitions and the full migration chain.
+
+The local server now supports single HTTP byte ranges, so a requested seek really
+seeks. This is playback support, not authentication. Public static asset URLs remain
+fetchable outside the game; only in-game discovery, presentation and network requests
+are permission-filtered.
+
+## Canonical source references
+
+- [Animation script](https://docs.google.com/document/d/1OYe2lI7gnJY1zgMFfkzdY3kp1lUZFQ8llGyXOCk35qg)
+- [Master Chronology](https://docs.google.com/document/d/1N76fAczbKn_wI6iWSVgv-hWaUUemEzLlaHtIymE-YCs/edit)
+- [Identifier Crosswalk](https://docs.google.com/document/d/1bhJF-gKd2BsirMQNAWyQr74IapRtnmZ7ZrUKVhPvncI/edit)
+- [Artifact Manifest](https://docs.google.com/document/d/19ZPJ8wikZfzuuD5Jt6pHNzNs75jO5pXIN8qDhHYqK5w/edit)
+- [Evidence Graph](https://docs.google.com/document/d/1bgFs7-M4ogi4IEOsJtfPUAF2fvaqr8Zy1bx1PASIEo4/edit)
+
+## Verification
+
+Local Windows, Node 24.12.0, Playwright with Microsoft Edge, HTTP port 8083.
+
+| Command | Actual result |
+| --- | --- |
+| `npm test` | 98 passed; 0 failed, skipped or cancelled. |
+| `python tests/serve_test.py` | Passed; 9 full/partial/suffix/invalid range subcases. |
+| `node tests/browser.check.js` | Passed: Jessica, report, cue once, reload/reset, desktop/mobile. |
+| `node tests/assistant.browser.check.js` | Passed on isolated rerun; see failures below. |
+| `node tests/mail.browser.check.js` | Passed, including authorization and storage fallback. |
+| `node tests/theme.browser.check.js` | Passed. |
+| `node tests/applications.browser.check.js` | Passed, including revoked readers and stale revoke/regrant completions. |
+| `node tests/security.browser.check.js` | Passed on the final implementation. |
+
+The browser suites ran sequentially. Security verifies both E routes, real duration and
+decoded playback, actual seek-to-end, partial/hidden/minimized/replaced denial, independent
+observations, fallback decoding, reset/regrant cancellation, reload, missing asset failure,
+mobile containment and no uncaught page exceptions. A passive Assistant covering the
+picture blocks observation on mobile. Source URL and decoded duration must match the
+trusted catalog. Hypothetical timeline approval exists only in injected tests; it proves
+the transport→AM-16→F→G-OPS route without enabling it in production.
+
+Initial failures were retained rather than treated as successful checks:
+
+- The old server returned 200 without byte-range support. Browser seekable range was
+  `[0,0]`, so a requested seek returned to zero and the entire clip played. Added range
+  handling and explicit seek-target assertions; the real seek now grants no observations.
+- Reloading an unchanged preview during reset cancelled downloads and failed Assistant's
+  request-failure check. Avoided unnecessary source replacement.
+- Assistant's pre-first-gesture audio assertion intermittently failed, as on the baseline
+  branch. The unchanged suite passed in the subsequent isolated/sequential invocation.
+- A source-element media error need not populate `video.error`. The missing-asset test
+  now waits for the actual error UI and verifies no observation was credited.
+
+Node CI is configured for the PR; browser results are local, not CI. No production
+end-to-end F/G completion is claimed. Static artwork/GIF attribution and timeline/personnel
+identity remain the explicit blockers above. Screenshots: [mobile player](images/security-mobile.png)
+and [editorial gate](images/security-editorial-block.png).

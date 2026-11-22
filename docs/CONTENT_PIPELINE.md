@@ -22,6 +22,12 @@ Google Docs drafts are editorial source material. Runtime reads only repository 
 
 ## Critical limitations
 
+**Issue #11 branch update:** content v4 adds the actual 14.375-second review clip and
+two separately validated visual observations. The paragraph below records the v3
+baseline. The delivered picture clock differs from the canonical interval, so the
+new production rules additionally require an unissued timeline-verification grant.
+AM-16 and F/G remain blocked. See [Security audit](SECURITY_INTEGRATION.md).
+
 `CAM-R03` is not currently available as a real video asset. The existing `CAM4-PREVIEW` is a demo video and **MUST NOT** be treated as proof that the player saw Tito's injury or sealed transport. Therefore the production `CAM-R03:transport-observed` milestone deliberately has no producer. `ASSET-CUSTODY-03` remains locked and F/G cannot yet be finished in production. The test fixture temporarily supplies that milestone to validate hypothetical downstream reachability; this is *not* a gameplay bypass and is never bundled in the runtime.
 
 The future video integration requires a genuine media source and two independently validated observation milestones: visible transport context around 00:09 and Tito injury/assistance around 00:23. Do not award either on file open or the first decoded frame.

@@ -3,7 +3,8 @@ const read=name=>JSON.parse(readFileSync(new URL('../../data/'+name+'.json',impo
 
 // Injected test-only corpus. No file in data/ is changed by these synthetic relationships.
 export function applicationFixture() {
-  const f={records:read('records'),cases:read('cases'),emails:read('emails'),progression:read('progression')};
+  // Keep this synthetic PR #8 integration fixture on its pre-Security catalog.
+  const f={records:read('records'),cases:read('cases'),emails:read('emails'),progression:read('history/progression-v3')};
   const d=f.progression;
   f.cases.push({id:'TEST-LOCKED-PLACEHOLDER',title:'Synthetic reserved title',description:'Synthetic private metadata',placeholder:true});
   d.contentCatalog.push({id:'TEST-LOCKED-PLACEHOLDER',kind:'case',caseId:'TEST-LOCKED-PLACEHOLDER',requiredGrantIds:[]});

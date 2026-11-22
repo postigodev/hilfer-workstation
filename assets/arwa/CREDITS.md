@@ -2,6 +2,18 @@
 
 Graphics: **Arwa**. Source visual implementation: **Altynai / april-hpxd**.
 
+## Security review derivative (issue #11)
+
+`assets/footage/recovered-review.mp4` comes from Arwa's `security footage.mov`,
+Drive ID `1QviEnvZb_A4hV1ABr4OWY-NJy4u8AFv5`, fetched November 21, 2026.
+Original: 24,584,989 bytes, 1920×1080, 24 fps, 14.375 s, H.264/PCM.
+Derivative: 2,293,457 bytes, 960×540, 24 fps, 14.375 s, H.264/yuv420p/AAC,
+CRF 25, AAC 96 kb/s, faststart. No padding, retiming, overlay replacement or
+invented frames. SHA-256: `2c1683e9aa50b3e5a069003445193797b84abb70dda4e03020c1b56ff990863d`.
+Originals remain in Drive. The clip's date and personnel identity are unverified;
+see [Security audit](../../docs/SECURITY_INTEGRATION.md) for rejected alternatives
+and the blocked narrative joins. No static-feed character attribution is asserted.
+
 Imported selectively from [april-hpxd/WIN98-template](https://github.com/april-hpxd/WIN98-template), commit `4be592205ce2d6d3c29f604ba5af41adc78a0b08` (2026-10-26 integration). The source repository's [LICENSE](LICENSE) is preserved here; original template attribution to pollygon-dev and HTML5-Templates.com remains in the project.
 
 | Runtime derivative | Source path | Output |
