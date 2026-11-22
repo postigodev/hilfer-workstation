@@ -132,7 +132,7 @@ The distortion module listens for reconciliation milestones, not clicks or elaps
 
 ## Asset boundaries
 
-The issue #11 development branch adds `data/footage.json`, `mountSecurity`, and the
+The Security integration adds `data/footage.json`, `mountSecurity`, and the
 closed `media-sequence-presented` policy. `createArtifacts` supplies immutable source
 metadata to the policy, overriding presentation-provided metadata. Transport and
 injury observations have separate logical evidence/artifact IDs for the same file.
@@ -140,7 +140,8 @@ Only contiguous visible decoded playback at normal speed can satisfy them. Parti
 coverage is transient; reset, pause, seek, replacement and revoked access invalidate
 pending operations. `store.js` and the save envelope are unchanged; content v3→v4
 uses explicit historical definition snapshots. Editorial validation is separate from
-visual inspection; the production timeline grant is intentionally unissued.
+visual inspection. Content v5 derives the timeline grant only from explicit E-I3,
+which requires both freshly inspected documentary addenda and actual transport observation.
 
 Run `node tests/security.browser.check.js` after the five existing browser suites,
 and `python tests/serve_test.py` for local HTTP byte-range responses.

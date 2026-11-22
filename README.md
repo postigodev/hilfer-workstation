@@ -10,7 +10,8 @@ HILFER is a browser-based institutional-horror investigation set inside a fictio
 
 The investigation engine and application integrations are implemented and merged into `main`: [Engine Foundation #7](https://github.com/postigodev/hilfer-workstation/pull/7) and [Application Integration #8](https://github.com/postigodev/hilfer-workstation/pull/8).
 
-This development branch stacks the corpus from PR #10 with the Security work in issue #11.
+The workstation includes the corpus from PR #10, Security playback from PR #12 and
+documentary reconciliation from PR #14.
 Jessica and both independent Security archive routes are playable. Content v5 adds the
 approved documentary association of the recovered extract, allowing F and G to be filed
 with source provenance. Tito's visual identity remains unverified. CASE-002 remains a

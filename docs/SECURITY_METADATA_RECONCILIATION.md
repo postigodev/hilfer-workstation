@@ -1,7 +1,7 @@
 # Security metadata reconciliation — content v5
 
-User-approved editorial follow-up to PR #12, stacked on that branch. No PR is merged
-by this work. Arwa's animation and every pixel of its clock remain unchanged.
+User-approved editorial follow-up to PR #12, originally reviewed as the stacked PR #14.
+Arwa's animation and every pixel of its clock remain unchanged.
 
 ## Approved narrative correction
 

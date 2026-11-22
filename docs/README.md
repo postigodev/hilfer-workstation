@@ -1,11 +1,14 @@
 # HILFER documentation
 
-**Current baseline:** the engine foundation and application integrations are complete on `main`, through
+**Engine baseline:** the engine foundation and application integrations are complete on `main`, through
 [PR #7](https://github.com/postigodev/hilfer-workstation/pull/7) and
 [PR #8](https://github.com/postigodev/hilfer-workstation/pull/8). The latter was squash-merged as
 `f8e7e8a74624f89d5c93aa7cd135fa683e26639c` on November 21, 2026.
 
-On this development branch, J/E/F/G are playable through explicit documentary association
+Current content includes [PR #10](https://github.com/postigodev/hilfer-workstation/pull/10),
+[PR #12](https://github.com/postigodev/hilfer-workstation/pull/12) and
+[PR #14](https://github.com/postigodev/hilfer-workstation/pull/14).
+J/E/F/G are playable through explicit documentary association
 and actual transport observation. Injury playback and personal identity are not required.
 Completion of the engine does not mean completion of the game.
 
