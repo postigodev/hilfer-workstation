@@ -6,7 +6,7 @@ import { deriveReport, renderReport } from '../js/apps/report.js';
 import { renderRecord } from '../js/apps/records-fixture.js';
 
 const read = name => JSON.parse(readFileSync(new URL('../data/' + name + '.json', import.meta.url), 'utf8'));
-const records = read('records'), cases = read('cases');
+const records = read('history/records-v2'), cases = read('history/cases-v2');
 function setup(storage, definitions = cases, registry = records) {
   const map = storage ?? new Map();
   const store = createStore({ records: registry, cases: definitions, storage: {

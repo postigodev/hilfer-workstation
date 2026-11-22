@@ -5,7 +5,7 @@ import { createStore } from '../js/core/store.js';
 import { SAVE_KEY, V2_SAVE_KEY } from '../js/core/persistence.js';
 import { validateResolution } from '../js/core/progression.js';
 const read = name => JSON.parse(readFileSync(new URL(`../data/${name}.json`, import.meta.url), 'utf8').replace(/^\uFEFF/, ''));
-const records = read('records'), cases = read('cases');
+const records = read('history/records-v2'), cases = read('history/cases-v2');
 const correct = cases[0].resolution;
 function memory() { const data = new Map(); return { getItem: k => data.get(k) ?? null, setItem: (k,v) => data.set(k,v) }; }
 function setup(storage = memory(), extras = []) { return createStore({ records: [...records, ...extras], cases, storage }); }

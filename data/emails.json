@@ -1,15 +1,17 @@
 {
   "schemaVersion": 1,
-  "datasetId": "HILFER-MAIL-DEMO-2026-11-04",
-  "contentStatus": "approved demo scope; message copy is authored proposal; all sentAt values are provisional demo timestamps, not established narrative canon",
+  "datasetId": "HILFER-MAIL-1998-CONTENT-V1",
+  "contentStatus": "Authored fictional production corpus; all mail timestamps are facility-local per Master Chronology v1.0.",
   "timeZone": "facility-local; offset intentionally omitted to match existing 1998 records.json convention",
   "timelineConstraints": {
     "recordAnchors": {
       "HR-014": "1998-10-12T09:00:00",
       "OH-008": "1998-10-13T14:30:00"
     },
-    "unfixed": "The incident date, Losurdo reassignment date, and precise historical mail chronology have not been canonically fixed; don't infer them from these demo times.",
-    "reviewRequiredBeforeFinal": "Recheck all mail dates and causal order once the narrative chronology is approved."
+    "incident": "1998-10-27T14:20:00",
+    "recovery03": "1998-10-28T06:34:00",
+    "playerLogin": "1998-11-06T12:10:00",
+    "note": "MAIL-001–007 redated without changing their wording."
   },
   "mailbox": {
     "id": "reconciliation-desk",
@@ -47,13 +49,10 @@
     "authorizedArchiveBasis": "Administrative records preservation and Reconciliation authorization; not illicit account access."
   },
   "contentRules": [
-    "Keep all 5 thread IDs, all 12 message IDs, bodies and order as supplied.",
-    "Do not fabricate more messages, subjects, attachments, recipients or evidence for this demo.",
-    "Only HR-014 has an explicit cross-app Records reference; inspect/open via existing openRecord.",
-    "OH-008's NOT_CLEARED value and occupational causation must not be disclosed by Email.",
-    "Do not imply that Tito died, that CAM-R03 contents are known, or that a prototype was recovered.",
-    "Reading a mail item is a UI receipt only; it is not formal evidence discovery or reconciliation.",
-    "Do not expose user Gmail content, Knox personal data, or actual teacher communications."
+    "Preserve original 12 message IDs and text; date-only migration for MAIL-001–007.",
+    "Use required grants before listing, searching or opening newly restricted messages.",
+    "Mail inspection is distinct from explicit inference and administrative filing.",
+    "Footage never establishes Tito's death."
   ],
   "threads": [
     {
@@ -70,7 +69,7 @@
       "messages": [
         {
           "id": "MAIL-001",
-          "sentAt": "1998-10-28T09:08:00",
+          "sentAt": "1998-11-06T09:08:00",
           "from": {
             "id": "records-coordination",
             "name": "Records Coordination",
@@ -89,7 +88,7 @@
         },
         {
           "id": "MAIL-002",
-          "sentAt": "1998-10-28T09:23:00",
+          "sentAt": "1998-11-06T09:23:00",
           "from": {
             "id": "records-admin",
             "name": "Records Administration",
@@ -115,7 +114,7 @@
         },
         {
           "id": "MAIL-003",
-          "sentAt": "1998-10-28T09:39:00",
+          "sentAt": "1998-11-06T09:39:00",
           "from": {
             "id": "records-coordination",
             "name": "Records Coordination",
@@ -155,7 +154,7 @@
       "messages": [
         {
           "id": "MAIL-004",
-          "sentAt": "1998-10-28T10:16:00",
+          "sentAt": "1998-11-06T10:16:00",
           "from": {
             "id": "human-resources",
             "name": "Human Resources",
@@ -186,7 +185,7 @@
         },
         {
           "id": "MAIL-005",
-          "sentAt": "1998-10-28T10:42:00",
+          "sentAt": "1998-11-06T10:42:00",
           "from": {
             "id": "operations-scheduling",
             "name": "Operations Scheduling",
@@ -226,7 +225,7 @@
       "messages": [
         {
           "id": "MAIL-006",
-          "sentAt": "1998-10-28T11:14:00",
+          "sentAt": "1998-11-06T11:14:00",
           "from": {
             "id": "occupational-health",
             "name": "Occupational Health Administration",
@@ -251,7 +250,7 @@
         },
         {
           "id": "MAIL-007",
-          "sentAt": "1998-10-28T11:37:00",
+          "sentAt": "1998-11-06T11:37:00",
           "from": {
             "id": "human-resources",
             "name": "Human Resources",
@@ -400,6 +399,173 @@
           "body": "We did. That's why I'm asking.",
           "references": [],
           "subject": "Re: Same relay again"
+        }
+      ]
+    },
+    {
+      "id": "THREAD-TEST-VIABILITY",
+      "folderId": "archive",
+      "subject": "Tomorrow's run",
+      "archiveSeries": null,
+      "access": {
+        "requiredGrants": [
+          "investigation.read"
+        ]
+      },
+      "narrativePurpose": "Engineering viability request",
+      "messages": [
+        {
+          "id": "MAIL-013",
+          "sentAt": "1998-10-26T17:25:00",
+          "from": {
+            "id": "program-management",
+            "name": "Program Management",
+            "address": "program-management@hilfer.internal"
+          },
+          "to": [
+            {
+              "id": "engineering-tim",
+              "name": "Tim",
+              "address": "tim@hilfer.internal"
+            }
+          ],
+          "cc": [],
+          "body": "Tim,\nInstrumentation has entered another exception for the late run. I need to know tonight whether the demonstration can proceed under Rev. C, or whether you're asking us to move the slot.\nPlease answer for the configuration we'll actually have tomorrow, including the temporary shielding. We can't plan from the replacement configuration if the part isn't here.\nProgram Management",
+          "references": [],
+          "subject": "Tomorrow's run"
+        },
+        {
+          "id": "MAIL-014",
+          "sentAt": "1998-10-26T18:05:00",
+          "from": {
+            "id": "engineering-tim",
+            "name": "Tim",
+            "address": "tim@hilfer.internal"
+          },
+          "to": [
+            {
+              "id": "program-management",
+              "name": "Program Management",
+              "address": "program-management@hilfer.internal"
+            }
+          ],
+          "cc": [],
+          "body": "With the current restrictions, yes, the run is technically possible.\nThat assumes the shorter entries are kept, the instrumentation comparison is done again before startup, and SHD-TEMP-01 is inspected. SEN-03 still needs the bench check. The 16:50 event is unresolved; I am not calling that trace bad.\nIf any of those conditions change overnight, ask again. This isn't clearance to run the old schedule.\nTim",
+          "references": [],
+          "subject": "Re: Tomorrow's run"
+        }
+      ]
+    },
+    {
+      "id": "THREAD-LEGAL-SCOPE",
+      "folderId": "archive",
+      "subject": "Incident notice wording",
+      "archiveSeries": null,
+      "access": {
+        "requiredGrants": [
+          "investigation.read"
+        ]
+      },
+      "narrativePurpose": "Legal wording qualifications",
+      "messages": [
+        {
+          "id": "MAIL-015",
+          "sentAt": "1998-10-29T13:40:00",
+          "from": {
+            "id": "legal-review",
+            "name": "Legal Review",
+            "address": "legal-review@hilfer.internal"
+          },
+          "to": [
+            {
+              "id": "communications-guy",
+              "name": "Guy",
+              "address": "guy@hilfer.internal"
+            },
+            {
+              "id": "occupational-health",
+              "name": "Occupational Health",
+              "address": "occupational-health@hilfer.internal"
+            }
+          ],
+          "cc": [],
+          "body": "Guy,\nThe Medical list includes six people under review. That is not the same field as confirmed serious exposures within the Incident reporting period. Please keep the two numbers identified by their criteria if both appear.\nI also want 'containment failure' removed from the employee notice for now. Engineering is still reconstructing the failure sequence. 'Containment event' is acceptable pending that review.\nDo not say that symptoms were unrelated to work. Medical hasn't found that. It has said a relationship has not been established in several of the cases.\nLegal Review",
+          "references": [],
+          "subject": "Incident notice wording"
+        },
+        {
+          "id": "MAIL-016",
+          "sentAt": "1998-10-29T15:15:00",
+          "from": {
+            "id": "communications-guy",
+            "name": "Guy",
+            "address": "guy@hilfer.internal"
+          },
+          "to": [
+            {
+              "id": "legal-review",
+              "name": "Legal Review",
+              "address": "legal-review@hilfer.internal"
+            }
+          ],
+          "cc": [],
+          "body": "Understood. I'll use 'containment event' in the general notice and leave the engineering description out until they sign it.\nFor the medical paragraph I'm putting 'no confirmed occupational cause has been established for the remaining cases.' If you want the review count stated separately, send me the approved line. I'd rather not have people adding six and two together as if they were different sets of employees.\nGuy",
+          "references": [],
+          "subject": "Re: Incident notice wording"
+        }
+      ]
+    },
+    {
+      "id": "THREAD-SPACCO-REC03",
+      "folderId": "archive",
+      "subject": "Another entry",
+      "archiveSeries": null,
+      "access": {
+        "requiredGrants": [
+          "research.recovery.read"
+        ]
+      },
+      "narrativePurpose": "Research objection",
+      "messages": [
+        {
+          "id": "MAIL-017",
+          "sentAt": "1998-10-27T22:20:00",
+          "from": {
+            "id": "research-spacco",
+            "name": "Spacco",
+            "address": "spacco@hilfer.internal"
+          },
+          "to": [
+            {
+              "id": "program-management",
+              "name": "Program Management",
+              "address": "program-management@hilfer.internal"
+            }
+          ],
+          "cc": [],
+          "body": "We have containment stabilized, and the diagnostic modules are out. What is the safety reason for sending another crew in?\nI know what's still in there. I also know we can't replace it quickly. That's a problem for the project, but it isn't the same problem the first two teams went in to solve.\nI want that distinction in the authorization.\nSpacco",
+          "references": [],
+          "subject": "Another entry"
+        },
+        {
+          "id": "MAIL-018",
+          "sentAt": "1998-10-28T00:05:00",
+          "from": {
+            "id": "program-management",
+            "name": "Program Management",
+            "address": "program-management@hilfer.internal"
+          },
+          "to": [
+            {
+              "id": "research-spacco",
+              "name": "Spacco",
+              "address": "spacco@hilfer.internal"
+            }
+          ],
+          "cc": [],
+          "body": "The entry has been reviewed under the emergency procedure, with Engineering's rotation plan and the current staffing limits. Operations has authorization for the recovery window.\nYour objection is noted and will be attached to the routing record. We aren't asking Research to certify the personnel assignments.\nProgram Management",
+          "references": [],
+          "subject": "Re: Another entry"
         }
       ]
     }

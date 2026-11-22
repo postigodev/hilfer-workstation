@@ -45,7 +45,7 @@ test('canceling a queued engine voice cannot interrupt another cue or mark it co
   voice.cancelCue('baseline');assert.equal(pauses,before+1);
   assert.equal(saved.size,0);
 });
-const records = read('records'), cases = read('cases'), content = read('assistant');
+const records = read('history/records-v2'), cases = read('history/cases-v2'), content = read('assistant');
 const memory = () => {
   const data = new Map();
   return { data, getItem: k => data.get(k) ?? null, setItem: (k, v) => data.set(k, v), removeItem: k => data.delete(k) };

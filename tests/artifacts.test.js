@@ -11,7 +11,7 @@ import {applicationFixture} from './fixtures/application.js';
 import {deriveReport,renderReport} from '../js/apps/report.js';
 import {presentationPolicies} from '../js/apps/inspection.js';
 
-const read = name=>JSON.parse(readFileSync(new URL('../data/'+name+'.json',import.meta.url),'utf8'));
+const read = name=>JSON.parse(readFileSync(new URL('../data/'+(['records','cases','emails','progression'].includes(name)?'history/'+name+'-v2':name)+'.json',import.meta.url),'utf8'));
 function fixture() {
   const progression=read('progression'),records=read('records'),cases=read('cases'),emails=read('emails');
   progression.grants.push('test.read');

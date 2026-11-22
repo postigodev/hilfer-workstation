@@ -1,5 +1,6 @@
 import { escapeHTML as h, displayField, displayValue, displayDate } from './shared.js';
 import { deriveReport, renderReport } from './report.js';
+import { renderInvestigationCase } from './investigation-cases.js';
 
 // Reconciliation is a document you revise with source claims, not a form or a file tray.
 export function mountReconciliation(root, store, { openRecord = () => {}, artifacts } = {}) {
@@ -15,6 +16,7 @@ export function mountReconciliation(root, store, { openRecord = () => {}, artifa
   const sourceLink = (id, text = id) => canOpenRecord(id) ? '<button type="button" class="source-reference" data-open-record="' + h(id) + '">' + h(text) + '</button>' : '<span>Source unavailable</span>';
   function showCase(definition, state) {
     if (!definition) return '<p>No assigned cases.</p>';
+    if (definition.investigation) return renderInvestigationCase(definition,store,artifacts,sourceLink);
     const done = state.completedCaseIds.includes(definition.id);
     const unlocked = state.unlockedCaseIds.includes(definition.id);
     const current = done ? state.resolutions[definition.id] : definition.provisional;
@@ -54,7 +56,15 @@ export function mountReconciliation(root, store, { openRecord = () => {}, artifa
     const openDetails = [...root.querySelectorAll('[data-audit-id][open]')].map(el => el.dataset.auditId);
     const state = store.getState();
     const visibleCases = cases.filter(c=>!artifacts || artifacts.caseVisible(c.id));
-    const report = deriveReport(visibleCases, state, getVisibleRecord,{getSourceForValidation:store.getRecord});
+    const defs=store.getDefinitions(), facts=store.getSnapshot().facts;
+    const formalFindings={};
+    for (const fact of Object.values(facts.determinations)) {
+      if(fact.origin==='migration-v1'||fact.caseId==='CASE-001')continue;
+      const ev=defs.evidence.find(e=>e.id===fact.sourceEvidenceId);
+      const recordId=ev?.artifacts.find(a=>a.app==='records')?.artifactId;
+      if(recordId)formalFindings[fact.caseId]={field:fact.field,value:fact.value,sourceId:recordId};
+    }
+    const report = deriveReport(visibleCases, state, getVisibleRecord,{getSourceForValidation:store.getRecord,formalFindings});
     const selected = visibleCases.find(c => c.id === selectedCaseId);
     root.innerHTML =
       '<div class="app-toolbar"><span>Reconciliation</span><div class="application-actions"><button data-open="records">Records</button><button data-arrange>Arrange</button></div></div>' +
@@ -102,6 +112,22 @@ export function mountReconciliation(root, store, { openRecord = () => {}, artifa
     render(); root.querySelector('#' + view + '-tab')?.focus();
   });
   root.addEventListener('click', event => {
+    const inferButton=event.target.closest('[data-inference-id]');
+    if(inferButton){
+      const inference=store.getDefinitions().inferences.find(i=>i.id===inferButton.dataset.inferenceId);
+      const sources=inference?.supportAlternatives[Number(inferButton.dataset.inferenceAlt)];
+      const result=sources?store.dispatch({type:'establishInference',inferenceId:inference.id,evidenceIds:sources}):
+        {ok:false,message:'Unknown evidence route.'};
+      feedbackTone=result.ok?'success':'error'; feedback=result.message|| (result.ok?'Relationship established.':'Relationship not supported.');
+      render();return;
+    }
+    const fileButton=event.target.closest('[data-file-determination]');
+    if(fileButton){
+      const result=store.dispatch({type:'fileDetermination',determinationId:fileButton.dataset.fileDetermination,sourceEvidenceId:fileButton.dataset.sourceEvidence});
+      feedbackTone=result.ok?'success':'error';feedback=result.message||(result.ok?'Determination filed.':'Source review incomplete.');
+      if(result.ok)view='report';
+      render();return;
+    }
     const tab = event.target.closest('[data-view]');
     if (tab) {
       view = tab.dataset.view; render(); root.querySelector('#' + view + '-tab')?.focus(); return;

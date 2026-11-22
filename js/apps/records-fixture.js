@@ -31,7 +31,11 @@ export function renderRecord(record) {
       ${fields([['Work-related cause', displayValue(record.fields.occupationalCausation)]])}<p class="document-note">${h(record.note)}</p>${auditDetails}
       <footer class="document-authorization"><span>ISSUING OFFICE</span><b>${h(record.department)}</b></footer>`;
   } else {
-    content = `<header class="document-heading"><b>${h(record.department)}</b><span>${h(record.title)}</span></header>${identity}${reference}${fields(Object.entries(record.fields).map(([key, value]) => [label(key), value]))}`;
+    const metadata = fields([['Record reference', record.id], ['Issued', displayDate(record.date)]]);
+    const structured = Object.keys(record.fields ?? {}).length
+      ? '<details class="record-details"><summary>Indexed values</summary>' + fields(Object.entries(record.fields).map(([key,value]) => [label(key),value])) + '</details>' : '';
+    const body = record.body ? '<div class="document-note" style="white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.4">' + h(record.body) + '</div>' : '';
+    content = `<header class="document-heading"><b>${h(record.department)}</b><span>${h(record.title)}</span></header>${metadata}${body}${structured}`;
   }
   return `<article data-artifact-id="${h(record.id)}" class="record-document ${record.type === 'occupational_health_record' ? 'medical-document' : ''}" tabindex="0" aria-label="Inspect ${h(record.id)}">${content}</article>`;
 }
@@ -58,7 +62,7 @@ export function mountRecords(root, store, { onClaim = () => {}, artifacts } = {}
     root.querySelector('.folder-tree').innerHTML='<div class="pane-label">Departments</div><button data-folder="" aria-pressed="true"><span class="folder-symbol" aria-hidden="true"></span>All departments</button>'+[...new Set(allowed.map(r=>r.department))].map(name=>`<button data-folder="${h(name)}" aria-pressed="false">${departmentIcons[name] ? `<span class="department-icon" data-department-icon="${departmentIcons[name]}" aria-hidden="true"></span>` : '<span class="folder-symbol" aria-hidden="true"></span>'}${h(name)}</button>`).join('');
     if(department && !allowed.some(r=>r.department===department)) department='';
     const records = allowed.filter(record => (!department || record.department === department) &&
-      [record.id, record.title, record.employee, record.employeeId, record.department].join(' ').toLowerCase().includes(query.toLowerCase()));
+      [record.id, record.title, record.employee ?? '', record.employeeId ?? '', record.department, record.body ?? ''].join(' ').toLowerCase().includes(query.toLowerCase()));
     if (!records.some(r => r.id === selectedId)) selectedId = null;
     root.querySelector('#record-files').innerHTML = records.length ? records.map(record => `<button class="record-file" data-file-id="${h(record.id)}" data-record-id="${h(record.id)}" aria-pressed="${selectedId === record.id}"><b><span class="file-symbol" aria-hidden="true"></span>${h(recordTitle(record))}</b><span>${h(record.department)} <time datetime="${h(record.date.slice(0, 10))}">· ${h(displayDate(record.date, true))}</time></span><small>${h(record.id)}</small></button>`).join('') : '<p class="files-empty">No matching records.</p>';
     root.querySelector('#record-count').textContent = `${records.length} document${records.length === 1 ? '' : 's'}`;

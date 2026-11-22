@@ -9,7 +9,7 @@ import { presentationPolicies, mountFootage } from './apps/inspection.js';
 import { mountPresentation } from './apps/presentation.js';
 
 async function boot() {
-  const [records, cases, assistant, emails, progression, previousProgression, previousCases] = await Promise.all(['records', 'cases', 'assistant', 'emails', 'progression','history/progression-v1','history/cases-v1'].map(async name => {
+  const [records, cases, assistant, emails, progression, previousProgression, previousCases, previousProgressionV2, previousCasesV2] = await Promise.all(['records', 'cases', 'assistant', 'emails', 'progression','history/progression-v1','history/cases-v1','history/progression-v2','history/cases-v2'].map(async name => {
     const response = await fetch(`./data/${name}.json`);
     if (!response.ok) throw new Error(`Could not load ${name}`);
     return response.json();
@@ -17,7 +17,10 @@ async function boot() {
   // Accessing localStorage itself can throw when browser storage is disabled.
   let storage;
   try { storage = window.localStorage; } catch { storage = { getItem() { throw new Error('Storage disabled'); }, setItem() { throw new Error('Storage disabled'); } }; }
-  const contentMigrations=[{from:1,to:2,sourceDefinition:previousProgression,sourceCases:previousCases,migrate:s=>({...s,contentVersion:2})}];
+  const contentMigrations=[
+    {from:1,to:2,sourceDefinition:previousProgression,sourceCases:previousCases,migrate:s=>({...s,contentVersion:2})},
+    {from:2,to:3,sourceDefinition:previousProgressionV2,sourceCases:previousCasesV2,migrate:s=>({...s,contentVersion:3})}
+  ];
   const store = createStore({ records, cases, storage, progression, contentMigrations });
   const mail = createMailModel(emails,{storage,getRecord:store.getRecord,grants:store.getAccess(),
     isAvailable:id=>store.isArtifactAvailable('mail',id),canReference:id=>store.isArtifactAvailable('records',id)});

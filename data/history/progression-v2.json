@@ -1,0 +1,308 @@
+{
+  "schemaVersion": 2,
+  "contentVersion": 2,
+  "evidence": [
+    {
+      "id": "HR-014",
+      "sourceGroupId": "HR-014",
+      "department": "Human Resources",
+      "tags": [],
+      "artifacts": [
+        {
+          "app": "records",
+          "artifactId": "HR-014",
+          "inspectionPolicyId": "document-presented"
+        }
+      ],
+      "fields": {
+        "workEligibility": "AVAILABLE"
+      },
+      "caseIds": [
+        "CASE-001"
+      ],
+      "requiredGrantIds": []
+    },
+    {
+      "id": "OH-008",
+      "sourceGroupId": "OH-008",
+      "department": "Occupational Health",
+      "tags": [],
+      "artifacts": [
+        {
+          "app": "records",
+          "artifactId": "OH-008",
+          "inspectionPolicyId": "document-presented"
+        }
+      ],
+      "fields": {
+        "workEligibility": "NOT_CLEARED",
+        "occupationalCausation": "NOT_ESTABLISHED"
+      },
+      "caseIds": [
+        "CASE-001"
+      ],
+      "requiredGrantIds": []
+    }
+  ],
+  "inferences": [],
+  "determinations": [
+    {
+      "id": "CASE-001:workEligibility",
+      "caseId": "CASE-001",
+      "claimId": "workEligibility",
+      "field": "workEligibility",
+      "value": "NOT_CLEARED",
+      "sourceEvidenceIds": [
+        "OH-008"
+      ],
+      "provenanceEvidenceIds": [
+        "HR-014",
+        "OH-008"
+      ],
+      "legacy": true
+    }
+  ],
+  "milestoneIds": [
+    "CASE-001:filed"
+  ],
+  "grants": [
+    "mail.desk.read",
+    "mail.archive.general"
+  ],
+  "initialGrantIds": [
+    "mail.desk.read",
+    "mail.archive.general"
+  ],
+  "initialCaseIds": [
+    "CASE-001"
+  ],
+  "caseCompletionPolicies": [
+    {
+      "caseId": "CASE-001",
+      "when": {
+        "determinationFiled": {
+          "determinationId": "CASE-001:workEligibility"
+        }
+      }
+    }
+  ],
+  "accessPolicies": [],
+  "availabilityPolicies": [
+    {
+      "contentId": "CASE-002",
+      "when": {
+        "any": [
+          {
+            "milestoneReached": {
+              "milestoneId": "CASE-001:filed"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "presentationPolicies": [
+    {
+      "id": "CASE-001:appearance",
+      "when": {
+        "milestoneReached": {
+          "milestoneId": "CASE-001:filed"
+        }
+      },
+      "distortionLevel": 1
+    }
+  ],
+  "effects": [],
+  "rules": [
+    {
+      "id": "CASE-001:completion",
+      "mode": "once",
+      "when": {
+        "determinationFiled": {
+          "determinationId": "CASE-001:workEligibility"
+        }
+      },
+      "consequences": [
+        {
+          "reachMilestone": {
+            "milestoneId": "CASE-001:filed"
+          }
+        }
+      ]
+    }
+  ],
+  "contentCatalog": [
+    {
+      "id": "CASE-001",
+      "kind": "case",
+      "caseId": "CASE-001",
+      "requiredGrantIds": []
+    },
+    {
+      "id": "CASE-002",
+      "kind": "case",
+      "caseId": "CASE-002",
+      "requiredGrantIds": []
+    },
+    {
+      "id": "record:HR-014",
+      "kind": "artifact",
+      "app": "records",
+      "artifactId": "HR-014",
+      "artifactType": "document",
+      "requiredGrantIds": []
+    },
+    {
+      "id": "record:OH-008",
+      "kind": "artifact",
+      "app": "records",
+      "artifactId": "OH-008",
+      "artifactType": "document",
+      "requiredGrantIds": []
+    },
+    {
+      "id": "mail:THREAD-DESK-HANDOFF",
+      "kind": "artifact",
+      "app": "mail",
+      "artifactId": "THREAD-DESK-HANDOFF",
+      "artifactType": "thread",
+      "requiredGrantIds": []
+    },
+    {
+      "id": "mail:MAIL-001",
+      "kind": "artifact",
+      "app": "mail",
+      "artifactId": "MAIL-001",
+      "artifactType": "message",
+      "requiredGrantIds": []
+    },
+    {
+      "id": "mail:MAIL-002",
+      "kind": "artifact",
+      "app": "mail",
+      "artifactId": "MAIL-002",
+      "artifactType": "message",
+      "requiredGrantIds": []
+    },
+    {
+      "id": "mail:MAIL-003",
+      "kind": "artifact",
+      "app": "mail",
+      "artifactId": "MAIL-003",
+      "artifactType": "message",
+      "requiredGrantIds": []
+    },
+    {
+      "id": "mail:THREAD-ROSTER",
+      "kind": "artifact",
+      "app": "mail",
+      "artifactId": "THREAD-ROSTER",
+      "artifactType": "thread",
+      "requiredGrantIds": []
+    },
+    {
+      "id": "mail:MAIL-004",
+      "kind": "artifact",
+      "app": "mail",
+      "artifactId": "MAIL-004",
+      "artifactType": "message",
+      "requiredGrantIds": []
+    },
+    {
+      "id": "mail:MAIL-005",
+      "kind": "artifact",
+      "app": "mail",
+      "artifactId": "MAIL-005",
+      "artifactType": "message",
+      "requiredGrantIds": []
+    },
+    {
+      "id": "mail:THREAD-MEDICAL-ROUTING",
+      "kind": "artifact",
+      "app": "mail",
+      "artifactId": "THREAD-MEDICAL-ROUTING",
+      "artifactType": "thread",
+      "requiredGrantIds": []
+    },
+    {
+      "id": "mail:MAIL-006",
+      "kind": "artifact",
+      "app": "mail",
+      "artifactId": "MAIL-006",
+      "artifactType": "message",
+      "requiredGrantIds": []
+    },
+    {
+      "id": "mail:MAIL-007",
+      "kind": "artifact",
+      "app": "mail",
+      "artifactId": "MAIL-007",
+      "artifactType": "message",
+      "requiredGrantIds": []
+    },
+    {
+      "id": "mail:THREAD-JESSICA-SHIFT",
+      "kind": "artifact",
+      "app": "mail",
+      "artifactId": "THREAD-JESSICA-SHIFT",
+      "artifactType": "thread",
+      "requiredGrantIds": []
+    },
+    {
+      "id": "mail:MAIL-008",
+      "kind": "artifact",
+      "app": "mail",
+      "artifactId": "MAIL-008",
+      "artifactType": "message",
+      "requiredGrantIds": []
+    },
+    {
+      "id": "mail:MAIL-009",
+      "kind": "artifact",
+      "app": "mail",
+      "artifactId": "MAIL-009",
+      "artifactType": "message",
+      "requiredGrantIds": []
+    },
+    {
+      "id": "mail:THREAD-TITO-RELAY",
+      "kind": "artifact",
+      "app": "mail",
+      "artifactId": "THREAD-TITO-RELAY",
+      "artifactType": "thread",
+      "requiredGrantIds": []
+    },
+    {
+      "id": "mail:MAIL-010",
+      "kind": "artifact",
+      "app": "mail",
+      "artifactId": "MAIL-010",
+      "artifactType": "message",
+      "requiredGrantIds": []
+    },
+    {
+      "id": "mail:MAIL-011",
+      "kind": "artifact",
+      "app": "mail",
+      "artifactId": "MAIL-011",
+      "artifactType": "message",
+      "requiredGrantIds": []
+    },
+    {
+      "id": "mail:MAIL-012",
+      "kind": "artifact",
+      "app": "mail",
+      "artifactId": "MAIL-012",
+      "artifactType": "message",
+      "requiredGrantIds": []
+    },
+    {
+      "id": "footage:preview",
+      "kind": "artifact",
+      "app": "footage",
+      "artifactId": "CAM4-PREVIEW",
+      "artifactType": "media",
+      "requiredGrantIds": []
+    }
+  ]
+}

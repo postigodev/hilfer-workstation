@@ -5,7 +5,7 @@ import { createStore } from '../js/core/store.js';
 import { deriveReport, renderReport } from '../js/apps/report.js';
 import { displayValue, displayDate, displayField } from '../js/apps/shared.js';
 const read = name => JSON.parse(readFileSync(new URL(`../data/${name}.json`, import.meta.url), 'utf8').replace(/^\uFEFF/, ''));
-const records = read('records'), cases = read('cases');
+const records = read('history/records-v2'), cases = read('history/cases-v2');
 function setup() {
   const saved = new Map();
   const storage = { getItem: key => saved.get(key) ?? null, setItem: (key, value) => saved.set(key, value) };
