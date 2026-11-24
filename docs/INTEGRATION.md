@@ -188,3 +188,8 @@ Production loads the original corpus into Records and Mail, with content v1→v6
 After actual source inspection, double-clicking document/message text invokes `contrastArtifact(app, artifactId)` in existing Reconciliation. It validates an authored inference support alternative through `establishInference`. A supported administrative claim remains a separate explicit selection of the existing Update report action. Reading alone establishes nothing. The original Jessica claim control remains unchanged.
 
 Declarative once-rules emit presentation effects on accepted inferences. `mountContrastEffects` delivers bounded clock/index/signal/cursor effects and derived artwork, without changing evidence or permissions. Existing effect receipts prevent replay after reload; Reset clears progression and Escape cancels active cosmetics. Restricted recovered footage uses the original native player after archive authorization; decoded observation proof remains required.
+
+
+## Altynai effect update (2026-11-23)
+
+Selected mechanics adapted from april-hpxd/HILFER commit fe5c681a3478c3513d308213f20834de02de33e5: desktop tear, inert Mail echoes, deterministic dead-pixel field. Source: https://github.com/april-hpxd/HILFER/tree/fe5c681a3478c3513d308213f20834de02de33e5 . Existing engine effect receipts remain authoritative; no new narrative rules, evidence, buttons or asset sets were imported. Unapproved footage/draft automation and error dialogs are excluded. Escape, reset, pagehide and authorization cancellation stop transients; reduced motion suppresses animations. Original Arwa artwork selection remains.

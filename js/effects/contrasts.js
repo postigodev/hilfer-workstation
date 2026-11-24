@@ -1,12 +1,17 @@
+import {mountGlitchSystem} from './altynai.js';
 // Presentation adapter for accepted engine effects. No gameplay commands or UI controls.
 export function mountContrastEffects(store) {
   const root=document.documentElement,jobs=new Map();let audio;
+  const upstream=mountGlitchSystem(store,{root:document.querySelector('#desktop')});
+  let previousDepth=-1;
   const cancel=id=>{const job=jobs.get(id);if(job){clearTimeout(job.timer);job.cleanup();jobs.delete(id);}};
-  const stop=()=>{for(const id of [...jobs.keys()])cancel(id);audio?.pause();};
+  const stop=()=>{for(const id of [...jobs.keys()])cancel(id);audio?.pause();upstream.cancelAll();};
   const clock=document.querySelector('#clock');
   function apply() {
     const depth=Object.keys(store.getSnapshot().facts.inferences).length;
     root.dataset.contrastDepth=String(Math.min(2,depth));
+    const level=Math.min(4,depth);
+    if(level!==previousDepth){previousDepth=level;root.dataset.aiState=String(level);window.dispatchEvent(new CustomEvent('hilfer:ai-state-changed',{detail:{state:level}}));}
     const face=document.querySelector('.ai-avatar');
     if(depth&&face)face.src='assets/arwa/final/assistant-'+(depth>2?'obstructive':'uneasy')+'.webp';
   }
@@ -19,5 +24,13 @@ export function mountContrastEffects(store) {
   document.addEventListener('keydown',e=>{if(e.key==='Escape')stop();});
   window.addEventListener('pagehide',stop);store.subscribe(apply);
   store.onEvent(({type})=>{if(type==='hilfer:progress-reset'){stop();apply();}});apply();
-  return {play(id){if(!actions[id])return false;cancel(id);const cleanup=actions[id]();jobs.set(id,{cleanup,timer:setTimeout(()=>cancel(id),id==='index-noise'?6000:id==='signal-noise'?900:id==='clock-rewind'?4500:3000)});return true;}};
+  return {stop,play(id){if(!actions[id])return false;cancel(id);
+    if(!matchMedia('(prefers-reduced-motion: reduce)').matches){
+      if(id==='clock-rewind')upstream.triggerGlitch('desktop_distortion',{once:false});
+      if(id==='signal-noise'){
+        const reader=[...document.querySelectorAll('.mail-message-window.visible')].find(n=>n.querySelector('.mail-body'));
+        if(reader)upstream.triggerGlitch('email_multiplication',{once:false,payload:{sourceWindow:reader,count:3}});
+      }
+    }
+    const cleanup=actions[id]();jobs.set(id,{cleanup,timer:setTimeout(()=>cancel(id),id==='index-noise'?6000:id==='signal-noise'?900:id==='clock-rewind'?4500:3000)});return true;}};
 }

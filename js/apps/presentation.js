@@ -4,6 +4,7 @@ import {drainEffects} from '../core/effects.js';
 export function mountPresentation(store,{assistant,contrastEffects}) {
   const active=new Set(),cleanup=new Set(),dialogues=new Set();let scheduled=false,disposed=false,animationTimer;
   const stop=()=>{
+    contrastEffects?.stop();
     for(const c of active)c.abort();for(const fn of [...cleanup])fn();
     for(const signal of dialogues)assistant.cancelSignal(signal);dialogues.clear();
     clearTimeout(animationTimer);document.documentElement.classList.remove('engine-microglitch');
