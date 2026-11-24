@@ -1,0 +1,23 @@
+name: HILFER content and engine tests
+
+on:
+  pull_request:
+  push:
+    branches:
+      - feat/artifact-corpus-json-v1
+
+permissions:
+  contents: read
+
+jobs:
+  node-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Run unit and content tests
+        run: npm test
+      - name: Verify local media range responses
+        run: python tests/serve_test.py

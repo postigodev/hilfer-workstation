@@ -4,10 +4,10 @@ import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { createMailModel, validateMailCorpus, renderMailThread, MAIL_UI_KEY } from '../js/apps/emails.js';
 import { createStore } from '../js/core/store.js';
-const bytes = readFileSync(new URL('../data/emails.json', import.meta.url));
+const bytes = readFileSync(new URL('../data/history/emails-v2.json', import.meta.url));
 const corpus = JSON.parse(bytes);
 const read = name => JSON.parse(readFileSync(new URL('../data/' + name + '.json', import.meta.url), 'utf8'));
-const records = read('records');
+const records = read('history/records-v2');
 const memory = () => { const data = new Map(); return {data,getItem:k=>data.get(k)??null,setItem:(k,v)=>data.set(k,v)}; };
 const fixture = () => {
   const data = structuredClone(corpus);
@@ -61,7 +61,7 @@ test('authorization precedes list, search, count, lookup, direct open, receipts 
 
 test('read/unread survives reload and reset, stores only UI IDs, and never modifies game state or source prose', () => {
   const storage = memory(), source = structuredClone(corpus);
-  const game = createStore({records,cases:read('cases'),storage}); const before = game.getState();
+  const game = createStore({records,cases:read('history/cases-v2'),storage}); const before = game.getState();
   let model = createMailModel(corpus,{storage}); model.openThread('THREAD-ROSTER');
   assert.equal(model.getFolders()[0].unread,2); assert.equal(model.getReference('MAIL-004','HR-014').type,'record');
   assert.equal(model.getReference('MAIL-004','OH-008'),null);

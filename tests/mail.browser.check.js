@@ -93,7 +93,23 @@ try {
  assert.equal(await page.locator('[data-mail-row]').count(), 0);
  await page.locator('.mail-folders [data-mail-folder="archive"]').click();
  assert.equal(await page.locator('[data-mail-row]').count(), 2);
- for (const thread of corpus.threads) {
+ // v3 contains restricted conversations. They must remain invisible and unopened
+ // before Jessica grants investigation.read.
+ const initiallyAuthorized = corpus.threads.filter(thread =>
+   thread.access.requiredGrants.every(grant => corpus.initialGrants.includes(grant)));
+ assert.equal(initiallyAuthorized.length, 5);
+ for (const id of ['THREAD-TEST-VIABILITY','THREAD-LEGAL-SCOPE','THREAD-SPACCO-REC03'])
+   assert.equal(await row(page,id).count(), 0, id + ' leaked before authorization');
+ await page.locator('#mail-search').fill("Tomorrow's run");
+ assert.equal(await page.locator('[data-mail-row]').count(), 0, 'Restricted Mail search exposed its subject');
+ await page.locator('#mail-search').fill('');
+ const denied = await page.evaluate(async () => {
+   const {createMailModel} = await import('/js/apps/emails.js');
+   const model = createMailModel(await (await fetch('/data/emails.json')).json());
+   return model.openThread('THREAD-TEST-VIABILITY').ok;
+ });
+ assert.equal(denied, false, 'Direct Mail lookup should also be denied');
+ for (const thread of initiallyAuthorized) {
    await page.locator('.mail-folders [data-mail-folder="' + thread.folderId + '"]').click();
    const node = await openThread(page, thread.id);
    assert.deepEqual(await node.locator('.mail-body').allTextContents(), thread.messages.map(message => message.body));
@@ -121,6 +137,18 @@ try {
  await page.locator('.claim-apply').click();
  assert.ok(await page.locator('#assistant-notification').isVisible());
  await open(page, 'emails');
+ await page.locator('.mail-folders [data-mail-folder="archive"]').click();
+ // Jessica's filed case unlocks P1 Mail, but not the later Recovery 03 thread.
+ for (const id of ['THREAD-TEST-VIABILITY','THREAD-LEGAL-SCOPE']) {
+   const thread = corpus.threads.find(item => item.id === id);
+   assert.ok(await row(page,id).isVisible(), id + ' did not unlock after authorization');
+   const node = await openThread(page,id);
+   assert.deepEqual(await node.locator('.mail-body').allTextContents(),
+     thread.messages.map(message => message.body));
+   await node.locator('[data-control="close"]').click();
+ }
+ assert.equal(await row(page,'THREAD-SPACCO-REC03').count(),0,
+   'Recovery 03 correspondence must stay locked until real footage');
  await page.locator('.mail-folders [data-mail-folder="inbox"]').click();
  await rosterRow.click();
  await page.locator('.mail-toolbar [data-mail-command="unread"]').click();

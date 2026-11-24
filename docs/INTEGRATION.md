@@ -28,6 +28,12 @@ it was local verification, not a CI run. An initial concurrent Assistant run fai
 assertion; the unchanged check then passed alone and in the final sequential run. See the
 [verification report](APPLICATION_INTEGRATION_REVIEW.md#2026-11-21--final-review-follow-up) for the record.
 
+For content v5, also run `node tests/security.browser.check.js` and
+`node tests/security-reconciliation.browser.check.js`. The latter uses production
+definitions, actual video playback and explicit E-I3/F/G actions, with no granted test
+shortcut. Current content and migration contracts are in
+[metadata reconciliation](SECURITY_METADATA_RECONCILIATION.md).
+
 In PowerShell, a separately installed Playwright module and a different server port can be selected with:
 
 ```powershell
@@ -126,6 +132,20 @@ The distortion module listens for reconciliation milestones, not clicks or elaps
 
 ## Asset boundaries
 
+The Security integration adds `data/footage.json`, `mountSecurity`, and the
+closed `media-sequence-presented` policy. `createArtifacts` supplies immutable source
+metadata to the policy, overriding presentation-provided metadata. Transport and
+injury observations have separate logical evidence/artifact IDs for the same file.
+Only contiguous visible decoded playback at normal speed can satisfy them. Partial
+coverage is transient; reset, pause, seek, replacement and revoked access invalidate
+pending operations. `store.js` and the save envelope are unchanged; content v3→v4
+uses explicit historical definition snapshots. Editorial validation is separate from
+visual inspection. Content v5 derives the timeline grant only from explicit E-I3,
+which requires both freshly inspected documentary addenda and actual transport observation.
+
+Run `node tests/security.browser.check.js` after the five existing browser suites,
+and `python tests/serve_test.py` for local HTTP byte-range responses.
+
 Original art is in `assets/arwa/`, with provenance and usage guidance in `assets/arwa/CREDITS.md`. `css/assets.css` centralizes shell asset paths; `css/arwa.css` styles the shell, and `css/hilfer.css` supplies game document layouts, claim comparisons and effects. Original upstream desktop snapshot in `references/WIN98-template/` remains unchanged.
 
 The initial medical/HR document graphics are placeholders pending Arwa's application-specific work. Prioritize legibility and believable paper/report composition, not more instructions or giant panels.
@@ -193,3 +213,8 @@ Declarative once-rules emit presentation effects on accepted inferences. `mountC
 ## Altynai effect update (2026-11-23)
 
 Selected mechanics adapted from april-hpxd/HILFER commit fe5c681a3478c3513d308213f20834de02de33e5: desktop tear, inert Mail echoes, deterministic dead-pixel field. Source: https://github.com/april-hpxd/HILFER/tree/fe5c681a3478c3513d308213f20834de02de33e5 . Existing engine effect receipts remain authoritative; no new narrative rules, evidence, buttons or asset sets were imported. Unapproved footage/draft automation and error dialogs are excluded. Escape, reset, pagehide and authorization cancellation stop transients; reduced motion suppresses animations. Original Arwa artwork selection remains.
+
+
+## Production deployment
+
+Vercel project `hilfer-final` is connected to `postigodev/hilfer-workstation`, production branch `main`. Pushes to main trigger production deployment for https://hilfer.postigo.sh/. Local `.vercel` settings and credentials are not committed.

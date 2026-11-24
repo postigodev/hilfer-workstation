@@ -9,7 +9,7 @@ import {investigation,memory} from './fixtures/investigation.js';
 
 const read = name => JSON.parse(readFileSync(new URL(`../data/${name}.json`,import.meta.url),'utf8'));
 // These PR 1 migration fixtures intentionally retain original content-1 definitions.
-const demo = () => ({records:read('records'),cases:read('cases'),progression:read('history/progression-v1')});
+const demo = () => ({records:read('history/records-v2'),cases:read('history/cases-v2'),progression:read('history/progression-v1')});
 function inspected(storage=memory()) {
   const store = createStore({...investigation(),storage});
   for(const evidenceId of ['TEST-CAMERA','TEST-HR','TEST-MAINTENANCE','TEST-RECOVERY']) store.dispatch({type:'inspectEvidence',evidenceId});
